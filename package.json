@@ -1,0 +1,29 @@
+{
+  "name": "create-harmonia",
+  "version": "5.0.10",
+  "type": "module",
+  "description": "Our pedagogical framework for the React-Express-MySQL cursus in Wild Code School",
+  "homepage": "https://github.com/wildcodeschool/create-harmonia#readme",
+  "bugs": {
+    "url": "https://github.com/wildcodeschool/create-harmonia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wildcodeschool/create-harmonia.git"
+  },
+  "bin": {
+    "create-harmonia": "./bin/create-harmonia.js"
+  },
+  "keywords": [
+    "react",
+    "express",
+    "framework"
+  ],
+  "author": "Wild Code School",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "kleur": "^4.1.5",
+    "mustache": "^4.2.0"
+  }
+}
