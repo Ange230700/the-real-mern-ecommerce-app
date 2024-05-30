@@ -1,6 +1,8 @@
 // Load the express module to create a web application
 
 const express = require("express");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
 
@@ -26,7 +28,7 @@ const app = express();
 // For example: ["http://mysite.com", "http://another-domain.com"]
 
 /*
-const cors = require("cors");
+ */
 
 app.use(
   cors({
@@ -34,10 +36,11 @@ app.use(
       process.env.CLIENT_URL, // keep this one, after checking the value in `server/.env`
       "http://mysite.com",
       "http://another-domain.com",
-    ]
+      "http://192.168.0.25:3004",
+      // "http://vps-80a85dd9.vps.ovh.net:5004",
+    ],
   })
 );
-*/
 
 /* ************************************************************************* */
 
@@ -54,7 +57,7 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
-// app.use(express.json());
+app.use(express.json());
 // app.use(express.urlencoded());
 // app.use(express.text());
 // app.use(express.raw());
@@ -108,7 +111,7 @@ app.use("/api", apiRouter);
 // 2. Ensure that the `reactBuildPath` points to the correct directory where your client's build artifacts are located.
 
 /*
-const path = require("path");
+ */
 
 const reactBuildPath = path.join(__dirname, "/../../client/dist");
 const publicFolderPath = path.join(__dirname, "/../public");
@@ -126,7 +129,6 @@ app.get("*.*", express.static(publicFolderPath, { maxAge: "1y" }));
 app.get("*", (_, res) => {
   res.sendFile(path.join(reactBuildPath, "/index.html"));
 });
-*/
 
 /* ************************************************************************* */
 
