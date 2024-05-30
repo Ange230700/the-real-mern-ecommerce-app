@@ -3,6 +3,7 @@ const ItemRepository = require("./models/ItemRepository");
 const AuthRepository = require("./models/AuthRepository");
 const UserRepository = require("./models/UserRepository");
 const CartRepository = require("./models/CartRepository");
+const OrderRepository = require("./models/OrderRepository");
 
 // Create an empty object to hold data repositories for different tables
 const tables = {};
@@ -16,6 +17,7 @@ tables.item = new ItemRepository();
 tables.user = new AuthRepository();
 tables.user = new UserRepository();
 tables.cart = new CartRepository();
+tables.order = new OrderRepository();
 
 /* ************************************************************************* */
 
