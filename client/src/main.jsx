@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App";
 
 import ProtectedRoute from "./common/ProtectedRoute";
+import { store, persistor } from "./redux/store";
 
 import Product from "./pages/Product";
 import Home from "./pages/Home";
@@ -25,23 +27,23 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/products/:category",
+        path: "products/:category",
         element: <ProductList />,
       },
       {
-        path: "/products/:id",
+        path: "product/:id",
         element: <Product />,
       },
       {
-        path: "/cart",
+        path: "cart",
         element: <Cart />,
       },
       {
-        path: "/success",
+        path: "success",
         element: <Success />,
       },
       {
-        path: "/login",
+        path: "login",
         element: (
           <ProtectedRoute>
             <Login />
@@ -49,7 +51,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/register",
+        path: "register",
         element: (
           <ProtectedRoute>
             <Register />
@@ -64,6 +66,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );
