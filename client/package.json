@@ -9,11 +9,24 @@
     "lint": "npx eslint . --fix"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@reduxjs/toolkit": "^1.6.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "axios": "^1.7.2",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-redux": "^7.2.5",
     "react-router-dom": "^6.23.0",
-    "sass": "^1.69.5"
+    "react-scripts": "^5.0.1",
+    "react-stripe-checkout": "^2.6.3",
+    "redux-persist": "^6.0.0",
+    "sass": "^1.69.5",
+    "styled-components": "^5.3.1",
+    "web-vitals": "^1.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
@@ -30,5 +43,17 @@
   "lint-staged": {
     "*.{html,scss,css}": "prettier --check",
     "*.{jsx,js}": "eslint --report-unused-disable-directives"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
