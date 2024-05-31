@@ -29,10 +29,10 @@ class ProductRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(product) {
+  async update(id, product) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET title = ?, price = ?, image_url = ? WHERE id = ?`,
-      [product.title, product.price, product.image_url, product.id]
+      [product.title, product.price, product.image_url, id]
     );
 
     return result.affectedRows;

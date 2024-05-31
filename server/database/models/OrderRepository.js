@@ -29,10 +29,10 @@ class OrderRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(order) {
+  async update(id, order) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET user_id = ?, total = ? WHERE id = ?`,
-      [order.user_id, order.total, order.id]
+      [order.user_id, order.total, id]
     );
 
     return result.affectedRows;

@@ -5,6 +5,7 @@ const CryptoJS = require("crypto-js");
 
 // Import the JWT library
 const jwt = require("jsonwebtoken");
+
 const tables = require("../../database/tables");
 
 // Register a new user
@@ -77,7 +78,10 @@ const login = async (request, response) => {
       }
     );
 
-    response.json({
+    const { password: userPassword, ...userWithoutPassword } = user;
+
+    response.status(200).json({
+      ...userWithoutPassword,
       token,
     });
   } catch (error) {

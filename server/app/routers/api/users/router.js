@@ -7,7 +7,6 @@ const router = express.Router();
 /* ************************************************************************* */
 
 const {
-  // verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
 } = require("../../../middlewares/authMiddleware");
@@ -17,7 +16,6 @@ const {
   browse,
   read,
   edit,
-  // add,
   destroy,
 } = require("../../../controllers/userActions");
 
@@ -29,9 +27,6 @@ router.get("/:id", verifyTokenAndAdmin, read);
 
 // Route to edit a specific user by ID
 router.put("/:id", verifyTokenAndAuthorization, edit);
-
-// // Route to add a new user
-// router.post("/", add);
 
 // Route to delete a specific user by ID
 router.delete("/:id", verifyTokenAndAuthorization, destroy);

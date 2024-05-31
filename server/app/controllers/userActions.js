@@ -1,3 +1,5 @@
+const CryptoJS = require("crypto-js");
+
 // Import access to database tables
 const tables = require("../../database/tables");
 
@@ -8,7 +10,7 @@ const browse = async (request, response, next) => {
     const users = await tables.user.readAll();
 
     // Respond with the items in JSON format
-    response.json(users);
+    response.status(200).json(users);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -20,13 +22,14 @@ const read = async (request, response, next) => {
   try {
     // Fetch a specific item from the database based on the provided ID
     const user = await tables.user.read(request.params.id);
+    const { password: userPassword, ...userWithoutPassword } = user;
 
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
     if (user == null) {
       response.sendStatus(404);
     } else {
-      response.json(user);
+      response.json(userWithoutPassword);
     }
   } catch (error) {
     // Pass any errors to the error-handling middleware
@@ -36,12 +39,28 @@ const read = async (request, response, next) => {
 
 // The E of BREAD - Edit (Update) operation
 const edit = async (request, response, next) => {
+  // Extract the item ID from the request parameters
+  const { id } = request.params;
+
+  if (request.body.password) {
+    const { password } = request.body;
+
+    if (password) {
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        password,
+        process.env.APP_SECRET
+      ).toString();
+
+      request.body.password = encryptedPassword;
+    }
+  }
+
   // Extract the item data from the request body
   const user = request.body;
 
   try {
     // Update the item in the database
-    await tables.user.update(user);
+    await tables.user.update(id, user);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);

@@ -29,10 +29,10 @@ class CartRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(cart) {
+  async update(id, cart) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET user_id = ? WHERE id = ?`,
-      [cart.user_id, cart.id]
+      [cart.user_id, id]
     );
 
     return result.affectedRows;

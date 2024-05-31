@@ -6,11 +6,7 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
-const {
-  // verifyToken,
-  // verifyTokenAndAuthorization,
-  verifyTokenAndAdmin,
-} = require("../../../middlewares/authMiddleware");
+const { verifyTokenAndAdmin } = require("../../../middlewares/authMiddleware");
 
 // Import product-related actions
 const {

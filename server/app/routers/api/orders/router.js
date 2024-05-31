@@ -16,8 +16,8 @@ const {
 const {
   browse,
   read,
-  add,
   edit,
+  add,
   destroy,
 } = require("../../../controllers/orderActions");
 
@@ -27,14 +27,14 @@ router.get("/", verifyTokenAndAdmin, browse);
 // Route to get a specific order by ID
 router.get("/:id", verifyTokenAndAuthorization, read);
 
+// Route to edit a specific order by ID
+router.put("/:id", verifyTokenAndAdmin, edit);
+
 // Route to add a new order
 router.post("/", verifyToken, add);
 
-// Route to edit a specific order by ID
-router.put("/:id", verifyTokenAndAuthorization, edit);
-
 // Route to delete a specific order by ID
-router.delete("/:id", verifyTokenAndAuthorization, destroy);
+router.delete("/:id", verifyTokenAndAdmin, destroy);
 
 /* ************************************************************************* */
 
