@@ -1,20 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import App from "./App";
 
 import { store, persistor } from "./redux/store";
 
-import Product from "./pages/Product";
+import App from "./App";
+
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
+import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Success from "./pages/Success";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const router = createBrowserRouter([
   {

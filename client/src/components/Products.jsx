@@ -10,7 +10,9 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import axios from "axios";
+
 import { popularProducts } from "../data";
+
 import Product from "./Product";
 
 const Container = styled.div`

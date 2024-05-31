@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
+import { Add, Remove } from "@material-ui/icons";
+
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
-import mobile from "../responsive";
+
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
+import mobile from "../responsive";
 
 const Container = styled.div``;
 
