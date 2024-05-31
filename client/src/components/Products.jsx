@@ -2,6 +2,10 @@
   eslint-disable no-unused-expressions
 */
 
+/*
+  eslint-disable react/require-default-props
+*/
+
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -76,12 +80,12 @@ function Products({ cat = "", filters = {}, sort = "" }) {
 }
 
 Products.propTypes = {
-  cat: PropTypes.string.isRequired,
+  cat: PropTypes.string,
   filters: PropTypes.shape({
     color: PropTypes.string,
     size: PropTypes.string,
-  }).isRequired,
-  sort: PropTypes.string.isRequired,
+  }),
+  sort: PropTypes.string,
 };
 
 export default Products;
