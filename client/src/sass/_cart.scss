@@ -1,0 +1,146 @@
+// .cart-container {}
+
+.cart-wrapper {
+  padding: 20px;
+}
+
+.cart-title {
+  font-weight: 300;
+  text-align: center;
+}
+
+.cart-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.cart-top-button {
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cart-top-button-filled {
+  border: none;
+  background-color: black;
+  color: white;
+}
+
+.cart-top-texts {
+  display: flex;
+}
+
+.cart-top-text {
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.cart-bottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-info {
+  flex: 3;
+}
+
+.cart-product {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-product-detail {
+  flex: 2;
+  display: flex;
+}
+
+.cart-image {
+  width: 200px;
+}
+
+.cart-details {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+// .cart-product-name {}
+
+// .cart-product-id {}
+
+.cart-product-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+// .cart-product-size {}
+
+.cart-price-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-product-amount-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cart-product-amount {
+  font-size: 24px;
+  margin: 5px;
+}
+
+.cart-product-price {
+  font-size: 30px;
+  font-weight: 200;
+}
+
+.cart-hr {
+  background-color: #eee;
+  border: none;
+  height: 1px;
+}
+
+.cart-summary {
+  flex: 1;
+  border: 0.5px solid lightgray;
+  border-radius: 10px;
+  padding: 20px;
+  height: 50vh;
+}
+
+.cart-summary-title {
+  font-weight: 200;
+}
+
+.cart-summary-item {
+  margin: 30px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+// .cart-summary-item-text {}
+
+// .cart-summary-item-price {}
+
+.cart-summary-item-total {
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.cart-button {
+  width: 100%;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  font-weight: 600;
+}

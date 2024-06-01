@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 
 function Home() {
   return (
-    <div>
+    <div className="home-container">
       <Announcement />
       <Navbar />
       <Slider />

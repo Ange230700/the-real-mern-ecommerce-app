@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router"; // eslint-disable-line
-
 import { userRequest } from "../requestMethods";
 
 function Success() {
   const location = useLocation();
-  // in Cart.jsx I sent data and cart. Please check that page for the changes.(in video it's only data)
   const data = location.state.stripeData;
-  // const cart = location.state.cart;
   const { cart } = location.state;
   const currentUser = useSelector((state) => state.user.currentUser);
   const [orderId, setOrderId] = useState(null);
@@ -30,26 +27,17 @@ function Success() {
         console.error(error);
       }
     };
-    // data && createOrder();
     if (data) {
       createOrder();
     }
   }, [cart, data, currentUser]);
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="success-container">
       {orderId
         ? `Order has been created successfully. Your order number is ${orderId}`
         : `Successful. Your order is being prepared...`}
-      <button type="button" style={{ padding: 10, marginTop: 20 }}>
+      <button className="success-button" type="button">
         Go to Homepage
       </button>
     </div>
