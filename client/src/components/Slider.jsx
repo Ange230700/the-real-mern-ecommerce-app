@@ -24,9 +24,9 @@ function Slider() {
       >
         <ArrowLeftOutlined />
       </button>
-      <div className="slider-wrapper" slideIndex={slideIndex}>
+      <div className="slider-wrapper">
         {sliderItems.map((item) => (
-          <div className="slider-slide" bg={item.bg} key={item.id}>
+          <div className="slider-slide" key={item.id}>
             <div className="slider-img-container">
               <img className="slider-image" src={item.img} alt="slider pic" />
             </div>
