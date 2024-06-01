@@ -1,5 +1,3 @@
--- server\database\schema.sql
-
 -- Drop existing tables if they exist to start with a clean slate
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `product`;

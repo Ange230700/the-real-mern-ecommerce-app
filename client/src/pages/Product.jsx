@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Add, Remove } from "@material-ui/icons";
-import Announcement from "../components/Announcement";
-import Footer from "../components/Footer";
+
 import Navbar from "../components/Navbar";
+import Announcement from "../components/Announcement";
 import Newsletter from "../components/Newsletter";
+import Footer from "../components/Footer";
+
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 

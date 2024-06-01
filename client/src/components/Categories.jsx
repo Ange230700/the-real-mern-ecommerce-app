@@ -1,5 +1,6 @@
-import { categories } from "../data";
 import CategoryItem from "./CategoryItem";
+
+import { categories } from "../data";
 
 function Categories() {
   return (

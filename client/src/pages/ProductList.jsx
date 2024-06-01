@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router"; // eslint-disable-line
+
 import Navbar from "../components/Navbar";
 import Announcement from "../components/Announcement";
 import Products from "../components/Products";
