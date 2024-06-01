@@ -1,7 +1,3 @@
-/*
-    eslint-disable no-underscore-dangle
-*/
-
 import {
   FavoriteBorderOutlined,
   SearchOutlined,

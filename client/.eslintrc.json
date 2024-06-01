@@ -25,6 +25,8 @@
       {
         "assert": "either"
       }
-    ]
+    ],
+    "react/require-default-props": "off",
+    "no-underscore-dangle": "off"
   }
 }

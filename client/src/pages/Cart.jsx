@@ -1,11 +1,3 @@
-/*
-  eslint-disable no-underscore-dangle
-*/
-
-/*
-  eslint-disable react-hooks/exhaustive-deps
-*/
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -196,7 +188,7 @@ function Cart() {
     if (stripeToken) {
       makeRequest();
     }
-  }, [stripeToken, cart.total, navigate]);
+  }, [stripeToken, cart, navigate]);
 
   return (
     <Container>

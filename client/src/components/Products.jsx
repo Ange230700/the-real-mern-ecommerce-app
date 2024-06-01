@@ -1,11 +1,3 @@
-/*
-  eslint-disable no-unused-expressions
-*/
-
-/*
-  eslint-disable react/require-default-props
-*/
-
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -44,7 +36,7 @@ function Products({ cat = "", filters = {}, sort = "" }) {
   }, [cat]);
 
   useEffect(() => {
-    cat &&
+    if (cat) {
       setFilteredProducts(
         products.filter((item) =>
           Object.entries(filters).every(([key, value]) =>
@@ -52,6 +44,7 @@ function Products({ cat = "", filters = {}, sort = "" }) {
           )
         )
       );
+    }
   }, [products, cat, filters]);
 
   useEffect(() => {

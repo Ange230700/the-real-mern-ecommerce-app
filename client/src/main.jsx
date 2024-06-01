@@ -16,6 +16,8 @@ import Success from "./pages/Success";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
+import "./sass/index.scss";
+
 const router = createBrowserRouter([
   {
     path: "/",
