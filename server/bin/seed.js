@@ -60,7 +60,7 @@ const seed = async () => {
 
       // Use delete instead of truncate to bypass foreign key constraint
       // Wait for the delete promise to complete
-      await database.query(`delete from ${firstOut.table}`);
+      await database.query(`DELETE FROM ${firstOut.table}`);
 
       await doTruncate(stack);
     };

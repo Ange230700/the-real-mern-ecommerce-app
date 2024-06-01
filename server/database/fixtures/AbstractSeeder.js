@@ -19,15 +19,22 @@ class AbstractSeeder {
       );
     }
 
+    // Store the table name
     this.table = table;
 
+    // Store the truncate option
     this.truncate = truncate;
 
+    // Store the dependencies
     this.dependencies = dependencies;
 
+    // Store the promises
     this.promises = [];
 
+    // Store the faker library
     this.faker = faker;
+
+    // Store the refs object
     this.refs = refs;
   }
 
@@ -41,7 +48,7 @@ class AbstractSeeder {
       .fill("?")
       .join(",");
 
-    const sql = `insert into ${this.table}(${fields}) values (${placeholders})`;
+    const sql = `INSERT INTO ${this.table}(${fields}) VALUES (${placeholders})`;
 
     // Perform the query and if applicable store the insert id given the ref name
     const [result] = await database.query(sql, Object.values(values));
