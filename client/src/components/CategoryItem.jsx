@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 function CategoryItem({ item }) {
   return (
-    <div className="category-item-container">
+    <div className="category-item-container" key={item.id}>
       <Link to={`/products/${item.cat}`}>
         <img
           className="category-item-image"
@@ -11,7 +11,7 @@ function CategoryItem({ item }) {
           alt="category item"
         />
         <div className="category-item-info">
-          <h1 className="category-item-title">{item.title}</h1>
+          <h1 className="category-item-title">{item.name}</h1>
           <button type="button" className="category-item-button">
             SHOP NOW
           </button>
@@ -23,8 +23,9 @@ function CategoryItem({ item }) {
 
 CategoryItem.propTypes = {
   item: PropTypes.shape({
+    id: PropTypes.number,
     img: PropTypes.string,
-    title: PropTypes.string,
+    name: PropTypes.string,
     cat: PropTypes.string,
   }).isRequired,
 };

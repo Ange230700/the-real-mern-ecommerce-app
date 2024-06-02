@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
+import Slider from "react-slick"; // eslint-disable-line
+
 import { publicRequest } from "../requestMethods";
 
-function Slider() {
-  const [slideIndex, setSlideIndex] = useState(0);
+function Carousel() {
   const [sliderItems, setSliderItems] = useState([]);
 
   useEffect(() => {
@@ -19,52 +20,43 @@ function Slider() {
     fetchSliderItems();
   }, []);
 
-  const handleClick = (direction) => {
-    if (direction === "left") {
-      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : sliderItems.length - 1);
-    } else {
-      setSlideIndex(slideIndex < sliderItems.length - 1 ? slideIndex + 1 : 0);
-    }
+  const settings = {
+    dots: false,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    prevArrow: (
+      <div className="slider-arrow left">
+        <ArrowLeftOutlined />
+      </div>
+    ),
+    nextArrow: (
+      <div className="slider-arrow right">
+        <ArrowRightOutlined />
+      </div>
+    ),
   };
 
   return (
     <div className="slider-container">
-      <button
-        type="button"
-        aria-label="left arrow"
-        className="slider-arrow"
-        direction="left"
-        onClick={() => handleClick("left")}
-      >
-        <ArrowLeftOutlined />
-      </button>
-      <div className="slider-wrapper">
+      <Slider className="slider-wrapper" {...settings}>
         {sliderItems.map((item) => (
           <div className="slider-slide" key={item.id}>
             <div className="slider-img-container">
-              <img className="slider-image" src={item.img} alt="slider pic" />
+              <img className="slider-image" src={item.image} alt="slider pic" />
             </div>
             <div className="slider-info-container">
               <h1 className="slider-title">{item.title}</h1>
-              <p className="slider-desc">{item.desc}</p>
               <button type="button" className="slider-button">
                 SHOW NOW
               </button>
             </div>
           </div>
         ))}
-      </div>
-      <button
-        type="button"
-        aria-label="right arrow"
-        className="slider-arrow"
-        direction="right"
-        onClick={() => handleClick("right")}
-      >
-        <ArrowRightOutlined />
-      </button>
+      </Slider>
     </div>
   );
 }
 
-export default Slider;
+export default Carousel;

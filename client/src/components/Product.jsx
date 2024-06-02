@@ -10,7 +10,7 @@ function Product({ item }) {
   return (
     <div className="product-container">
       <div className="product-circle" />
-      <img className="product-image" src={item.img} alt="product pic" />
+      <img className="product-image" src={item.image_url} alt="product pic" />
       <div className="product-info">
         <div className="product-icon">
           <ShoppingCartOutlined />
@@ -30,7 +30,7 @@ function Product({ item }) {
 
 Product.propTypes = {
   item: PropTypes.shape({
-    img: PropTypes.string,
+    image_url: PropTypes.string,
     _id: PropTypes.string,
   }).isRequired,
 };

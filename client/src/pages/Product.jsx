@@ -52,7 +52,11 @@ function Product() {
       <Announcement />
       <div className="product-wrapper">
         <div className="product-img-container">
-          <img className="product-image" src={product.img} alt="product pic" />
+          <img
+            className="product-image"
+            src={product.image_url}
+            alt="product pic"
+          />
         </div>
         <div className="product-info-container">
           <h1 className="product-title">{product.title}</h1>
