@@ -1,6 +1,6 @@
 import Announcement from "../components/Announcement";
 import Navbar from "../components/Navbar";
-import Slider from "../components/Carousel";
+import Carousel from "../components/Carousel";
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import Newsletter from "../components/Newsletter";
@@ -11,7 +11,7 @@ function Home() {
     <div className="home-container">
       <Announcement />
       <Navbar />
-      <Slider />
+      <Carousel />
       <Categories />
       <Products />
       <Newsletter />

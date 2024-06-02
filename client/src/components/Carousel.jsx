@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
 import Slider from "react-slick"; // eslint-disable-line
+
+import PrevArrow from "./PrevArrow";
+import NextArrow from "./NextArrow";
 
 import { publicRequest } from "../requestMethods";
 
@@ -26,16 +28,8 @@ function Carousel() {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    prevArrow: (
-      <div className="slider-arrow left">
-        <ArrowLeftOutlined />
-      </div>
-    ),
-    nextArrow: (
-      <div className="slider-arrow right">
-        <ArrowRightOutlined />
-      </div>
-    ),
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
   };
 
   return (
