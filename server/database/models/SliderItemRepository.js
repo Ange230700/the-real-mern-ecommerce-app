@@ -7,7 +7,7 @@ class SliderItemRepository extends AbstractRepository {
 
   async create({ title, image }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (title, image_url) VALUES (?, ?)`,
+      `INSERT INTO ${this.table} (title, image) VALUES (?, ?)`,
       [title, image]
     );
 

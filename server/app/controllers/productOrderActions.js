@@ -5,7 +5,7 @@ const tables = require("../../database/tables");
 const browse = async (request, response, next) => {
   try {
     // Fetch all items from the database
-    const productCategories = await tables.productCategory.readAll();
+    const productCategories = await tables.product_order.readAll();
 
     // Respond with the items in JSON format
     response.status(200).json(productCategories);
@@ -19,9 +19,7 @@ const browse = async (request, response, next) => {
 const read = async (request, response, next) => {
   try {
     // Fetch a specific item from the database based on the provided ID
-    const productCategory = await tables.productCategory.read(
-      request.params.id
-    );
+    const productCategory = await tables.product_order.read(request.params.id);
 
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
@@ -46,7 +44,7 @@ const edit = async (request, response, next) => {
 
   try {
     // Update the item in the database
-    await tables.productCategory.update(id, productCategory);
+    await tables.product_order.update(id, productCategory);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -63,7 +61,7 @@ const add = async (request, response, next) => {
 
   try {
     // Insert the item into the database
-    const insertId = await tables.productCategory.create(productCategory);
+    const insertId = await tables.product_order.create(productCategory);
 
     // Respond with HTTP 201 (Created)
     response.status(201).json({
@@ -82,7 +80,7 @@ const destroy = async (request, response, next) => {
 
   try {
     // Delete the item from the database
-    await tables.productCategory.delete(id);
+    await tables.product_order.delete(id);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);

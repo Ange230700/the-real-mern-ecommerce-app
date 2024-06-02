@@ -2,13 +2,13 @@ const AbstractRepository = require("./AbstractRepository");
 
 class ProductRepository extends AbstractRepository {
   constructor() {
-    super({ table: "product" });
+    super({ table: "category" });
   }
 
-  async create(product) {
+  async create({ name }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (title, price, image_url) VALUES (?, ?, ?)`,
-      [product.title, product.price, product.image_url]
+      `INSERT INTO ${this.table} (name) VALUES (?)`,
+      [name]
     );
 
     return result.insertId;
@@ -29,10 +29,10 @@ class ProductRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(id, product) {
+  async update(id, { name }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET title = ?, price = ?, image_url = ? WHERE id = ?`,
-      [product.title, product.price, product.image_url, id]
+      `UPDATE ${this.table} SET name = ? WHERE id = ?`,
+      [name, id]
     );
 
     return result.affectedRows;

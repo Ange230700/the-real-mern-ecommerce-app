@@ -5,10 +5,10 @@ class OrderRepository extends AbstractRepository {
     super({ table: "order" });
   }
 
-  async create(order) {
+  async create({ userId, total }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (userId, total) VALUES (?, ?)`,
-      [order.userId, order.total]
+      [userId, total]
     );
 
     return result.insertId;
@@ -29,10 +29,10 @@ class OrderRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(id, order) {
+  async update(id, { userId, total }) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET user_id = ?, total = ? WHERE id = ?`,
-      [order.user_id, order.total, id]
+      [userId, total, id]
     );
 
     return result.affectedRows;

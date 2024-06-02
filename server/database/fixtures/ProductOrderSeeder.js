@@ -1,9 +1,16 @@
 const AbstractSeeder = require("./AbstractSeeder");
 
+const ProductSeeder = require("./ProductSeeder");
+const OrderSeeder = require("./OrderSeeder");
+
 class ProductOrderSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "product_order", truncate: true });
+    super({
+      table: "product_order",
+      truncate: true,
+      dependencies: [ProductSeeder, OrderSeeder],
+    });
   }
 
   // $ The run method - Populate the 'product_order' table with fake data
