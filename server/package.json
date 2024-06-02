@@ -7,7 +7,7 @@
     "dev": "nodemon --ignore ./database/fixtures index.js",
     "db:migrate": "node ./bin/migrate.js",
     "db:seed": "node ./bin/seed.js",
-    "build": "npm run db:migrate",
+    "build": "npm run db:migrate ; npm run db:seed",
     "start": "node index.js",
     "test": "jest",
     "prettier": "npx prettier --write .",

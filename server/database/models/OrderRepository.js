@@ -7,8 +7,8 @@ class OrderRepository extends AbstractRepository {
 
   async create(order) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (user_id, total) VALUES (?, ?)`,
-      [order.user_id, order.total]
+      `INSERT INTO ${this.table} (userId, total) VALUES (?, ?)`,
+      [order.userId, order.total]
     );
 
     return result.insertId;

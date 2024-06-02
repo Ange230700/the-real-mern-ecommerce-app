@@ -5,10 +5,10 @@ class ProductRepository extends AbstractRepository {
     super({ table: "product" });
   }
 
-  async create({ title, price, image_url }) {
+  async create(product) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (title, price, image_url) VALUES (?, ?, ?)`,
-      [title, price, image_url]
+      [product.title, product.price, product.image_url]
     );
 
     return result.insertId;
@@ -29,10 +29,10 @@ class ProductRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(id, { title, price, image_url }) {
+  async update(id, product) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET title = ?, price = ?, image_url = ? WHERE id = ?`,
-      [title, price, image_url, id]
+      [product.title, product.price, product.image_url, id]
     );
 
     return result.affectedRows;

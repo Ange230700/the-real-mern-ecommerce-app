@@ -2,13 +2,27 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import { popularProducts } from "../data";
+import { publicRequest } from "../requestMethods";
 
 import Product from "./Product";
 
 function Products({ cat = "", filters = {}, sort = "" }) {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [popularProducts, setPopularProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchPopularProducts = async () => {
+      try {
+        const res = await publicRequest.get("/products?popular=true");
+        setPopularProducts(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchPopularProducts();
+  }, []);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -25,7 +39,7 @@ function Products({ cat = "", filters = {}, sort = "" }) {
       }
     };
     getProducts();
-  }, [cat]);
+  }, [cat, popularProducts]);
 
   useEffect(() => {
     if (cat) {

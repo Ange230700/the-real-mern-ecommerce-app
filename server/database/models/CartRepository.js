@@ -5,10 +5,10 @@ class CartRepository extends AbstractRepository {
     super({ table: "cart" });
   }
 
-  async create(cart) {
+  async create({ userId }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (user_id) VALUES (?)`,
-      [cart.user_id]
+      `INSERT INTO ${this.table} (userId) VALUES (?)`,
+      [userId]
     );
 
     return result.insertId;
@@ -29,10 +29,10 @@ class CartRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(id, cart) {
+  async update(id, { userId }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET user_id = ? WHERE id = ?`,
-      [cart.user_id, id]
+      `UPDATE ${this.table} SET userId = ? WHERE id = ?`,
+      [userId, id]
     );
 
     return result.affectedRows;

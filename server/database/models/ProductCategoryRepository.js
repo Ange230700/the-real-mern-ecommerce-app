@@ -1,14 +1,14 @@
 const AbstractRepository = require("./AbstractRepository");
 
-class ProductRepository extends AbstractRepository {
+class ProductCategoryRepository extends AbstractRepository {
   constructor() {
-    super({ table: "product" });
+    super({ table: "product_category" });
   }
 
-  async create({ title, price, image_url }) {
+  async create({ productId, categoryId }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (title, price, image_url) VALUES (?, ?, ?)`,
-      [title, price, image_url]
+      `INSERT INTO ${this.table} (productId, categoryId) VALUES (?, ?)`,
+      [productId, categoryId]
     );
 
     return result.insertId;
@@ -29,10 +29,10 @@ class ProductRepository extends AbstractRepository {
     return rows;
   }
 
-  async update(id, { title, price, image_url }) {
+  async update(id, { productId, categoryId }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET title = ?, price = ?, image_url = ? WHERE id = ?`,
-      [title, price, image_url, id]
+      `UPDATE ${this.table} SET productId = ?, categoryId = ? WHERE id = ?`,
+      [productId, categoryId, id]
     );
 
     return result.affectedRows;
@@ -48,4 +48,4 @@ class ProductRepository extends AbstractRepository {
   }
 }
 
-module.exports = ProductRepository;
+module.exports = ProductCategoryRepository;

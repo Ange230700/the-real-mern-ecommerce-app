@@ -5,6 +5,12 @@ class UserRepository extends AbstractRepository {
     super({ table: "user" });
   }
 
+  async readAll() {
+    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
+
+    return rows;
+  }
+
   async read(id) {
     const [rows] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
@@ -14,16 +20,10 @@ class UserRepository extends AbstractRepository {
     return rows[0];
   }
 
-  async readAll() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
-
-    return rows;
-  }
-
-  async update(id, user) {
+  async update(id, { username, email, password }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET email = ?, password = ? WHERE id = ?`,
-      [user.email, user.password, id]
+      `UPDATE ${this.table} SET username = ?, email = ?, password = ? WHERE id = ?`,
+      [username, email, password, id]
     );
 
     return result.affectedRows;

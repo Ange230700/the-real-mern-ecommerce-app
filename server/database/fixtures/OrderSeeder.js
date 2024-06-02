@@ -1,6 +1,5 @@
 const AbstractSeeder = require("./AbstractSeeder");
 const UserSeeder = require("./UserSeeder");
-const CartSeeder = require("./CartSeeder");
 
 class OrderSeeder extends AbstractSeeder {
   constructor() {
@@ -8,7 +7,7 @@ class OrderSeeder extends AbstractSeeder {
     super({
       table: "order",
       truncate: true,
-      dependencies: [UserSeeder, CartSeeder],
+      dependencies: [UserSeeder],
     });
   }
 
@@ -19,10 +18,8 @@ class OrderSeeder extends AbstractSeeder {
     for (let i = 0; i < 10; i += 1) {
       // Get the reference to the user and cart
       const user = this.getRef(`user_${i % 10}`); // Get the reference to the user
-      const cart = this.getRef(`cart_${i % 10}`); // Get the reference to the cart
       const fakeOrder = {
-        user_id: user.insertId, // Get the user id from the user reference
-        cart_id: cart.insertId, // Get the cart id from the cart reference
+        userId: user.insertId, // Get the user id from the user reference
         total: this.faker.commerce.price(), // Generate a fake total using faker library
         refName: `order_${i}`, // Create a reference name for the order
       };

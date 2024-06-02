@@ -15,7 +15,7 @@ class CartSeeder extends AbstractSeeder {
       // Generate fake cart data
       const user = this.getRef(`user_${i % 10}`);
       const fakeCart = {
-        user_id: user.insertId, // Generate a fake user_id using faker library
+        userId: user.insertId, // Generate a fake user_id using faker library
         refName: `cart_${i}`, // Create a reference name for the cart
       };
 

@@ -1,83 +1,114 @@
 -- Drop existing tables if they exist to start with a clean slate
 DROP TABLE IF EXISTS `user`;
-DROP TABLE IF EXISTS `product`;
+
 DROP TABLE IF EXISTS `cart`;
+
+DROP TABLE IF EXISTS `product`;
+
 DROP TABLE IF EXISTS `order`;
+
 DROP TABLE IF EXISTS `sliderItem`;
+
 DROP TABLE IF EXISTS `category`;
+
 DROP TABLE IF EXISTS `popularProducts`;
 
--- Create the `user` table
+-- junction tables
+
+DROP TABLE IF EXISTS `product_category`;
+
+DROP TABLE IF EXISTS `product_order`;
+
+
+-- $ Conceptual data model for the database
+
+
+-- § Relationships between user and cart
+-- a user can have only one cart and a cart is associated with only one user. (one-to-one, foreign key in cart)
+
+-- § Relationships between product and cart
+-- a cart can have many products and a product can be in only one cart. (one-to-many, foreign key in product)
+
+-- § Relationships between product and category
+-- a product can have many categories and a category can have many products. (many-to-many, junction table)
+
+-- § Relationships between product and order
+-- an order can have many products and a product can be in many orders. (many-to-many, junction table)
+
+-- § Relationships between user and order
+-- a user can have many orders and an order is associated with only one user. (one-to-many, foreign key in order)
+
+-- % Based on the conceptual data model above, give me the entire schema for the database. Mind the insertion of foreign keys based on one-to-one, one-to-many, and many-to-many relationships.
+
+-- $ Create the tables
+
 CREATE TABLE `user` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `username` VARCHAR(255) NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     `isAdmin` BOOLEAN DEFAULT FALSE,
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  PRIMARY KEY (`id`)
 );
 
--- Create the `product` table
+CREATE TABLE `cart` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`id`)
+);
+
 CREATE TABLE `product` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `title` VARCHAR(255) NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
     `price` DECIMAL(10, 2) NOT NULL,
     `image_url` VARCHAR(255),
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  PRIMARY KEY (`id`)
 );
 
--- Create the `cart` table
-CREATE TABLE `cart` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `product_id` INT NOT NULL,
-    `quantity` INT NOT NULL,
-    `total` DECIMAL(10, 2) NOT NULL,
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-    FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
-);
-
--- Create the `order` table
 CREATE TABLE `order` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `cart_id` INT NOT NULL,
-    `total` DECIMAL(10, 2) NOT NULL,
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-    FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`)
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `total` DECIMAL(10, 2) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`id`)
 );
 
--- Create the `sliderItem` table
 CREATE TABLE `sliderItem` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `image_url` VARCHAR(255),
-    `title` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
-    `backgroundColor` VARCHAR(255),
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `image` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Create the `category` table
 CREATE TABLE `category` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `img` VARCHAR(255),
-    `title` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Create the `popularProducts` table
-CREATE TABLE `popularProducts` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `image_url` VARCHAR(255),
-    -- `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE `popularProduct` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `price` DECIMAL(10, 2) NOT NULL,
+  `image` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- junction tables
+
+CREATE TABLE `product_category` (
+  `productId` INT NOT NULL,
+  `categoryId` INT NOT NULL,
+  FOREIGN KEY (`productId`) REFERENCES `product`(`id`),
+  FOREIGN KEY (`categoryId`) REFERENCES `category`(`id`),
+  PRIMARY KEY (`productId`, `categoryId`)
+);
+
+CREATE TABLE `product_order` (
+  `productId` INT NOT NULL,
+  `orderId` INT NOT NULL,
+  FOREIGN KEY (`productId`) REFERENCES `product`(`id`),
+  FOREIGN KEY (`orderId`) REFERENCES `order`(`id`),
+  PRIMARY KEY (`productId`, `orderId`)
 );

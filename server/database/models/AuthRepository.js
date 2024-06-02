@@ -8,11 +8,11 @@ class AuthRepository extends AbstractRepository {
   }
 
   // Create
-  async create(user) {
+  async create({ username, email, password }) {
     // Execute the SQL INSERT query to add a new user to the "user" table
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (email, password) VALUES (?, ?)`,
-      [user.email, user.password]
+      `INSERT INTO ${this.table} (username, email, password) VALUES (?, ?, ?)`,
+      [username, email, password]
     );
 
     // Return the ID of the newly inserted user

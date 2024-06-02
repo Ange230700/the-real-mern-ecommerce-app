@@ -1,16 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
-
-import { sliderItems } from "../data";
+import { publicRequest } from "../requestMethods";
 
 function Slider() {
   const [slideIndex, setSlideIndex] = useState(0);
+  const [sliderItems, setSliderItems] = useState([]);
+
+  useEffect(() => {
+    const fetchSliderItems = async () => {
+      try {
+        const res = await publicRequest.get("/sliderItems");
+        setSliderItems(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSliderItems();
+  }, []);
 
   const handleClick = (direction) => {
     if (direction === "left") {
-      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
+      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : sliderItems.length - 1);
     } else {
-      setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0);
+      setSlideIndex(slideIndex < sliderItems.length - 1 ? slideIndex + 1 : 0);
     }
   };
 
