@@ -1,8 +1,8 @@
 const AbstractRepository = require("./AbstractRepository");
 
-class OrderRepository extends AbstractRepository {
+class PurchaseRepository extends AbstractRepository {
   constructor() {
-    super({ table: "order" });
+    super({ table: "purchase" });
   }
 
   async create({ userId, total }) {
@@ -48,4 +48,4 @@ class OrderRepository extends AbstractRepository {
   }
 }
 
-module.exports = OrderRepository;
+module.exports = PurchaseRepository;

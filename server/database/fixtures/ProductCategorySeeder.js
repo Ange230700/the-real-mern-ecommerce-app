@@ -1,5 +1,7 @@
 const AbstractSeeder = require("./AbstractSeeder");
 
+// Import seeders that must be executed before this one
+// Follow your foreign keys to find the right order ;)
 const ProductSeeder = require("./ProductSeeder");
 const CategorySeeder = require("./CategorySeeder");
 

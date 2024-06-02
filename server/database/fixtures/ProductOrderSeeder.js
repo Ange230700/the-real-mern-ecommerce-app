@@ -1,7 +1,9 @@
 const AbstractSeeder = require("./AbstractSeeder");
 
+// Import seeders that must be executed before this one
+// Follow your foreign keys to find the right order ;)
 const ProductSeeder = require("./ProductSeeder");
-const OrderSeeder = require("./OrderSeeder");
+const PurchaseSeeder = require("./PurchaseSeeder");
 
 class ProductOrderSeeder extends AbstractSeeder {
   constructor() {
@@ -9,7 +11,7 @@ class ProductOrderSeeder extends AbstractSeeder {
     super({
       table: "product_order",
       truncate: true,
-      dependencies: [ProductSeeder, OrderSeeder],
+      dependencies: [ProductSeeder, PurchaseSeeder],
     });
   }
 

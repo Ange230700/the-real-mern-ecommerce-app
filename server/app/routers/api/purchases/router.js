@@ -19,7 +19,7 @@ const {
   edit,
   add,
   destroy,
-} = require("../../../controllers/orderActions");
+} = require("../../../controllers/purchaseActions");
 
 // Route to get a list of orders
 router.get("/", verifyTokenAndAdmin, browse);

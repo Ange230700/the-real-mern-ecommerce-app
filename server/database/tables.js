@@ -1,11 +1,11 @@
 // Import the repository modules responsible for handling data operations on the tables
-const ItemRepository = require("./models/ItemRepository");
+// const ItemRepository = require("./models/ItemRepository");
 
 const AuthRepository = require("./models/AuthRepository");
 const UserRepository = require("./models/UserRepository");
 const CartRepository = require("./models/CartRepository");
 const ProductRepository = require("./models/ProductRepository");
-const OrderRepository = require("./models/OrderRepository");
+const PurchaseRepository = require("./models/PurchaseRepository");
 const SliderItemRepository = require("./models/SliderItemRepository");
 const CategoryRepository = require("./models/CategoryRepository");
 const PopularProductRepository = require("./models/PopularProductRepository");
@@ -20,12 +20,12 @@ const tables = {};
 /* ************************************************************************* */
 
 // Register each repository as data access point for its table
-tables.item = new ItemRepository();
+// tables.item = new ItemRepository();
 
 tables.user = new AuthRepository();
 tables.user = new UserRepository();
 tables.cart = new CartRepository();
-tables.order = new OrderRepository();
+tables.purchase = new PurchaseRepository();
 tables.product = new ProductRepository();
 tables.sliderItem = new SliderItemRepository();
 tables.category = new CategoryRepository();

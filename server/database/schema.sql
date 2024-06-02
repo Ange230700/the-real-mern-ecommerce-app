@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `cart`;
 
 DROP TABLE IF EXISTS `product`;
 
-DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `purchase`;
 
 DROP TABLE IF EXISTS `sliderItem`;
 
@@ -25,10 +25,10 @@ DROP TABLE IF EXISTS `product_order`;
 -- a cart can have many products and a product can be in only one cart. (one-to-many, foreign key in product)
 -- § Relationships between product and category
 -- a product can have many categories and a category can have many products. (many-to-many, junction table)
--- § Relationships between product and order
--- an order can have many products and a product can be in many orders. (many-to-many, junction table)
--- § Relationships between user and order
--- a user can have many orders and an order is associated with only one user. (one-to-many, foreign key in order)
+-- § Relationships between product and purchase
+-- a purchase can have many products and a product can be in many purchases. (many-to-many, junction table)
+-- § Relationships between user and purchase
+-- a user can have many purchases and an purchase is associated with only one user. (one-to-many, foreign key in purchase)
 -- % Based on the conceptual data model above, give me the entire schema for the database. Mind the insertion of foreign keys based on one-to-one, one-to-many, and many-to-many relationships.
 -- $ Create the tables
 CREATE TABLE
@@ -59,7 +59,7 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `order` (
+  `purchase` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `userId` INT NOT NULL,
     `total` DECIMAL(10, 2) NOT NULL,
@@ -106,6 +106,6 @@ CREATE TABLE
     `productId` INT NOT NULL,
     `orderId` INT NOT NULL,
     FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-    FOREIGN KEY (`orderId`) REFERENCES `order` (`id`),
+    FOREIGN KEY (`orderId`) REFERENCES `purchase` (`id`),
     PRIMARY KEY (`productId`, `orderId`)
   );

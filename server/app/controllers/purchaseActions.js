@@ -5,10 +5,10 @@ const tables = require("../../database/tables");
 const browse = async (request, response, next) => {
   try {
     // Fetch all items from the database
-    const orders = await tables.order.readAll();
+    const purchases = await tables.purchase.readAll();
 
     // Respond with the items in JSON format
-    response.status(200).json(orders);
+    response.status(200).json(purchases);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -19,14 +19,14 @@ const browse = async (request, response, next) => {
 const read = async (request, response, next) => {
   try {
     // Fetch a specific item from the database based on the provided ID
-    const order = await tables.order.read(request.params.id);
+    const purchase = await tables.purchase.read(request.params.id);
 
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
-    if (order == null) {
+    if (purchase == null) {
       response.sendStatus(404);
     } else {
-      response.status(200).json(order);
+      response.status(200).json(purchase);
     }
   } catch (error) {
     // Pass any errors to the error-handling middleware
@@ -40,11 +40,11 @@ const edit = async (request, response, next) => {
   const { id } = request.params;
 
   // Extract the item data from the request body
-  const order = request.body;
+  const purchase = request.body;
 
   try {
     // Update the item in the database
-    await tables.order.update(id, order);
+    await tables.purchase.update(id, purchase);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -57,11 +57,11 @@ const edit = async (request, response, next) => {
 // The A of BREAD - Add (Create) operation
 const add = async (request, response, next) => {
   // Extract the item data from the request body
-  const order = request.body;
+  const purchase = request.body;
 
   try {
     // Insert the item into the database
-    const insertId = await tables.order.create(order);
+    const insertId = await tables.purchase.create(purchase);
 
     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
     response.status(201).json({ insertId });
@@ -75,7 +75,7 @@ const add = async (request, response, next) => {
 const destroy = async (request, response, next) => {
   try {
     // Delete the item from the database
-    await tables.cart.delete(request.params.id);
+    await tables.purchase.delete(request.params.id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);
