@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import Slider from "react-slick"; // eslint-disable-line
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import PrevArrow from "./PrevArrow";
 import NextArrow from "./NextArrow";
 
 import { publicRequest } from "../requestMethods";
 
-function Carousel() {
+function HeroCarousel() {
   const [sliderItems, setSliderItems] = useState([]);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ function Carousel() {
 
   return (
     <div className="slider-container">
-      <Slider className="slider-wrapper" {...settings}>
+      <Slider {...settings}>
         {sliderItems.map((item) => (
           <div className="slider-slide" key={item.id}>
             <div className="slider-img-container">
@@ -53,4 +55,4 @@ function Carousel() {
   );
 }
 
-export default Carousel;
+export default HeroCarousel;

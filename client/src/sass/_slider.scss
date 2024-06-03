@@ -62,6 +62,18 @@
   justify-content: center;
   opacity: 0.5;
   cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.control-btn.prev {
+  left: 10px;
+}
+
+.control-btn.next {
+  right: 10px;
 }
 
 /*=============================== BREAKPOINTS ===============================*/

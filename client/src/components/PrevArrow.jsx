@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
 import { ArrowLeftOutlined } from "@material-ui/icons";
 
-function PrevArrow({ onClick }) {
+function PrevArrow({ handleClick }) {
   return (
-    <div
+    <button
+      type="button"
+      aria-label="previous button"
       className="control-btn prev"
       style={{
         display: "flex",
@@ -20,13 +22,14 @@ function PrevArrow({ onClick }) {
         height: "50px",
         cursor: "pointer",
         opacity: 0.5,
+        border: "none",
       }}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {" "}
       <ArrowLeftOutlined />{" "}
-    </div>
+    </button>
   );
 }
-PrevArrow.propTypes = { onClick: PropTypes.func };
+PrevArrow.propTypes = { handleClick: PropTypes.func };
 export default PrevArrow;

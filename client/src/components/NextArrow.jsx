@@ -1,8 +1,11 @@
 import PropTypes from "prop-types";
 import { ArrowRightOutlined } from "@material-ui/icons";
-function NextArrow({ onClick }) {
+
+function NextArrow({ handleClick }) {
   return (
-    <div
+    <button
+      type="button"
+      aria-label="next button"
       className="control-btn next"
       style={{
         display: "flex",
@@ -19,13 +22,14 @@ function NextArrow({ onClick }) {
         height: "50px",
         cursor: "pointer",
         opacity: 0.5,
+        border: "none",
       }}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {" "}
       <ArrowRightOutlined />{" "}
-    </div>
+    </button>
   );
 }
-NextArrow.propTypes = { onClick: PropTypes.func };
+NextArrow.propTypes = { handleClick: PropTypes.func };
 export default NextArrow;

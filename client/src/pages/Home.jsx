@@ -1,6 +1,6 @@
 import Announcement from "../components/Announcement";
 import Navbar from "../components/Navbar";
-import Carousel from "../components/Carousel";
+import Carousel from "../components/HeroCarousel";
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import Newsletter from "../components/Newsletter";
