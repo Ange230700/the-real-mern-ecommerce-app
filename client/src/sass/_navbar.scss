@@ -45,6 +45,7 @@
 
 .navbar-input {
   border: none;
+  outline: none;
 
   @media #{$mobile} {
     width: 50px;
@@ -55,6 +56,8 @@
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
+  text-decoration: none;
+  color: initial;
 
   @media #{$mobile} {
     font-size: 12px;

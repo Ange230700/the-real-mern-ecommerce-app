@@ -4,71 +4,51 @@
   display: flex;
   position: relative;
   overflow: hidden;
-  background-color: #f8f8f8; // Ensure the container has a background
+  background-color: #f8f8f8;
 }
 
 .slider-wrapper {
   height: 100%;
-  width: 100%;
   display: flex;
   transition: all 1.5s ease;
 }
 
 .slider-slide {
-  width: 100%;
+  max-width: 100vw;
   height: 100vh;
   display: flex !important;
   align-items: center;
-  justify-content: center; // Center the content horizontally
-  position: relative;
 }
 
 .slider-img-container {
   height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center; // Center the image container
-  align-items: center;
+  flex: 1;
 }
 
 .slider-image {
-  max-height: 80%;
-  max-width: 100%;
-  object-fit: cover;
-  display: block; // Ensure the image is displayed as a block element
+  height: 80%;
 }
 
 .slider-info-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center; // Center the text
-  background: rgba(0, 0, 0, 0.5); // Add background for better text visibility
-  padding: 20px;
-  border-radius: 10px;
+  flex: 1;
+  padding: 50px;
 }
 
 .slider-title {
-  font-size: 2rem; // Adjust font size as needed
-  color: white; // Ensure the title is visible
+  font-size: 70px;
 }
 
 .slider-desc {
   margin: 20px 0;
-  font-size: 1.2rem;
+  font-size: 20px;
   font-weight: 500;
   letter-spacing: 3px;
-  color: white; // Ensure the description is visible
 }
 
 .slider-button {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  background-color: transparent;
   cursor: pointer;
 }
 

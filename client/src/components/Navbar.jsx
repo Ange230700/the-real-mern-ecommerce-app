@@ -20,8 +20,12 @@ function Navbar() {
           <h1 className="navbar-logo">LAMA.</h1>
         </div>
         <div className="navbar-right">
-          <div className="navbar-menu-item">REGISTER</div>
-          <div className="navbar-menu-item">SIGN IN</div>
+          <Link to="/register" className="navbar-menu-item">
+            REGISTER
+          </Link>
+          <Link to="/login" className="navbar-menu-item">
+            SIGN IN
+          </Link>
           <Link to="/cart">
             <div className="navbar-menu-item">
               <Badge

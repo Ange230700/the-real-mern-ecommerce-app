@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 function CategoryItem({ item }) {
   return (
     <div className="category-item-container" key={item.id}>
-      <Link to={`/products/${item.cat}`}>
+      <Link to={`/products/${item.name}`}>
         <img
           className="category-item-image"
-          src={item.img}
+          src={item.image}
           alt="category item"
         />
         <div className="category-item-info">
@@ -24,7 +24,7 @@ function CategoryItem({ item }) {
 CategoryItem.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.number,
-    img: PropTypes.string,
+    image: PropTypes.string,
     name: PropTypes.string,
     cat: PropTypes.string,
   }).isRequired,

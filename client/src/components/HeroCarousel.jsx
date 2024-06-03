@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 import PrevArrow from "./PrevArrow";
 import NextArrow from "./NextArrow";
@@ -36,7 +34,7 @@ function HeroCarousel() {
 
   return (
     <div className="slider-container">
-      <Slider {...settings}>
+      <Slider className="slider-wrapper" {...settings}>
         {sliderItems.map((item) => (
           <div className="slider-slide" key={item.id}>
             <div className="slider-img-container">

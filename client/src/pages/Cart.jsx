@@ -43,8 +43,8 @@ function Cart() {
 
   return (
     <div className="cart-container">
-      <Navbar />
       <Announcement />
+      <Navbar />
       <div className="cart-wrapper">
         <h1 className="cart-title">YOUR BAG</h1>
         <div className="cart-top">

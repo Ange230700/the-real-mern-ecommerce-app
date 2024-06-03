@@ -32,7 +32,7 @@ router.use("/categories", categoriesRouter);
 router.use("/popularProducts", popularProductsRouter);
 router.use("/productCategory", productCategoryRouter);
 router.use("/productOrder", productOrderRouter);
-router.use("/payment", paymentRouter);
+router.use("/checkout", paymentRouter);
 
 /* ************************************************************************* */
 
