@@ -29,6 +29,7 @@ class PurchaseSeeder extends AbstractSeeder {
 
       const fakePurchase = {
         userId: user.insertId, // Get the user id from the user reference
+        total: this.faker.commerce.price(), // Generate a fake total using faker library
         refName: `purchase_${i}`, // Create a reference name for the purchase
       };
 

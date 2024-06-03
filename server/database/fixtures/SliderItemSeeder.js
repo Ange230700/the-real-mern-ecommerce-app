@@ -15,8 +15,7 @@ class SliderItemSeeder extends AbstractSeeder {
       // Generate fake sliderItem data
       const fakeSliderItem = {
         title: this.faker.commerce.productName(), // Generate a fake product name using faker library
-        description: this.faker.commerce.productDescription(), // Generate a fake product description using faker library
-        image_url: this.faker.image.url(), // Generate a fake image URL using faker library
+        image: this.faker.image.url(), // Generate a fake image URL using faker library
         refName: `sliderItem_${i}`, // Create a reference name for the sliderItem
       };
 

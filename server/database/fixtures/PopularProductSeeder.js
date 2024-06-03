@@ -14,7 +14,7 @@ class PopularProductSeeder extends AbstractSeeder {
       const fakePopularProduct = {
         title: this.faker.commerce.productName(), // Generate a fake product name using faker library
         price: this.faker.commerce.price(), // Generate a fake price using faker library
-        image_url: this.faker.image.url(), // Generate a fake image URL using faker library
+        image: this.faker.image.url(), // Generate a fake image URL using faker library
         refName: `popularProduct_${i}`, // Create a reference name for the popularProduct
       };
 
