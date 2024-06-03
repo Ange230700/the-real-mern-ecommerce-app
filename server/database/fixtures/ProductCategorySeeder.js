@@ -16,14 +16,45 @@ class ProductCategorySeeder extends AbstractSeeder {
   }
 
   // $ The run method - Populate the 'product_category' table with fake data
+  async run() {
+    const uniqueProductCategoryDuos = new Set();
 
-  run() {
+    // getting the length of the product array using the count method from the AbstractSeeder class
+    const lengthOfProductArray = await new ProductSeeder().count();
+
+    // getting the length of the category array using the count method from the AbstractSeeder class
+    const lengthOfCategoryArray = await new CategorySeeder().count();
+
+    const maxOfProductCategoryDuos =
+      lengthOfProductArray * lengthOfCategoryArray;
+
     // Generate and insert fake data into the 'product_category' table
-    for (let i = 0; i < 10; i += 1) {
-      // Generate fake product_category data
+    for (let i = 0; i < maxOfProductCategoryDuos; i += 1) {
+      let productCategoryKey;
+
+      do {
+        // Generate random product and category IDs
+        const productId = this.faker.number.int({
+          min: 1,
+          max: lengthOfProductArray,
+        });
+        const categoryId = this.faker.number.int({
+          min: 1,
+          max: lengthOfCategoryArray,
+        });
+
+        // Create a unique key for the Set
+        productCategoryKey = `${productId}-${categoryId}`;
+      } while (uniqueProductCategoryDuos.has(productCategoryKey));
+
+      // Add the unique duo to the Set
+      uniqueProductCategoryDuos.add(productCategoryKey);
+
+      const [productId, categoryId] = productCategoryKey.split("-").map(Number);
+
       const fakeProductCategory = {
-        productId: this.faker.number.int({ min: 1, max: 10 }), // Generate a random product ID
-        categoryId: this.faker.number.int({ min: 1, max: 10 }), // Generate a random category ID
+        productId,
+        categoryId,
       };
 
       this.insert(fakeProductCategory);

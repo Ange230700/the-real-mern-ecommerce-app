@@ -11,6 +11,7 @@
   },
   "rules": {
     "no-console": ["error", { "allow": ["error", "info", "warn"] }],
-    "camelcase": "off"
+    "camelcase": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }

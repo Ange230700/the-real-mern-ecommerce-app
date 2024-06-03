@@ -10,8 +10,11 @@ class UserSeeder extends AbstractSeeder {
   // $ The run method - Populate the 'user' table with fake data
 
   run() {
+    const numberOfUsers = 10; // Change this value based on the number of users you want to generate
+
     // Generate and insert fake data into the 'user' table
-    for (let i = 0; i < 10; i += 1) {
+
+    for (let i = 0; i < numberOfUsers; i += 1) {
       // Generate fake user data
       const fakeUser = {
         username: this.faker.internet.userName(), // Generate a fake username using faker library
@@ -24,8 +27,7 @@ class UserSeeder extends AbstractSeeder {
         refName: `user_${i}`, // Create a reference name for the user
       };
 
-      // Insert the fakeUser data into the 'user' table
-      this.insert(fakeUser); // insert into user(email, password) values (?, ?)
+      this.insert(fakeUser);
     }
   }
 }

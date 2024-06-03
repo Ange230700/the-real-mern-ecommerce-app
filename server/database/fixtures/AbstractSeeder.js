@@ -1,5 +1,3 @@
-/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
-
 // Import Faker library for generating fake data
 const { faker } = require("@faker-js/faker");
 
@@ -62,6 +60,13 @@ class AbstractSeeder {
 
   insert(data) {
     this.promises.push(this.#doInsert(data));
+  }
+
+  // Method to count the number of rows in a table
+  async count() {
+    const sql = `SELECT COUNT(*) AS count FROM ${this.table}`;
+    const [rows] = await database.query(sql);
+    return rows[0].count;
   }
 
   // eslint-disable-next-line class-methods-use-this

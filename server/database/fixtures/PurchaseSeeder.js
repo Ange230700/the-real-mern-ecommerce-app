@@ -17,18 +17,23 @@ class PurchaseSeeder extends AbstractSeeder {
   // $ The run method - Populate the 'order' table with fake data
 
   run() {
+    // getting the length of the user array using the count method from the AbstractSeeder class
+    const lengthOfUserArray = new UserSeeder().count();
+
+    const numberOfPurchases = lengthOfUserArray; // Number of purchases to generate
+
     // Generate and insert fake data into the 'order' table
-    for (let i = 0; i < 10; i += 1) {
-      // Get the reference to the user and cart
-      const user = this.getRef(`user_${i % 10}`); // Get the reference to the user
-      const fakeOrder = {
+    for (let i = 0; i < numberOfPurchases; i += 1) {
+      // Get the reference to the user
+      const user = this.getRef(`user_${i % lengthOfUserArray}`); // Get the reference to the user
+
+      const fakePurchase = {
         userId: user.insertId, // Get the user id from the user reference
-        total: this.faker.commerce.price(), // Generate a fake total using faker library
-        refName: `order_${i}`, // Create a reference name for the order
+        refName: `purchase_${i}`, // Create a reference name for the purchase
       };
 
-      // Insert the fakeOrder data into the 'order' table
-      this.insert(fakeOrder); // Insert the fakeOrder data into the 'order' table
+      // Insert the fakePurchase data into the 'purchase' table
+      this.insert(fakePurchase);
     }
   }
 }

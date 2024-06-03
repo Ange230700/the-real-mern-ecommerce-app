@@ -17,13 +17,44 @@ class ProductOrderSeeder extends AbstractSeeder {
 
   // $ The run method - Populate the 'product_order' table with fake data
 
-  run() {
+  async run() {
+    const uniqueProductOrderDuos = new Set();
+
+    // getting the length of the product array using the count method from the AbstractSeeder class
+    const lengthOfProductArray = await new ProductSeeder().count();
+
+    // getting the length of the order array using the count method from the AbstractSeeder class
+    const lengthOfOrderArray = await new PurchaseSeeder().count();
+
+    const maxOfProductCategoryDuos = lengthOfProductArray * lengthOfOrderArray; // Maximum number of product-order duos
+
     // Generate and insert fake data into the 'product_order' table
-    for (let i = 0; i < 10; i += 1) {
-      // Generate fake product_order data
+    for (let i = 0; i < maxOfProductCategoryDuos; i += 1) {
+      let productOrderKey;
+
+      do {
+        // Generate random product and order IDs
+        const productId = this.faker.number.int({
+          min: 1,
+          max: lengthOfProductArray,
+        });
+        const orderId = this.faker.number.int({
+          min: 1,
+          max: lengthOfOrderArray,
+        });
+
+        // Create a unique key for the Set
+        productOrderKey = `${productId}-${orderId}`;
+      } while (uniqueProductOrderDuos.has(productOrderKey));
+
+      // Add the unique duo to the Set
+      uniqueProductOrderDuos.add(productOrderKey);
+
+      const [productId, orderId] = productOrderKey.split("-").map(Number);
+
       const fakeProductOrder = {
-        productId: this.faker.number.int({ min: 1, max: 10 }), // Generate a random product ID
-        orderId: this.faker.number.int({ min: 1, max: 10 }), // Generate a random order ID
+        productId,
+        orderId,
       };
 
       this.insert(fakeProductOrder);

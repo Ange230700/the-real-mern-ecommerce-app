@@ -8,14 +8,17 @@ class CategorySeeder extends AbstractSeeder {
   // $ The run method - Populate the 'category' table with fake data
 
   run() {
+    const numberOfCategories = 10; // Change this value based on the number of categories you want to generate
+
     // Generate and insert fake data into the 'category' table
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < numberOfCategories; i += 1) {
       // Generate fake category data
       const fakeCategory = {
         name: this.faker.commerce.department(), // Generate a fake department name using faker library
         refName: `category_${i}`, // Create a reference name for the category
       };
 
+      // Insert the fakeCategory data into the 'category' table
       this.insert(fakeCategory);
     }
   }
