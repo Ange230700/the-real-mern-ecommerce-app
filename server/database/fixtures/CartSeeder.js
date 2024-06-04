@@ -7,7 +7,7 @@ const UserSeeder = require("./UserSeeder");
 class CartSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "cart", truncate: true, dependencies: [UserSeeder] });
+    super({ table: "Cart", truncate: true, dependencies: [UserSeeder] });
   }
 
   // $ The run method - Populate the 'cart' table with fake data
@@ -24,7 +24,7 @@ class CartSeeder extends AbstractSeeder {
       const user = this.getRef(`user_${i % lengthOfUserArray}`); // Get the reference to the user
 
       const fakeCart = {
-        userId: user.insertId, // Get the user id from the user reference
+        user_id: user.insertId, // Get the user id from the user reference
         refName: `cart_${i}`, // Create a reference name for the cart
       };
 

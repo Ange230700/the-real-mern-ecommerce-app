@@ -2,13 +2,17 @@
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browseCarts = async (request, response, next) => {
   try {
-    // Fetch all items from the database
-    const carts = await tables.cart.readAll();
+    // Fetch all carts from the database
+    const carts = await tables.Cart.readAllCarts();
 
-    // Respond with the items in JSON format
-    response.status(200).json(carts);
+    // Respond with the carts in JSON format
+    if (carts == null) {
+      response.sendStatus(404);
+    } else {
+      response.status(200).json(carts);
+    }
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -16,13 +20,15 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readCart = async (request, response, next) => {
   try {
-    // Fetch a specific item from the database based on the provided ID
-    const cart = await tables.cart.read(request.params.id);
+    const { user_id } = request.params;
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
+    // Fetch a specific cart from the database based on the provided ID
+    const cart = await tables.Cart.readCart(user_id);
+
+    // If the cart is not found, respond with HTTP 404 (Not Found)
+    // Otherwise, respond with the cart in JSON format
     if (cart == null) {
       response.sendStatus(404);
     } else {
@@ -35,16 +41,16 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
+const editCart = async (request, response, next) => {
+  // Extract the cart ID from the request parameters
+  const { user_id } = request.params;
 
-  // Extract the item data from the request body
+  // Extract the cart data from the request body
   const cart = request.body;
 
   try {
-    // Update the item in the database
-    await tables.cart.update(id, cart);
+    // Update the cart in the database
+    await tables.Cart.updateCart(user_id, cart);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -55,15 +61,15 @@ const edit = async (request, response, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add = async (request, response, next) => {
-  // Extract the item data from the request body
+const addCart = async (request, response, next) => {
+  // Extract the cart data from the request body
   const cart = request.body;
 
   try {
-    // Insert the item into the database
-    const insertId = await tables.cart.create(cart);
+    // Insert the cart into the database
+    const insertId = await tables.Cart.createCart(cart);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted item
+    // Respond with HTTP 201 (Created) and the ID of the newly inserted cart
     response.status(201).json({ insertId });
   } catch (error) {
     // Pass any errors to the error-handling middleware
@@ -72,10 +78,12 @@ const add = async (request, response, next) => {
 };
 
 // The D of BREAD - Destroy (Delete) operation
-const destroy = async (request, response, next) => {
+const destroyCart = async (request, response, next) => {
   try {
-    // Delete the item from the database
-    await tables.cart.delete(request.params.id);
+    const { user_id } = request.params;
+
+    // Delete the cart from the database
+    await tables.Cart.deleteCart(user_id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);
@@ -87,9 +95,9 @@ const destroy = async (request, response, next) => {
 
 // Ready to export the controller functions
 module.exports = {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseCarts,
+  readCart,
+  editCart,
+  addCart,
+  destroyCart,
 };

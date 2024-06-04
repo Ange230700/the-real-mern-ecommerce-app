@@ -14,27 +14,27 @@ const {
 
 // Import cart-related actions
 const {
-  browse,
-  read,
-  add,
-  edit,
-  destroy,
+  browseCarts,
+  readCart,
+  addCart,
+  editCart,
+  destroyCart,
 } = require("../../../controllers/cartActions");
 
 // Route to get a list of carts
-router.get("/", verifyTokenAndAdmin, browse);
+router.get("/admin", verifyTokenAndAdmin, browseCarts);
 
 // Route to get a specific cart by ID
-router.get("/:id", verifyTokenAndAuthorization, read);
+router.get("/cart/user/:user_id", verifyTokenAndAuthorization, readCart);
 
 // Route to add a new cart
-router.post("/", verifyToken, add);
+router.post("/cart/user", verifyToken, addCart);
 
 // Route to edit a specific cart by ID
-router.put("/:id", verifyTokenAndAuthorization, edit);
+router.put("/cart/user/:user_id", verifyTokenAndAuthorization, editCart);
 
 // Route to delete a specific cart by ID
-router.delete("/:id", verifyTokenAndAuthorization, destroy);
+router.delete("/cart/user/:user_id", verifyTokenAndAuthorization, destroyCart);
 
 /* ************************************************************************* */
 

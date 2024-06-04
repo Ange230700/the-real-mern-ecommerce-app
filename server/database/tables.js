@@ -24,7 +24,7 @@ const tables = {};
 
 tables.User = new AuthRepository();
 tables.User = new UserRepository();
-tables.cart = new CartRepository();
+tables.Cart = new CartRepository();
 tables.purchase = new PurchaseRepository();
 tables.product = new ProductRepository();
 tables.sliderItem = new SliderItemRepository();

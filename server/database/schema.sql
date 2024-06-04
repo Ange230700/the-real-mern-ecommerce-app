@@ -13,7 +13,7 @@
 -- Drop existing tables and junction tables if they exist to start with a clean slate
 DROP TABLE IF EXISTS `User`;
 
-DROP TABLE IF EXISTS `cart`;
+DROP TABLE IF EXISTS `Cart`;
 
 DROP TABLE IF EXISTS `product`;
 
@@ -42,11 +42,11 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `cart` (
+  `Cart` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `userId` INT NOT NULL,
+    `user_id` INT NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
   );
 
 CREATE TABLE
@@ -64,10 +64,10 @@ CREATE TABLE
 CREATE TABLE
   `purchase` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `userId` INT NOT NULL,
+    `user_id` INT NOT NULL,
     `total` DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
   );
 
 CREATE TABLE
