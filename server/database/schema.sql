@@ -55,6 +55,9 @@ CREATE TABLE
     `title` VARCHAR(255) NOT NULL,
     `price` DECIMAL(10, 2) NOT NULL,
     `image_url` VARCHAR(255),
+    `product_adjective` VARCHAR(255),
+    `product_material` VARCHAR(255),
+    `product_description` TEXT,
     PRIMARY KEY (`id`)
   );
 

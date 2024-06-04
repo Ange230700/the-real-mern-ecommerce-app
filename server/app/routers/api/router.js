@@ -23,6 +23,7 @@ const paymentRouter = require("./payment/router");
 // router.use("/items", itemsRouter);
 
 router.use("/auth", authRouter);
+
 router.use("/users", usersRouter);
 router.use("/carts", cartsRouter);
 router.use("/products", productsRouter);
