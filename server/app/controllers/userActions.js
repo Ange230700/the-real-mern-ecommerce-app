@@ -4,13 +4,17 @@ const CryptoJS = require("crypto-js");
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browseUsers = async (request, response, next) => {
   try {
-    // Fetch all items from the database
-    const users = await tables.user.readAll();
+    // Fetch all users from the database
+    const users = await tables.User.readAllUsers();
 
-    // Respond with the items in JSON format
-    response.status(200).json(users);
+    // Respond with the users in JSON format
+    if (!users) {
+      response.sendStatus(404);
+    } else {
+      response.status(200).json(users);
+    }
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -18,15 +22,15 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readUser = async (request, response, next) => {
   try {
-    // Fetch a specific item from the database based on the provided ID
-    const user = await tables.user.read(request.params.id);
+    // Fetch a specific user from the database based on the provided ID
+    const user = await tables.User.readUser(request.params.id);
     const { password: userPassword, ...userWithoutPassword } = user;
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
-    if (user == null) {
+    // If the user is not found, respond with HTTP 404 (Not Found)
+    // Otherwise, respond with the user in JSON format
+    if (!user) {
       response.sendStatus(404);
     } else {
       response.json(userWithoutPassword);
@@ -38,29 +42,26 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
-  // Extract the item ID from the request parameters
+const editUser = async (request, response, next) => {
+  // Extract the user ID from the request parameters
   const { id } = request.params;
+  const { password } = request.body;
 
-  if (request.body.password) {
-    const { password } = request.body;
+  if (password) {
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      password,
+      process.env.APP_SECRET
+    ).toString();
 
-    if (password) {
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        password,
-        process.env.APP_SECRET
-      ).toString();
-
-      request.body.password = encryptedPassword;
-    }
+    request.body.password = encryptedPassword;
   }
 
-  // Extract the item data from the request body
+  // Extract the user data from the request body
   const user = request.body;
 
   try {
-    // Update the item in the database
-    await tables.user.update(id, user);
+    // Update the user in the database
+    await tables.User.updateUser(id, user);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -71,10 +72,10 @@ const edit = async (request, response, next) => {
 };
 
 // The D of BREAD - Destroy (Delete) operation
-const destroy = async (request, response, next) => {
+const destroyUser = async (request, response, next) => {
   try {
-    // Delete the item from the database
-    await tables.user.delete(request.params.id);
+    // Delete the user from the database
+    await tables.User.deleteUser(request.params.id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);
@@ -86,8 +87,8 @@ const destroy = async (request, response, next) => {
 
 // Ready to export the controller functions
 module.exports = {
-  browse,
-  read,
-  edit,
-  destroy,
+  browseUsers,
+  readUser,
+  editUser,
+  destroyUser,
 };

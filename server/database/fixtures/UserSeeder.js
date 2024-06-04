@@ -23,7 +23,7 @@ class UserSeeder extends AbstractSeeder {
           this.faker.internet.password(),
           process.env.APP_SECRET
         ).toString(), // Generate a fake password using faker library
-        isAdmin: this.faker.datatype.boolean(), // Generate a fake isAdmin using faker library
+        is_admin: this.faker.datatype.boolean(), // Generate a fake is_admin using faker library
         refName: `user_${i}`, // Create a reference name for the user
       };
 

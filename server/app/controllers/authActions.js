@@ -20,7 +20,7 @@ const register = async (request, response) => {
 
   try {
     // Insert the user into the database
-    const insertId = await tables.user.create({
+    const insertId = await tables.User.create({
       username,
       email,
       password: encryptedPassword,
@@ -42,7 +42,7 @@ const login = async (request, response) => {
 
   try {
     // Fetch the user from the database based on the provided email
-    const user = await tables.user.findByEmail(email);
+    const user = await tables.User.findByEmail(email);
 
     if (user == null) {
       response.status(401).json({

@@ -13,23 +13,23 @@ const {
 
 // Import user-related actions
 const {
-  browse,
-  read,
-  edit,
-  destroy,
+  browseUsers,
+  readUser,
+  editUser,
+  destroyUser,
 } = require("../../../controllers/userActions");
 
 // Route to get a list of users
-router.get("/", verifyTokenAndAdmin, browse);
+router.get("/", verifyTokenAndAdmin, browseUsers);
 
 // Route to get a specific user by ID
-router.get("/:id", verifyTokenAndAdmin, read);
+router.get("/user/:id", verifyTokenAndAdmin, readUser);
 
 // Route to edit a specific user by ID
-router.put("/:id", verifyTokenAndAuthorization, edit);
+router.put("/user/:id", verifyTokenAndAuthorization, editUser);
 
 // Route to delete a specific user by ID
-router.delete("/:id", verifyTokenAndAuthorization, destroy);
+router.delete("/user/:id", verifyTokenAndAuthorization, destroyUser);
 
 /* ************************************************************************* */
 

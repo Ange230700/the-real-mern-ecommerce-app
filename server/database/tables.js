@@ -22,8 +22,8 @@ const tables = {};
 // Register each repository as data access point for its table
 // tables.item = new ItemRepository();
 
-tables.user = new AuthRepository();
-tables.user = new UserRepository();
+tables.User = new AuthRepository();
+tables.User = new UserRepository();
 tables.cart = new CartRepository();
 tables.purchase = new PurchaseRepository();
 tables.product = new ProductRepository();

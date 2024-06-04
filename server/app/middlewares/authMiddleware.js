@@ -21,7 +21,7 @@ const verifyToken = (request, response, next) => {
 
 const verifyTokenAndAuthorization = (request, response, next) => {
   verifyToken(request, response, () => {
-    if (request.user.id === request.params.id || request.user.isAdmin) {
+    if (request.user.id === request.params.id || request.user.is_admin) {
       next();
     } else {
       response.status(403).json("You are not allowed to do that!");
@@ -31,7 +31,7 @@ const verifyTokenAndAuthorization = (request, response, next) => {
 
 const verifyTokenAndAdmin = (request, response, next) => {
   verifyToken(request, response, () => {
-    if (request.user.isAdmin) {
+    if (request.user.is_admin) {
       next();
     } else {
       response.status(403).json("You are not allowed to do that!");
