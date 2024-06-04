@@ -46,7 +46,7 @@ CREATE TABLE
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
   );
 
 CREATE TABLE
@@ -62,12 +62,12 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `purchase` (
+  `Purchase` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL,
     `total` DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
   );
 
 CREATE TABLE
@@ -100,7 +100,7 @@ CREATE TABLE
   `product_category` (
     `productId` INT NOT NULL,
     `categoryId` INT NOT NULL,
-    FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+    FOREIGN KEY (`productId`) REFERENCES `Product` (`id`),
     FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
     PRIMARY KEY (`productId`, `categoryId`)
   );
@@ -109,7 +109,7 @@ CREATE TABLE
   `product_order` (
     `productId` INT NOT NULL,
     `orderId` INT NOT NULL,
-    FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-    FOREIGN KEY (`orderId`) REFERENCES `purchase` (`id`),
+    FOREIGN KEY (`productId`) REFERENCES `Product` (`id`),
+    FOREIGN KEY (`orderId`) REFERENCES `Purchase` (`id`),
     PRIMARY KEY (`productId`, `orderId`)
   );

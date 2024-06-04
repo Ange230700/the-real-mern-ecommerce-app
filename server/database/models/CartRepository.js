@@ -42,7 +42,7 @@ class CartRepository extends AbstractRepository {
 
   async deleteCart(user_id) {
     const [result] = await this.database.query(
-      `DELETE FROM ${this.table} WHERE id = ?`,
+      `DELETE FROM ${this.table} WHERE user_id = ?`,
       [user_id]
     );
 

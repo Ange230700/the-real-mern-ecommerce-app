@@ -2,13 +2,17 @@
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browsePurchases = async (request, response, next) => {
   try {
-    // Fetch all items from the database
-    const purchases = await tables.purchase.readAll();
+    // Fetch all purchases from the database
+    const purchases = await tables.Purchase.readAllPurchases();
 
-    // Respond with the items in JSON format
-    response.status(200).json(purchases);
+    // Respond with the purchases in JSON format
+    if (purchases == null) {
+      response.sendStatus(404);
+    } else {
+      response.status(200).json(purchases);
+    }
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -16,13 +20,15 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readPurchase = async (request, response, next) => {
   try {
-    // Fetch a specific item from the database based on the provided ID
-    const purchase = await tables.purchase.read(request.params.id);
+    const { user_id } = request.params;
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
+    // Fetch a specific purchase from the database based on the provided ID
+    const purchase = await tables.Purchase.readPurchase(user_id);
+
+    // If the purchase is not found, respond with HTTP 404 (Not Found)
+    // Otherwise, respond with the purchase in JSON format
     if (purchase == null) {
       response.sendStatus(404);
     } else {
@@ -35,16 +41,16 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
+const editPurchase = async (request, response, next) => {
+  // Extract the purchase ID from the request parameters
+  const { user_id } = request.params;
 
-  // Extract the item data from the request body
+  // Extract the purchase data from the request body
   const purchase = request.body;
 
   try {
-    // Update the item in the database
-    await tables.purchase.update(id, purchase);
+    // Update the purchase in the database
+    await tables.Purchase.updatePurchase(user_id, purchase);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -55,15 +61,15 @@ const edit = async (request, response, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add = async (request, response, next) => {
-  // Extract the item data from the request body
+const addPurchase = async (request, response, next) => {
+  // Extract the purchase data from the request body
   const purchase = request.body;
 
   try {
-    // Insert the item into the database
-    const insertId = await tables.purchase.create(purchase);
+    // Insert the purchase into the database
+    const insertId = await tables.Purchase.createPurchase(purchase);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted item
+    // Respond with HTTP 201 (Created) and the ID of the newly inserted purchase
     response.status(201).json({ insertId });
   } catch (error) {
     // Pass any errors to the error-handling middleware
@@ -72,10 +78,12 @@ const add = async (request, response, next) => {
 };
 
 // The D of BREAD - Destroy (Delete) operation
-const destroy = async (request, response, next) => {
+const destroyPurchase = async (request, response, next) => {
   try {
-    // Delete the item from the database
-    await tables.purchase.delete(request.params.id);
+    const { user_id } = request.params;
+
+    // Delete the purchase from the database
+    await tables.Purchase.deletePurchase(user_id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);
@@ -87,9 +95,9 @@ const destroy = async (request, response, next) => {
 
 // Ready to export the controller functions
 module.exports = {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browsePurchases,
+  readPurchase,
+  editPurchase,
+  addPurchase,
+  destroyPurchase,
 };

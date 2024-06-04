@@ -2,10 +2,10 @@ const AbstractRepository = require("./AbstractRepository");
 
 class PurchaseRepository extends AbstractRepository {
   constructor() {
-    super({ table: "purchase" });
+    super({ table: "Purchase" });
   }
 
-  async create({ user_id, total }) {
+  async createPurchase({ user_id, total }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (user_id, total) VALUES (?, ?)`,
       [user_id, total]
@@ -14,22 +14,24 @@ class PurchaseRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async read(id) {
+  async readPurchase(user_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} WHERE id = ?`,
-      [id]
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
+      [user_id]
     );
 
     return rows[0];
   }
 
-  async readAll() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
+  async readAllPurchases() {
+    const [rows] = await this.database.query(
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id`
+    );
 
     return rows;
   }
 
-  async update(id, { user_id, total }) {
+  async updatePurchase(id, { user_id, total }) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET user_id = ?, total = ? WHERE id = ?`,
       [user_id, total, id]
@@ -38,10 +40,10 @@ class PurchaseRepository extends AbstractRepository {
     return result.affectedRows;
   }
 
-  async delete(id) {
+  async deletePurchase(user_id) {
     const [result] = await this.database.query(
-      `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      `DELETE FROM ${this.table} WHERE user_id = ?`,
+      [user_id]
     );
 
     return result.affectedRows;

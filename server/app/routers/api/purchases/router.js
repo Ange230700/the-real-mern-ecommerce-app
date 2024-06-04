@@ -14,27 +14,27 @@ const {
 
 // Import order-related actions
 const {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browsePurchases,
+  readPurchase,
+  editPurchase,
+  addPurchase,
+  destroyPurchase,
 } = require("../../../controllers/purchaseActions");
 
 // Route to get a list of orders
-router.get("/", verifyTokenAndAdmin, browse);
+router.get("/admin", verifyTokenAndAdmin, browsePurchases);
 
 // Route to get a specific order by ID
-router.get("/:id", verifyTokenAndAuthorization, read);
+router.get("/order/user/:user_id", verifyTokenAndAuthorization, readPurchase);
 
 // Route to edit a specific order by ID
-router.put("/:id", verifyTokenAndAdmin, edit);
+router.put("/order/user/:user_id", verifyTokenAndAdmin, editPurchase);
 
 // Route to add a new order
-router.post("/", verifyToken, add);
+router.post("/order/user/", verifyToken, addPurchase);
 
 // Route to delete a specific order by ID
-router.delete("/:id", verifyTokenAndAdmin, destroy);
+router.delete("/order/user/:user_id", verifyTokenAndAdmin, destroyPurchase);
 
 /* ************************************************************************* */
 

@@ -8,7 +8,7 @@ class PurchaseSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
     super({
-      table: "purchase",
+      table: "Purchase",
       truncate: true,
       dependencies: [UserSeeder],
     });
