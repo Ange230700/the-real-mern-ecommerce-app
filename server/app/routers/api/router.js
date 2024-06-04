@@ -27,7 +27,7 @@ router.use("/users", usersRouter);
 router.use("/carts", cartsRouter);
 router.use("/products", productsRouter);
 router.use("/purchases", purchasesRouter);
-router.use("/sliderItems", sliderItemsRouter);
+router.use("/slider_items", sliderItemsRouter);
 router.use("/categories", categoriesRouter);
 router.use("/popularProducts", popularProductsRouter);
 router.use("/productCategory", productCategoryRouter);

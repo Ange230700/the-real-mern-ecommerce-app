@@ -17,9 +17,9 @@ DROP TABLE IF EXISTS `Cart`;
 
 DROP TABLE IF EXISTS `Product`;
 
-DROP TABLE IF EXISTS `purchase`;
+DROP TABLE IF EXISTS `Purchase`;
 
-DROP TABLE IF EXISTS `sliderItem`;
+DROP TABLE IF EXISTS `Slider_item`;
 
 DROP TABLE IF EXISTS `category`;
 
@@ -71,7 +71,7 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `sliderItem` (
+  `Slider_item` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `image` VARCHAR(255) NOT NULL,

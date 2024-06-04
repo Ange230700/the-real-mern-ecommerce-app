@@ -2,10 +2,10 @@ const AbstractRepository = require("./AbstractRepository");
 
 class SliderItemRepository extends AbstractRepository {
   constructor() {
-    super({ table: "sliderItem" });
+    super({ table: "Slider_item" });
   }
 
-  async create({ title, image }) {
+  async createSliderItem({ title, image }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (title, image) VALUES (?, ?)`,
       [title, image]
@@ -14,7 +14,7 @@ class SliderItemRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async read(id) {
+  async readSliderItem(id) {
     const [rows] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
@@ -23,13 +23,13 @@ class SliderItemRepository extends AbstractRepository {
     return rows[0];
   }
 
-  async readAll() {
+  async readAllSliderItems() {
     const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
 
     return rows;
   }
 
-  async update(id, { title, image }) {
+  async updateSliderItem(id, { title, image }) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET title = ?, image = ? WHERE id = ?`,
       [title, image, id]
@@ -38,7 +38,7 @@ class SliderItemRepository extends AbstractRepository {
     return result.affectedRows;
   }
 
-  async delete(id) {
+  async deleteSliderItem(id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
       [id]

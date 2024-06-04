@@ -2,10 +2,10 @@
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browseSliderItems = async (request, response, next) => {
   try {
     // Fetch all items from the database
-    const sliderItems = await tables.sliderItem.readAll();
+    const sliderItems = await tables.Slider_item.readAllSliderItems();
 
     // Respond with the items in JSON format
     response.status(200).json(sliderItems);
@@ -16,10 +16,12 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readSliderItem = async (request, response, next) => {
   try {
     // Fetch the item from the database
-    const sliderItem = await tables.sliderItem.read(request.params.id);
+    const sliderItem = await tables.Slider_item.readSliderItem(
+      request.params.id
+    );
 
     // Respond with the item in JSON format
     response.status(200).json(sliderItem);
@@ -30,7 +32,7 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
+const editSliderItem = async (request, response, next) => {
   // Extract the item ID from the request parameters
   const { id } = request.params;
 
@@ -39,7 +41,7 @@ const edit = async (request, response, next) => {
 
   try {
     // Update the item in the database
-    await tables.sliderItem.update(id, sliderItem);
+    await tables.Slider_item.updateSliderItem(id, sliderItem);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -50,13 +52,13 @@ const edit = async (request, response, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add = async (request, response, next) => {
+const addSliderItem = async (request, response, next) => {
   // Extract the item data from the request body
   const sliderItem = request.body;
 
   try {
     // Insert the item into the database
-    const insertId = await tables.sliderItem.create(sliderItem);
+    const insertId = await tables.Slider_item.createSliderItem(sliderItem);
 
     // Respond with the item ID in JSON format
     response.status(201).json({
@@ -69,13 +71,13 @@ const add = async (request, response, next) => {
 };
 
 // The D of BREAD - Delete operation
-const destroy = async (request, response, next) => {
+const destroySliderItem = async (request, response, next) => {
   // Extract the item ID from the request parameters
   const { id } = request.params;
 
   try {
     // Delete the item from the database
-    await tables.sliderItem.delete(id);
+    await tables.Slider_item.deleteSliderItem(id);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -86,9 +88,9 @@ const destroy = async (request, response, next) => {
 };
 
 module.exports = {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseSliderItems,
+  readSliderItem,
+  editSliderItem,
+  addSliderItem,
+  destroySliderItem,
 };

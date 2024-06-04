@@ -2,7 +2,7 @@ const AbstractSeeder = require("./AbstractSeeder");
 
 class SliderItemSeeder extends AbstractSeeder {
   constructor() {
-    super({ table: "sliderItem", truncate: true });
+    super({ table: "Slider_item", truncate: true });
   }
 
   // $ The run method - Populate the 'sliderItem' table with fake data
@@ -16,7 +16,7 @@ class SliderItemSeeder extends AbstractSeeder {
       const fakeSliderItem = {
         title: this.faker.commerce.productName(), // Generate a fake product name using faker library
         image: this.faker.image.url(), // Generate a fake image URL using faker library
-        refName: `sliderItem_${i}`, // Create a reference name for the sliderItem
+        refName: `slider_item_${i}`, // Create a reference name for the sliderItem
       };
 
       // Insert the fakeSliderItem data into the 'sliderItem' table
