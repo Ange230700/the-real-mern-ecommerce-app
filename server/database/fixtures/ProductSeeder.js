@@ -3,7 +3,7 @@ const AbstractSeeder = require("./AbstractSeeder");
 class ProductSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "product", truncate: true });
+    super({ table: "Product", truncate: true });
   }
 
   // $ The run method - Populate the 'product' table with fake data

@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS `User`;
 
 DROP TABLE IF EXISTS `Cart`;
 
-DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `Product`;
 
 DROP TABLE IF EXISTS `purchase`;
 
@@ -50,7 +50,7 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `product` (
+  `Product` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `price` DECIMAL(10, 2) NOT NULL,

@@ -5,7 +5,7 @@ const tables = require("../../database/tables");
 const browseProducts = async (request, response, next) => {
   try {
     // Fetch all products from the database
-    const products = await tables.product.readAllProducts();
+    const products = await tables.Product.readAllProducts();
 
     // Respond with the products in JSON format
     if (products == null) {
@@ -24,9 +24,13 @@ const browseProductsByCategory = async (request, response, next) => {
     const { categoryId } = request.params;
 
     const productsByCategory =
-      await tables.product.readAllProductsByCategory(categoryId);
+      await tables.Product.readAllProductsByCategory(categoryId);
 
-    response.status(200).json(productsByCategory);
+    if (productsByCategory == null) {
+      response.sendStatus(404);
+    } else {
+      response.status(200).json(productsByCategory);
+    }
   } catch (error) {
     next(error);
   }
@@ -38,7 +42,7 @@ const readProduct = async (request, response, next) => {
     const { id } = request.params;
 
     // Fetch a specific product from the database based on the provided ID
-    const product = await tables.product.readProduct(id);
+    const product = await tables.Product.readProduct(id);
 
     // If the product is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the product in JSON format
@@ -58,7 +62,7 @@ const readProductByCategory = async (request, response, next) => {
   try {
     const { productId, categoryId } = request.params;
 
-    const productByCategory = await tables.product.readProductByCategory(
+    const productByCategory = await tables.Product.readProductByCategory(
       productId,
       categoryId
     );
@@ -83,7 +87,7 @@ const editProduct = async (request, response, next) => {
 
   try {
     // Update the product in the database
-    await tables.product.updateProduct(id, product);
+    await tables.Product.updateProduct(id, product);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -100,7 +104,7 @@ const addProduct = async (request, response, next) => {
 
   try {
     // Insert the product into the database
-    const id = await tables.product.createProduct(product);
+    const id = await tables.Product.createProduct(product);
 
     // Respond with the ID of the newly created product
     response.json({ id });
@@ -114,7 +118,7 @@ const addProduct = async (request, response, next) => {
 const destroyProduct = async (request, response, next) => {
   try {
     // Delete the product from the database
-    await tables.product.deleteProduct(request.params.id);
+    await tables.Product.deleteProduct(request.params.id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);

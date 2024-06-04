@@ -2,7 +2,7 @@ const AbstractRepository = require("./AbstractRepository");
 
 class ProductRepository extends AbstractRepository {
   constructor() {
-    super({ table: "product" });
+    super({ table: "Product" });
   }
 
   async createProduct({
