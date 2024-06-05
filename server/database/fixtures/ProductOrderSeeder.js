@@ -9,7 +9,7 @@ class ProductOrderSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
     super({
-      table: "product_order",
+      table: "Product_order",
       truncate: true,
       dependencies: [ProductSeeder, PurchaseSeeder],
     });
@@ -34,27 +34,27 @@ class ProductOrderSeeder extends AbstractSeeder {
 
       do {
         // Generate random product and order IDs
-        const productId = this.faker.number.int({
+        const product_id = this.faker.number.int({
           min: 1,
           max: lengthOfProductArray,
         });
-        const orderId = this.faker.number.int({
+        const order_id = this.faker.number.int({
           min: 1,
           max: lengthOfOrderArray,
         });
 
         // Create a unique key for the Set
-        productOrderKey = `${productId}-${orderId}`;
+        productOrderKey = `${product_id}-${order_id}`;
       } while (uniqueProductOrderDuos.has(productOrderKey));
 
       // Add the unique duo to the Set
       uniqueProductOrderDuos.add(productOrderKey);
 
-      const [productId, orderId] = productOrderKey.split("-").map(Number);
+      const [product_id, order_id] = productOrderKey.split("-").map(Number);
 
       const fakeProductOrder = {
-        productId,
-        orderId,
+        product_id,
+        order_id,
       };
 
       this.insert(fakeProductOrder);

@@ -28,10 +28,10 @@ tables.Cart = new CartRepository();
 tables.Purchase = new PurchaseRepository();
 tables.Product = new ProductRepository();
 tables.Slider_item = new SliderItemRepository();
-tables.category = new CategoryRepository();
-tables.popularProduct = new PopularProductRepository();
-tables.product_category = new ProductCategoryRepository();
-tables.product_order = new ProductOrderRepository();
+tables.Category = new CategoryRepository();
+tables.Popular_product = new PopularProductRepository();
+tables.Product_category = new ProductCategoryRepository();
+tables.Product_order = new ProductOrderRepository();
 
 /* ************************************************************************* */
 

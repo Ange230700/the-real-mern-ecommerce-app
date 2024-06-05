@@ -2,46 +2,46 @@ const AbstractRepository = require("./AbstractRepository");
 
 class ProductOrderRepository extends AbstractRepository {
   constructor() {
-    super({ table: "product_order" });
+    super({ table: "Product_order" });
   }
 
-  async create({ productId, orderId }) {
+  async createProductOrder({ product_id, order_id }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (productId, orderId) VALUES (?, ?)`,
-      [productId, orderId]
+      `INSERT INTO ${this.table} (product_id, order_id) VALUES (?, ?)`,
+      [product_id, order_id]
     );
 
     return result.insertId;
   }
 
-  async read(id) {
+  async readProductOrder(product_id, order_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} WHERE id = ?`,
-      [id]
+      `SELECT * FROM ${this.table} WHERE product_id = ? AND order_id = ?`,
+      [product_id, order_id]
     );
 
     return rows[0];
   }
 
-  async readAll() {
+  async readAllProductOrder() {
     const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
 
     return rows;
   }
 
-  async update(id, { productId, orderId }) {
+  async updateProductOrder({ product_id, order_id }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET productId = ?, orderId = ? WHERE id = ?`,
-      [productId, orderId, id]
+      `UPDATE ${this.table} SET product_id = ?, order_id = ?`,
+      [product_id, order_id]
     );
 
     return result.affectedRows;
   }
 
-  async delete(id) {
+  async deleteProductOrder(product_id, order_id) {
     const [result] = await this.database.query(
-      `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      `DELETE FROM ${this.table} WHERE product_id = ? AND order_id = ?`,
+      [product_id, order_id]
     );
 
     return result.affectedRows;

@@ -21,11 +21,11 @@ const {
 
 // Route to get a list of products
 router.get("/", browseProducts);
-router.get("/category/:categoryId", browseProductsByCategory);
+router.get("/category/:category_id", browseProductsByCategory);
 
 // Route to get a specific product by product ID and/or category ID
 router.get("/product/:id", readProduct);
-router.get("/product/:productId/category/:categoryId", readProductByCategory);
+router.get("/product/:product_id/category/:category_id", readProductByCategory);
 
 // Route to add a new product
 router.post("/product", verifyTokenAndAdmin, addProduct);

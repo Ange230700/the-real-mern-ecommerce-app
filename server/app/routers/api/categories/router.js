@@ -10,26 +10,30 @@ const { verifyTokenAndAdmin } = require("../../../middlewares/authMiddleware");
 
 // Import category-related actions
 const {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseCategories,
+  browseCategoriesByProduct,
+  readCategory,
+  readCategoryByProduct,
+  editCategory,
+  addCategory,
+  destroyCategory,
 } = require("../../../controllers/categoryActions");
 
 // Route to get a list of categories
-router.get("/", browse);
+router.get("/", browseCategories);
+router.get("/product/:product_id", browseCategoriesByProduct);
 
 // Route to get a specific category by ID
-router.get("/:id", read);
+router.get("/category/:id", readCategory);
+router.get("/category/:category_id/product/:product_id", readCategoryByProduct);
 
 // Route to add a new category
-router.post("/", verifyTokenAndAdmin, add);
+router.post("/category", verifyTokenAndAdmin, addCategory);
 
 // Route to edit a specific category by ID
-router.put("/:id", verifyTokenAndAdmin, edit);
+router.put("/category/:id", verifyTokenAndAdmin, editCategory);
 
 // Route to delete a specific category by ID
-router.delete("/:id", verifyTokenAndAdmin, destroy);
+router.delete("/category/:id", verifyTokenAndAdmin, destroyCategory);
 
 module.exports = router;

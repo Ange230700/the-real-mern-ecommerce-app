@@ -37,10 +37,10 @@ class ProductRepository extends AbstractRepository {
     return rows[0];
   }
 
-  async readProductByCategory(productId, categoryId) {
+  async readProductByCategory(product_id, category_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.productId WHERE product_category.productId = ? AND product_category.categoryId = ?`,
-      [productId, categoryId]
+      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.product_id = ? AND product_category.category_id = ?`,
+      [product_id, category_id]
     );
 
     return rows[0];
@@ -52,10 +52,10 @@ class ProductRepository extends AbstractRepository {
     return rows;
   }
 
-  async readAllProductsByCategory(categoryId) {
+  async readAllProductsByCategory(category_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.productId WHERE product_category.categoryId = ?`,
-      [categoryId]
+      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.category_id = ?`,
+      [category_id]
     );
 
     return rows;

@@ -74,8 +74,10 @@ const editUser = async (request, response, next) => {
 // The D of BREAD - Destroy (Delete) operation
 const destroyUser = async (request, response, next) => {
   try {
+    const { id } = request.params;
+
     // Delete the user from the database
-    await tables.User.deleteUser(request.params.id);
+    await tables.User.deleteUser(id);
 
     // Respond with HTTP 204 (No Content)
     response.sendStatus(204);

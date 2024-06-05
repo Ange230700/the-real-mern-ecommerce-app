@@ -2,10 +2,10 @@
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browseProductOrder = async (request, response, next) => {
   try {
     // Fetch all items from the database
-    const productCategories = await tables.product_order.readAll();
+    const productCategories = await tables.Product_order.readAllProductOrder();
 
     // Respond with the items in JSON format
     response.status(200).json(productCategories);
@@ -16,10 +16,12 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readProductOrder = async (request, response, next) => {
   try {
     // Fetch a specific item from the database based on the provided ID
-    const productCategory = await tables.product_order.read(request.params.id);
+    const productCategory = await tables.Product_order.readProductOrder(
+      request.params.id
+    );
 
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
@@ -35,7 +37,7 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
+const editProductOrder = async (request, response, next) => {
   // Extract the item ID from the request parameters
   const { id } = request.params;
 
@@ -44,7 +46,7 @@ const edit = async (request, response, next) => {
 
   try {
     // Update the item in the database
-    await tables.product_order.update(id, productCategory);
+    await tables.Product_order.updateProductOrder(id, productCategory);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -55,13 +57,14 @@ const edit = async (request, response, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add = async (request, response, next) => {
+const addProductOrder = async (request, response, next) => {
   // Extract the item data from the request body
   const productCategory = request.body;
 
   try {
     // Insert the item into the database
-    const insertId = await tables.product_order.create(productCategory);
+    const insertId =
+      await tables.Product_order.createProductOrder(productCategory);
 
     // Respond with HTTP 201 (Created)
     response.status(201).json({
@@ -74,13 +77,13 @@ const add = async (request, response, next) => {
 };
 
 // The D of BREAD - Delete operation
-const destroy = async (request, response, next) => {
+const destroyProductOrder = async (request, response, next) => {
   // Extract the item ID from the request parameters
   const { id } = request.params;
 
   try {
     // Delete the item from the database
-    await tables.product_order.delete(id);
+    await tables.Product_order.deleteProductOrder(id);
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -91,9 +94,9 @@ const destroy = async (request, response, next) => {
 };
 
 module.exports = {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseProductOrder,
+  readProductOrder,
+  editProductOrder,
+  addProductOrder,
+  destroyProductOrder,
 };

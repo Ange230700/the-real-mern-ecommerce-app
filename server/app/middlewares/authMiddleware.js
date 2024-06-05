@@ -6,16 +6,14 @@ const verifyToken = (request, response, next) => {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.APP_SECRET, (err, user) => {
       if (err) {
-        // return response.status(403).json("Token is not valid!");
-        response.status(403).json("Token is not valid!");
+        response.status(403).json({ message: "Token is not valid!" });
       }
 
       request.user = user;
       next();
     });
   } else {
-    // return res.status(401).json("You are not authenticated!");
-    response.status(401).json("You are not authenticated!");
+    response.status(400).json({ message: "You are not authenticated!" });
   }
 };
 
@@ -24,7 +22,7 @@ const verifyTokenAndAuthorization = (request, response, next) => {
     if (request.user.id === request.params.id || request.user.is_admin) {
       next();
     } else {
-      response.status(403).json("You are not allowed to do that!");
+      response.status(401).json({ message: "Unauthorized" });
     }
   });
 };
@@ -34,7 +32,7 @@ const verifyTokenAndAdmin = (request, response, next) => {
     if (request.user.is_admin) {
       next();
     } else {
-      response.status(403).json("You are not allowed to do that!");
+      response.status(403).json({ message: "You are not allowed to do that!" });
     }
   });
 };

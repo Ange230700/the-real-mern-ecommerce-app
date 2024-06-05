@@ -21,14 +21,14 @@ DROP TABLE IF EXISTS `Purchase`;
 
 DROP TABLE IF EXISTS `Slider_item`;
 
-DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `Category`;
 
-DROP TABLE IF EXISTS `popularProducts`;
+DROP TABLE IF EXISTS `Popular_product`;
 
 -- junction tables
-DROP TABLE IF EXISTS `product_category`;
+DROP TABLE IF EXISTS `Product_category`;
 
-DROP TABLE IF EXISTS `product_order`;
+DROP TABLE IF EXISTS `Product_order`;
 
 -- $ Create the tables
 CREATE TABLE
@@ -79,7 +79,7 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `category` (
+  `Category` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `image` VARCHAR(255) NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  `popularProduct` (
+  `Popular_product` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `price` DECIMAL(10, 2) NOT NULL,
@@ -97,19 +97,19 @@ CREATE TABLE
 
 -- junction tables
 CREATE TABLE
-  `product_category` (
-    `productId` INT NOT NULL,
-    `categoryId` INT NOT NULL,
-    FOREIGN KEY (`productId`) REFERENCES `Product` (`id`),
-    FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
-    PRIMARY KEY (`productId`, `categoryId`)
+  `Product_category` (
+    `product_id` INT NOT NULL,
+    `category_id` INT NOT NULL,
+    FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`),
+    FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`),
+    PRIMARY KEY (`product_id`, `category_id`)
   );
 
 CREATE TABLE
-  `product_order` (
-    `productId` INT NOT NULL,
-    `orderId` INT NOT NULL,
-    FOREIGN KEY (`productId`) REFERENCES `Product` (`id`),
-    FOREIGN KEY (`orderId`) REFERENCES `Purchase` (`id`),
-    PRIMARY KEY (`productId`, `orderId`)
+  `Product_order` (
+    `product_id` INT NOT NULL,
+    `order_id` INT NOT NULL,
+    FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`),
+    FOREIGN KEY (`order_id`) REFERENCES `Purchase` (`id`),
+    PRIMARY KEY (`product_id`, `order_id`)
   );

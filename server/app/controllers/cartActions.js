@@ -1,103 +1,93 @@
-// Import access to database tables
 const tables = require("../../database/tables");
 
-// The B of BREAD - Browse (Read All) operation
-const browseCarts = async (request, response, next) => {
+const browseCartsAsUser = async (request, response, next) => {
   try {
-    // Fetch all carts from the database
-    const carts = await tables.Cart.readAllCarts();
+    const { user_id } = request.params;
 
-    // Respond with the carts in JSON format
-    if (carts == null) {
-      response.sendStatus(404);
+    const carts = await tables.Cart.readAllCartsAsUser(user_id);
+
+    if (!carts) {
+      response.status(404).json({ message: "Carts not found" });
     } else {
       response.status(200).json(carts);
     }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The R of BREAD - Read operation
-const readCart = async (request, response, next) => {
+const readCartAsUser = async (request, response, next) => {
   try {
-    const { user_id } = request.params;
+    const { id, user_id } = request.params;
 
-    // Fetch a specific cart from the database based on the provided ID
-    const cart = await tables.Cart.readCart(user_id);
+    const cart = await tables.Cart.readCartAsUser(id, user_id);
 
-    // If the cart is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the cart in JSON format
-    if (cart == null) {
-      response.sendStatus(404);
+    if (!cart) {
+      response.status(404).json({ message: "Cart not found" });
     } else {
       response.status(200).json(cart);
     }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The E of BREAD - Edit (Update) operation
-const editCart = async (request, response, next) => {
-  // Extract the cart ID from the request parameters
-  const { user_id } = request.params;
-
-  // Extract the cart data from the request body
-  const cart = request.body;
-
+const editCartAsUser = async (request, response, next) => {
   try {
-    // Update the cart in the database
-    await tables.Cart.updateCart(user_id, cart);
+    const { id, user_id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    const cart = request.body;
+
+    const result = await tables.Cart.updateCartAsUser(id, user_id, cart);
+
+    if (!result) {
+      response.status(404).json({ message: "Cart not updated" });
+    } else {
+      response.status(204).json({ message: "Cart updated" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The A of BREAD - Add (Create) operation
-const addCart = async (request, response, next) => {
-  // Extract the cart data from the request body
-  const cart = request.body;
-
-  try {
-    // Insert the cart into the database
-    const insertId = await tables.Cart.createCart(cart);
-
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted cart
-    response.status(201).json({ insertId });
-  } catch (error) {
-    // Pass any errors to the error-handling middleware
-    next(error);
-  }
-};
-
-// The D of BREAD - Destroy (Delete) operation
-const destroyCart = async (request, response, next) => {
+const addCartAsUser = async (request, response, next) => {
   try {
     const { user_id } = request.params;
 
-    // Delete the cart from the database
-    await tables.Cart.deleteCart(user_id);
+    const cart = request.body;
 
-    // Respond with HTTP 204 (No Content)
-    response.sendStatus(204);
+    const insertId = await tables.Cart.createCartAsUser(user_id, cart);
+
+    if (!insertId) {
+      response.status(404).json({ message: "Cart not created" });
+    } else {
+      response.status(201).json({ message: "Cart created" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// Ready to export the controller functions
+const destroyCartAsUser = async (request, response, next) => {
+  try {
+    const { id, user_id } = request.params;
+
+    const result = await tables.Cart.deleteCartAsUser(id, user_id);
+
+    if (!result) {
+      response.status(404).json({ message: "Cart not deleted" });
+    } else {
+      response.status(204).json({ message: "Cart deleted" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  browseCarts,
-  readCart,
-  editCart,
-  addCart,
-  destroyCart,
+  browseCartsAsUser,
+  readCartAsUser,
+  editCartAsUser,
+  addCartAsUser,
+  destroyCartAsUser,
 };

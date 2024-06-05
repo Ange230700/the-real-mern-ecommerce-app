@@ -2,10 +2,10 @@ const AbstractRepository = require("./AbstractRepository");
 
 class PopularProductRepository extends AbstractRepository {
   constructor() {
-    super({ table: "popularProduct" });
+    super({ table: "Popular_product" });
   }
 
-  async create({ title, price, image }) {
+  async createPopularProduct({ title, price, image }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (product_id) VALUES (?)`,
       [title, price, image]
@@ -14,7 +14,7 @@ class PopularProductRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async read(id) {
+  async readPopularProduct(id) {
     const [rows] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
@@ -23,13 +23,13 @@ class PopularProductRepository extends AbstractRepository {
     return rows[0];
   }
 
-  async readAll() {
+  async readAllPopularProducts() {
     const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
 
     return rows;
   }
 
-  async update(id, { title, price, image }) {
+  async updatePopularProduct(id, { title, price, image }) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET title = ?, price = ?, image = ? WHERE id = ?`,
       [title, price, image, id]
@@ -38,7 +38,7 @@ class PopularProductRepository extends AbstractRepository {
     return result.affectedRows;
   }
 
-  async delete(id) {
+  async deletePopularProduct(id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
       [id]

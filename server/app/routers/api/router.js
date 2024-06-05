@@ -29,9 +29,9 @@ router.use("/products", productsRouter);
 router.use("/purchases", purchasesRouter);
 router.use("/slider_items", sliderItemsRouter);
 router.use("/categories", categoriesRouter);
-router.use("/popularProducts", popularProductsRouter);
-router.use("/productCategory", productCategoryRouter);
-router.use("/productOrder", productOrderRouter);
+router.use("/popular_products", popularProductsRouter);
+router.use("/product_category", productCategoryRouter);
+router.use("/product_order", productOrderRouter);
 router.use("/checkout", paymentRouter);
 
 /* ************************************************************************* */

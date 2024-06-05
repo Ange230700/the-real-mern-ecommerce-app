@@ -2,7 +2,7 @@ const AbstractSeeder = require("./AbstractSeeder");
 
 class CategorySeeder extends AbstractSeeder {
   constructor() {
-    super({ table: "category", truncate: true });
+    super({ table: "Category", truncate: true });
   }
 
   // $ The run method - Populate the 'category' table with fake data

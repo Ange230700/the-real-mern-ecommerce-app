@@ -10,27 +10,31 @@ const { verifyTokenAndAdmin } = require("../../../middlewares/authMiddleware");
 
 // Import popularProduct-related actions
 const {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browsePopularProducts,
+  readPopularProduct,
+  editPopularProduct,
+  addPopularProduct,
+  destroyPopularProduct,
 } = require("../../../controllers/popularProductActions");
 
 // Route to get a list of popularProducts
-router.get("/", browse);
+router.get("/", browsePopularProducts);
 
 // Route to get a specific popularProduct by ID
-router.get("/:id", read);
+router.get("/popular_product/:id", readPopularProduct);
 
 // Route to add a new popularProduct
-router.post("/", verifyTokenAndAdmin, add);
+router.post("/popular_product", verifyTokenAndAdmin, addPopularProduct);
 
 // Route to edit a specific popularProduct by ID
-router.put("/:id", verifyTokenAndAdmin, edit);
+router.put("/popular_product/:id", verifyTokenAndAdmin, editPopularProduct);
 
 // Route to delete a specific popularProduct by ID
-router.delete("/:id", verifyTokenAndAdmin, destroy);
+router.delete(
+  "/popular_product/:id",
+  verifyTokenAndAdmin,
+  destroyPopularProduct
+);
 
 /* ************************************************************************* */
 

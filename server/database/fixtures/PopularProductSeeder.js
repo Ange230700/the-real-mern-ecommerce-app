@@ -2,7 +2,7 @@ const AbstractSeeder = require("./AbstractSeeder");
 
 class PopularProductSeeder extends AbstractSeeder {
   constructor() {
-    super({ table: "popularProduct", truncate: true });
+    super({ table: "Popular_product", truncate: true });
   }
 
   run() {
@@ -15,7 +15,7 @@ class PopularProductSeeder extends AbstractSeeder {
         title: this.faker.commerce.productName(), // Generate a fake product name using faker library
         price: this.faker.commerce.price(), // Generate a fake price using faker library
         image: this.faker.image.url(), // Generate a fake image URL using faker library
-        refName: `popularProduct_${i}`, // Create a reference name for the popularProduct
+        refName: `popular_product_${i}`, // Create a reference name for the popularProduct
       };
 
       // Insert the fakePopularProduct data into the 'popularProduct' table

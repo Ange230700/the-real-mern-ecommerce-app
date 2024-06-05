@@ -2,13 +2,14 @@
 const tables = require("../../database/tables");
 
 // The B of BREAD - Browse (Read All) operation
-const browse = async (request, response, next) => {
+const browseProductCategory = async (request, response, next) => {
   try {
     // Fetch all items from the database
-    const productCategories = await tables.product_category.readAll();
+    const productCategoryDuos =
+      await tables.Product_category.readAllProductCategory();
 
     // Respond with the items in JSON format
-    response.status(200).json(productCategories);
+    response.status(200).json(productCategoryDuos);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -16,11 +17,14 @@ const browse = async (request, response, next) => {
 };
 
 // The R of BREAD - Read operation
-const read = async (request, response, next) => {
+const readProductCategory = async (request, response, next) => {
   try {
+    const { product_id, category_id } = request.params;
+
     // Fetch a specific item from the database based on the provided ID
-    const productCategory = await tables.product_category.read(
-      request.params.id
+    const productCategory = await tables.Product_category.readProductCategory(
+      product_id,
+      category_id
     );
 
     // If the item is not found, respond with HTTP 404 (Not Found)
@@ -37,16 +41,20 @@ const read = async (request, response, next) => {
 };
 
 // The E of BREAD - Edit (Update) operation
-const edit = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
-  // Extract the item data from the request body
-  const productCategory = request.body;
-
+const editProductCategory = async (request, response, next) => {
   try {
+    // Extract the item ID from the request parameters
+    const { product_id, category_id } = request.params;
+
+    // Extract the item data from the request body
+    const productCategory = request.body;
+
     // Update the item in the database
-    await tables.product_category.update(id, productCategory);
+    await tables.Product_category.updateProductCategory(
+      product_id,
+      category_id,
+      productCategory
+    );
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -57,13 +65,14 @@ const edit = async (request, response, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add = async (request, response, next) => {
-  // Extract the item data from the request body
-  const productCategory = request.body;
-
+const addProductCategory = async (request, response, next) => {
   try {
+    // Extract the item data from the request body
+    const productCategory = request.body;
+
     // Insert the item into the database
-    const insertId = await tables.product_category.create(productCategory);
+    const insertId =
+      await tables.Product_category.createProductCategory(productCategory);
 
     // Respond with HTTP 201 (Created)
     response.status(201).json({
@@ -76,13 +85,16 @@ const add = async (request, response, next) => {
 };
 
 // The D of BREAD - Delete operation
-const destroy = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
+const destroyProductCategory = async (request, response, next) => {
   try {
+    // Extract the item ID from the request parameters
+    const { product_id, category_id } = request.params;
+
     // Delete the item from the database
-    await tables.product_category.delete(id);
+    await tables.Product_category.deleteProductCategory(
+      product_id,
+      category_id
+    );
 
     // Respond with HTTP 200 (OK)
     response.sendStatus(200);
@@ -94,9 +106,9 @@ const destroy = async (request, response, next) => {
 
 // Ready to export the controller functions
 module.exports = {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseProductCategory,
+  readProductCategory,
+  editProductCategory,
+  addProductCategory,
+  destroyProductCategory,
 };

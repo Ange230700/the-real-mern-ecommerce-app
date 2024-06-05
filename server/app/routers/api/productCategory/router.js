@@ -10,27 +10,35 @@ const { verifyTokenAndAdmin } = require("../../../middlewares/authMiddleware");
 
 // Import productCategory-related actions
 const {
-  browse,
-  read,
-  edit,
-  add,
-  destroy,
+  browseProductCategory,
+  readProductCategory,
+  editProductCategory,
+  addProductCategory,
+  destroyProductCategory,
 } = require("../../../controllers/productCategoryActions");
 
 // Route to get a list of productCategories
-router.get("/", browse);
+router.get("/", browseProductCategory);
 
 // Route to get a specific productCategory by ID
-router.get("/:id", read);
+router.get("/product/:product_id/category/:category_id", readProductCategory);
 
 // Route to add a new productCategory
-router.post("/", verifyTokenAndAdmin, add);
+router.post("/", verifyTokenAndAdmin, addProductCategory);
 
 // Route to edit a specific productCategory by ID
-router.put("/:id", verifyTokenAndAdmin, edit);
+router.put(
+  "/product/:product_id/category/:category_id",
+  verifyTokenAndAdmin,
+  editProductCategory
+);
 
 // Route to delete a specific productCategory by ID
-router.delete("/:id", verifyTokenAndAdmin, destroy);
+router.delete(
+  "/product/:product_id/category/:category_id",
+  verifyTokenAndAdmin,
+  destroyProductCategory
+);
 
 /* ************************************************************************* */
 

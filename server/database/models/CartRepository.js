@@ -5,45 +5,46 @@ class CartRepository extends AbstractRepository {
     super({ table: "Cart" });
   }
 
-  async createCart({ user_id }) {
+  async createCartAsUser(user_id, cart) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (user_id) VALUES (?)`,
-      [user_id]
+      `INSERT INTO ${this.table} JOIN User ON ${this.table}.user_id = User.id (user_id) VALUES (?) WHERE User.id = ?`,
+      [cart.user_id, user_id]
     );
 
     return result.insertId;
   }
 
-  async readCart(user_id) {
+  async readCartAsUser(id, user_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
-      [user_id]
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [id, user_id]
     );
 
     return rows[0];
   }
 
-  async readAllCarts() {
+  async readAllCartsAsUser(user_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id`
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
+      [user_id]
     );
 
     return rows;
   }
 
-  async updateCart(id, { user_id }) {
+  async updateCartAsUser(id, user_id, cart) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET user_id = ? WHERE id = ?`,
-      [user_id, id]
+      `UPDATE ${this.table} JOIN User ON ${this.table}.user_id = User.id SET ${this.table}.user_id = COALESCE(?, ${this.table}.user_id) WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [cart.user_id, id, user_id]
     );
 
     return result.affectedRows;
   }
 
-  async deleteCart(user_id) {
+  async deleteCartAsUser(id, user_id) {
     const [result] = await this.database.query(
-      `DELETE FROM ${this.table} WHERE user_id = ?`,
-      [user_id]
+      `DELETE FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [id, user_id]
     );
 
     return result.affectedRows;

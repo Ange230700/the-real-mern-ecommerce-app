@@ -9,32 +9,43 @@ const router = express.Router();
 const {
   verifyToken,
   verifyTokenAndAuthorization,
-  verifyTokenAndAdmin,
 } = require("../../../middlewares/authMiddleware");
 
 // Import cart-related actions
 const {
-  browseCarts,
-  readCart,
-  addCart,
-  editCart,
-  destroyCart,
+  browseCartsAsUser,
+  readCartAsUser,
+  addCartAsUser,
+  editCartAsUser,
+  destroyCartAsUser,
 } = require("../../../controllers/cartActions");
 
 // Route to get a list of carts
-router.get("/admin", verifyTokenAndAdmin, browseCarts);
+router.get("/user/:user_id", verifyTokenAndAuthorization, browseCartsAsUser);
 
 // Route to get a specific cart by ID
-router.get("/cart/user/:user_id", verifyTokenAndAuthorization, readCart);
+router.get(
+  "/cart/:id/user/:user_id",
+  verifyTokenAndAuthorization,
+  readCartAsUser
+);
 
 // Route to add a new cart
-router.post("/cart/user", verifyToken, addCart);
+router.post("/cart/user/:user_id", verifyToken, addCartAsUser);
 
 // Route to edit a specific cart by ID
-router.put("/cart/user/:user_id", verifyTokenAndAuthorization, editCart);
+router.put(
+  "/cart/:id/user/:user_id",
+  verifyTokenAndAuthorization,
+  editCartAsUser
+);
 
 // Route to delete a specific cart by ID
-router.delete("/cart/user/:user_id", verifyTokenAndAuthorization, destroyCart);
+router.delete(
+  "/cart/:id/user/:user_id",
+  verifyTokenAndAuthorization,
+  destroyCartAsUser
+);
 
 /* ************************************************************************* */
 
