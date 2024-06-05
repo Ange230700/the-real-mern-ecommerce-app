@@ -25,7 +25,7 @@ class ProductRepository extends AbstractRepository {
 
   async readCategoryByProduct(category_id, product_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.category_id = ? AND product_category.product_id = ?`,
+      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.category_id = ? AND product_category.product_id = ?`,
       [category_id, product_id]
     );
 
@@ -40,7 +40,7 @@ class ProductRepository extends AbstractRepository {
 
   async readAllCategoriesByProduct(product_id) {
     const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.product_id = ?`,
+      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.product_id = ?`,
       [product_id]
     );
 

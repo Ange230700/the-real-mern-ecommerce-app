@@ -9,7 +9,7 @@ const browsePurchases = async (request, response, next) => {
 
     // Respond with the purchases in JSON format
     if (purchases == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.status(200).json(purchases);
     }
@@ -30,7 +30,7 @@ const readPurchase = async (request, response, next) => {
     // If the purchase is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the purchase in JSON format
     if (purchase == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.status(200).json(purchase);
     }
@@ -53,7 +53,7 @@ const editPurchase = async (request, response, next) => {
     await tables.Purchase.updatePurchase(user_id, purchase);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -86,7 +86,7 @@ const destroyPurchase = async (request, response, next) => {
     await tables.Purchase.deletePurchase(user_id);
 
     // Respond with HTTP 204 (No Content)
-    response.sendStatus(204);
+    response.status(204);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);

@@ -5,60 +5,37 @@ class ProductRepository extends AbstractRepository {
     super({ table: "Product" });
   }
 
-  async createProduct({
-    title,
-    price,
-    image_url,
-    product_adjective,
-    product_material,
-    product_description,
-  }) {
-    const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (title, price, image_url, product_adjective, product_material, product_description) VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        title,
-        price,
-        image_url,
-        product_adjective,
-        product_material,
-        product_description,
-      ]
+  async readAllProducts() {
+    const [products] = await this.database.query(`SELECT * FROM ${this.table}`);
+
+    return products;
+  }
+
+  async readAllProductsByCategory(category_id) {
+    const [productsByCategory] = await this.database.query(
+      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.category_id = ?`,
+      [category_id]
     );
 
-    return result.insertId;
+    return productsByCategory;
   }
 
   async readProduct(id) {
-    const [rows] = await this.database.query(
+    const [products] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
     );
 
-    return rows[0];
+    return products[0];
   }
 
   async readProductByCategory(product_id, category_id) {
-    const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.product_id = ? AND product_category.category_id = ?`,
+    const [productsByCategory] = await this.database.query(
+      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.product_id = ? AND product_category.category_id = ?`,
       [product_id, category_id]
     );
 
-    return rows[0];
-  }
-
-  async readAllProducts() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
-
-    return rows;
-  }
-
-  async readAllProductsByCategory(category_id) {
-    const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} INNER JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.category_id = ?`,
-      [category_id]
-    );
-
-    return rows;
+    return productsByCategory[0];
   }
 
   async updateProduct(
@@ -86,6 +63,29 @@ class ProductRepository extends AbstractRepository {
     );
 
     return result.affectedRows;
+  }
+
+  async createProduct({
+    title,
+    price,
+    image_url,
+    product_adjective,
+    product_material,
+    product_description,
+  }) {
+    const [result] = await this.database.query(
+      `INSERT INTO ${this.table} (title, price, image_url, product_adjective, product_material, product_description) VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        price,
+        image_url,
+        product_adjective,
+        product_material,
+        product_description,
+      ]
+    );
+
+    return result.insertId;
   }
 
   async deleteProduct(id) {

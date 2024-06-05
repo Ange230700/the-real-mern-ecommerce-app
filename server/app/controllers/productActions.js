@@ -4,8 +4,8 @@ const browseProducts = async (request, response, next) => {
   try {
     const products = await tables.Product.readAllProducts();
 
-    if (products == null) {
-      response.sendStatus(404);
+    if (!products) {
+      response.status(404).json({ message: "Products not found" });
     } else {
       response.status(200).json(products);
     }
@@ -21,8 +21,8 @@ const browseProductsByCategory = async (request, response, next) => {
     const productsByCategory =
       await tables.Product.readAllProductsByCategory(category_id);
 
-    if (productsByCategory == null) {
-      response.sendStatus(404);
+    if (!productsByCategory) {
+      response.status(404).json({ message: "Products not found" });
     } else {
       response.status(200).json(productsByCategory);
     }
@@ -37,8 +37,8 @@ const readProduct = async (request, response, next) => {
 
     const product = await tables.Product.readProduct(id);
 
-    if (product == null) {
-      response.sendStatus(404);
+    if (!product) {
+      response.status(404).json({ message: "Product not found" });
     } else {
       response.status(200).json(product);
     }
@@ -56,8 +56,8 @@ const readProductByCategory = async (request, response, next) => {
       category_id
     );
 
-    if (productByCategory == null) {
-      response.sendStatus(404);
+    if (!productByCategory) {
+      response.status(404).json({ message: "Product not found" });
     } else {
       response.status(200).json(productByCategory);
     }
@@ -67,26 +67,34 @@ const readProductByCategory = async (request, response, next) => {
 };
 
 const editProduct = async (request, response, next) => {
-  const { id } = request.params;
-
-  const product = request.body;
-
   try {
-    await tables.Product.updateProduct(id, product);
+    const { id } = request.params;
 
-    response.sendStatus(200);
+    const product = request.body;
+
+    const affectedRows = await tables.Product.updateProduct(id, product);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Product not found" });
+    } else {
+      response.status(200);
+    }
   } catch (error) {
     next(error);
   }
 };
 
 const addProduct = async (request, response, next) => {
-  const product = request.body;
-
   try {
-    const id = await tables.Product.createProduct(product);
+    const product = request.body;
 
-    response.json({ id });
+    const insertId = await tables.Product.createProduct(product);
+
+    if (!insertId) {
+      response.status(404).json({ message: "Product not added" });
+    } else {
+      response.status(200).json({ insertId, message: "Product added" });
+    }
   } catch (error) {
     next(error);
   }
@@ -94,9 +102,15 @@ const addProduct = async (request, response, next) => {
 
 const destroyProduct = async (request, response, next) => {
   try {
-    await tables.Product.deleteProduct(request.params.id);
+    const { id } = request.params;
 
-    response.sendStatus(204);
+    const affectedRows = await tables.Product.deleteProduct(id);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Product not found" });
+    } else {
+      response.status(204).json({ message: "Product deleted" });
+    }
   } catch (error) {
     next(error);
   }

@@ -44,7 +44,7 @@ const editSliderItem = async (request, response, next) => {
     await tables.Slider_item.updateSliderItem(id, sliderItem);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -80,7 +80,7 @@ const destroySliderItem = async (request, response, next) => {
     await tables.Slider_item.deleteSliderItem(id);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);

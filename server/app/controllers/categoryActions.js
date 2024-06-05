@@ -23,7 +23,7 @@ const browseCategoriesByProduct = async (request, response, next) => {
       await tables.Category.readAllCategoriesByProduct(product_id);
 
     if (categoriesByProduct == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.status(200).json(categoriesByProduct);
     }
@@ -41,7 +41,7 @@ const readCategory = async (request, response, next) => {
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
     if (category == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.json(category);
     }
@@ -61,7 +61,7 @@ const readCategoryByProduct = async (request, response, next) => {
     );
 
     if (categoryByProduct == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.status(200).json(categoryByProduct);
     }
@@ -83,7 +83,7 @@ const editCategory = async (request, response, next) => {
     await tables.Category.updateCategory(id, category);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -119,7 +119,7 @@ const destroyCategory = async (request, response, next) => {
     await tables.Category.deleteCategory(id);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);

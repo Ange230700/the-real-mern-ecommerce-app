@@ -27,7 +27,7 @@ const readPopularProduct = async (request, response, next) => {
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
     if (popularProduct == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.json(popularProduct);
     }
@@ -50,7 +50,7 @@ const editPopularProduct = async (request, response, next) => {
     await tables.Popular_product.updatePopularProduct(id, popularProduct);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -84,7 +84,7 @@ const destroyPopularProduct = async (request, response, next) => {
     await tables.Popular_product.deletePopularProduct(request.params.id);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);

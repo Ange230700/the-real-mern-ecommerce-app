@@ -30,7 +30,7 @@ const readProductCategory = async (request, response, next) => {
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
     if (productCategory == null) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.json(productCategory);
     }
@@ -57,7 +57,7 @@ const editProductCategory = async (request, response, next) => {
     );
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -97,7 +97,7 @@ const destroyProductCategory = async (request, response, next) => {
     );
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);

@@ -11,7 +11,7 @@ const browseUsers = async (request, response, next) => {
 
     // Respond with the users in JSON format
     if (!users) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.status(200).json(users);
     }
@@ -31,7 +31,7 @@ const readUser = async (request, response, next) => {
     // If the user is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the user in JSON format
     if (!user) {
-      response.sendStatus(404);
+      response.status(404);
     } else {
       response.json(userWithoutPassword);
     }
@@ -64,7 +64,7 @@ const editUser = async (request, response, next) => {
     await tables.User.updateUser(id, user);
 
     // Respond with HTTP 200 (OK)
-    response.sendStatus(200);
+    response.status(200);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
@@ -80,7 +80,7 @@ const destroyUser = async (request, response, next) => {
     await tables.User.deleteUser(id);
 
     // Respond with HTTP 204 (No Content)
-    response.sendStatus(204);
+    response.status(204);
   } catch (error) {
     // Pass any errors to the error-handling middleware
     next(error);
