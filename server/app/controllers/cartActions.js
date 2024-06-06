@@ -2,9 +2,9 @@ const tables = require("../../database/tables");
 
 const browseCarts = async (request, response, next) => {
   try {
-    const { id } = request.user;
+    const { user_id } = request.params;
 
-    if (!id) {
+    if (!user_id) {
       response.status(400).json({ message: "User ID is required" });
 
       return;
@@ -22,11 +22,17 @@ const browseCarts = async (request, response, next) => {
   }
 };
 
-const readCartAsUser = async (request, response, next) => {
+const readCart = async (request, response, next) => {
   try {
-    const { id, user_id } = request.params;
+    const { cart_id, user_id } = request.params;
 
-    const cart = await tables.Cart.readCartAsUser(id, user_id);
+    if (!user_id) {
+      response.status(400).json({ message: "User ID is required" });
+
+      return;
+    }
+
+    const cart = await tables.Cart.readCart(cart_id);
 
     if (!cart) {
       response.status(404).json({ message: "Cart not found" });
@@ -38,17 +44,19 @@ const readCartAsUser = async (request, response, next) => {
   }
 };
 
-const editCartAsUser = async (request, response, next) => {
+const editCart = async (request, response, next) => {
   try {
-    const { id, user_id } = request.params;
+    const { cart_id, user_id } = request.params;
 
     const cart = request.body;
 
-    if (!cart.user_id) {
+    if (!user_id) {
       response.status(400).json({ message: "User ID is required" });
+
+      return;
     }
 
-    const affectedRows = await tables.Cart.updateCartAsUser(id, user_id, cart);
+    const affectedRows = await tables.Cart.updateCart(cart_id, cart);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Cart not updated" });
@@ -60,7 +68,7 @@ const editCartAsUser = async (request, response, next) => {
   }
 };
 
-const addCartAsUser = async (request, response, next) => {
+const addCart = async (request, response, next) => {
   try {
     const { user_id } = request.params;
 
@@ -82,7 +90,7 @@ const addCartAsUser = async (request, response, next) => {
   }
 };
 
-const destroyCartAsUser = async (request, response, next) => {
+const destroyCart = async (request, response, next) => {
   try {
     const { id, user_id } = request.params;
 
@@ -100,8 +108,8 @@ const destroyCartAsUser = async (request, response, next) => {
 
 module.exports = {
   browseCarts,
-  readCartAsUser,
-  editCartAsUser,
-  addCartAsUser,
-  destroyCartAsUser,
+  readCart,
+  editCart,
+  addCart,
+  destroyCart,
 };

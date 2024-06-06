@@ -18,16 +18,17 @@ const browseUsers = async (request, response, next) => {
 
 const readUser = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { user_id } = request.params;
 
-    const user = await tables.User.readUser(id);
+    const user = await tables.User.readUser(user_id);
 
     const { password: userPassword, ...userWithoutPassword } = user;
 
     if (!user) {
       response.status(404).json({ message: "User not found" });
     } else {
-      response.json(...userWithoutPassword);
+      // response.json(...userWithoutPassword);
+      response.json(userWithoutPassword);
     }
   } catch (error) {
     next(error);
@@ -36,7 +37,7 @@ const readUser = async (request, response, next) => {
 
 const editUser = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { user_id } = request.params;
     const { password } = request.body;
 
     if (password) {
@@ -54,7 +55,7 @@ const editUser = async (request, response, next) => {
       response.status(400).json({ message: "All fields are required" });
     }
 
-    const affectedRows = await tables.User.updateUser(id, user);
+    const affectedRows = await tables.User.updateUser(user_id, user);
 
     if (!affectedRows) {
       response.status(404).json({ message: "User not found" });
@@ -68,9 +69,9 @@ const editUser = async (request, response, next) => {
 
 const destroyUser = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { user_id } = request.params;
 
-    const affectedRows = await tables.User.deleteUser(id);
+    const affectedRows = await tables.User.deleteUser(user_id);
 
     if (!affectedRows) {
       response.status(404).json({ message: "User not found" });

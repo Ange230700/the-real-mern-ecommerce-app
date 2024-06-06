@@ -13,25 +13,25 @@ class CartRepository extends AbstractRepository {
     return carts;
   }
 
-  async readCartAsUser(id, user_id) {
+  async readCart(cart_id) {
     const [carts] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
-      [id, user_id]
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ?`,
+      [cart_id]
     );
 
     return carts[0];
   }
 
-  async updateCartAsUser(id, userId, { user_id }) {
+  async updateCart(cart_id, { user_id }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET user_id = ? WHERE id = ? AND user_id = ?`,
-      [user_id, id, userId]
+      `UPDATE ${this.table} SET user_id = COALESCE(?, user_id) WHERE id = ?`,
+      [user_id, cart_id]
     );
 
     return result.affectedRows;
   }
 
-  async createCartAsUser(userId, { user_id }) {
+  async createCart(userId, { user_id }) {
     if (!userId) {
       throw new Error("User ID is required");
     }
@@ -44,7 +44,7 @@ class CartRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async deleteCartAsUser(id, user_id) {
+  async deleteCart(id, user_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ? AND user_id = ?`,
       [id, user_id]

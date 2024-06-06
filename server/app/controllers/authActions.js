@@ -43,11 +43,11 @@ const login = async (request, response) => {
     const user = await tables.Auth.findUserByEmail(email);
 
     if (!user) {
-      response.status(404).json({ error: "User not found" });
+      return response.status(404).json({ error: "User not found" });
     }
 
     if (!user.email || !user.password) {
-      response.status(401).json({ error: "Invalid email or password" });
+      return response.status(401).json({ error: "Invalid email or password" });
     }
 
     const decryptedPassword = CryptoJS.AES.decrypt(
@@ -58,9 +58,7 @@ const login = async (request, response) => {
     const OriginalPassword = decryptedPassword.toString(CryptoJS.enc.Utf8);
 
     if (OriginalPassword !== password) {
-      response.status(401).json({ error: "Invalid email or password" });
-
-      return;
+      return response.status(401).json({ error: "Invalid email or password" });
     }
 
     const { password: userPassword, ...userWithoutPassword } = user;
@@ -69,9 +67,9 @@ const login = async (request, response) => {
       expiresIn: "1d",
     });
 
-    response.status(200).json({ ...userWithoutPassword, token });
+    return response.status(200).json({ ...userWithoutPassword, token });
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    return response.status(500).json({ error: error.message });
   }
 };
 

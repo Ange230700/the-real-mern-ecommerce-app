@@ -1,6 +1,6 @@
 -- $ Conceptual data model for the database
 -- § Relationships between user and cart
--- a user can have only one cart and a cart is associated with only one user. (one-to-one, foreign key in cart)
+-- a user can have many carts and a cart is associated with only one user. (many-to-one, foreign key in cart)
 -- § Relationships between product and cart
 -- a cart can have many products and a product can be in only one cart. (one-to-many, foreign key in product)
 -- § Relationships between product and category

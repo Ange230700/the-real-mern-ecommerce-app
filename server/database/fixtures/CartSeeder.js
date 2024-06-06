@@ -12,9 +12,9 @@ class CartSeeder extends AbstractSeeder {
 
   // $ The run method - Populate the 'cart' table with fake data
 
-  run() {
+  async run() {
     // getting the length of the user array using the count method from the AbstractSeeder class
-    const lengthOfUserArray = new UserSeeder().count();
+    const lengthOfUserArray = await new UserSeeder().count();
 
     const numberOfCarts = lengthOfUserArray; // Number of carts to generate
 
@@ -31,6 +31,9 @@ class CartSeeder extends AbstractSeeder {
       // Insert the fakeCart data into the 'cart' table
       this.insert(fakeCart);
     }
+
+    // Wait for all promises to resolve
+    await Promise.all(this.promises);
   }
 }
 

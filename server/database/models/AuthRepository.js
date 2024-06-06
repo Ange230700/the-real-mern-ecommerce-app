@@ -16,7 +16,7 @@ class AuthRepository extends AbstractRepository {
 
   async findUserByEmail(email) {
     const [users] = await this.database.query(
-      `SELECT * FROM ${this.table} WHERE email = ?`,
+      `SELECT id AS userId, username, email, password, is_admin FROM ${this.table} WHERE email = ?`,
       [email]
     );
 
