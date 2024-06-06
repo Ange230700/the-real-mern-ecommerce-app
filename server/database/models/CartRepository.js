@@ -5,45 +5,49 @@ class CartRepository extends AbstractRepository {
     super({ table: "Cart" });
   }
 
-  async createCartAsUser(user_id, cart) {
-    const [result] = await this.database.query(
-      `INSERT INTO ${this.table} JOIN User ON ${this.table}.user_id = User.id (user_id) VALUES (?) WHERE User.id = ?`,
-      [cart.user_id, user_id]
-    );
-
-    return result.insertId;
-  }
-
-  async readCartAsUser(id, user_id) {
-    const [rows] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
-      [id, user_id]
-    );
-
-    return rows[0];
-  }
-
   async readAllCartsAsUser(user_id) {
-    const [rows] = await this.database.query(
+    const [carts] = await this.database.query(
       `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
       [user_id]
     );
 
-    return rows;
+    return carts;
   }
 
-  async updateCartAsUser(id, user_id, cart) {
+  async readCartAsUser(id, user_id) {
+    const [carts] = await this.database.query(
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [id, user_id]
+    );
+
+    return carts[0];
+  }
+
+  async updateCartAsUser(id, userId, { user_id }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} JOIN User ON ${this.table}.user_id = User.id SET ${this.table}.user_id = COALESCE(?, ${this.table}.user_id) WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
-      [cart.user_id, id, user_id]
+      `UPDATE ${this.table} SET user_id = ? WHERE id = ? AND user_id = ?`,
+      [user_id, id, userId]
     );
 
     return result.affectedRows;
   }
 
+  async createCartAsUser(userId, { user_id }) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    const [result] = await this.database.query(
+      `INSERT INTO ${this.table} (user_id) VALUES (?)`,
+      [user_id]
+    );
+
+    return result.insertId;
+  }
+
   async deleteCartAsUser(id, user_id) {
     const [result] = await this.database.query(
-      `DELETE FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      `DELETE FROM ${this.table} WHERE id = ? AND user_id = ?`,
       [id, user_id]
     );
 

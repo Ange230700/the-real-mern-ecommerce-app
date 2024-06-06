@@ -1,88 +1,96 @@
-// Import access to database tables
 const tables = require("../../database/tables");
 
-// The B of BREAD - Browse (Read All) operation
 const browseSliderItems = async (request, response, next) => {
   try {
-    // Fetch all items from the database
-    const sliderItems = await tables.Slider_item.readAllSliderItems();
+    const slider_items = await tables.Slider_item.readAllSliderItems();
 
-    // Respond with the items in JSON format
-    response.status(200).json(sliderItems);
+    if (!slider_items) {
+      response.status(404).json({ message: "No slider items found" });
+    } else {
+      response.status(200).json(slider_items);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The R of BREAD - Read operation
 const readSliderItem = async (request, response, next) => {
   try {
-    // Fetch the item from the database
-    const sliderItem = await tables.Slider_item.readSliderItem(
-      request.params.id
+    const { id } = request.params;
+
+    const slider_item = await tables.Slider_item.readSliderItem(id);
+
+    if (!slider_item) {
+      response.status(404).json({ message: "Slider item not found" });
+    } else {
+      response.status(200).json(slider_item);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const editSliderItem = async (request, response, next) => {
+  try {
+    const { id } = request.params;
+
+    const slider_item = request.body;
+
+    if (!slider_item.title || !slider_item.image) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
+    const affectedRows = await tables.Slider_item.updateSliderItem(
+      id,
+      slider_item
     );
 
-    // Respond with the item in JSON format
-    response.status(200).json(sliderItem);
+    if (!affectedRows) {
+      response.status(404).json({ message: "Slider item not found" });
+    } else {
+      response.status(200);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The E of BREAD - Edit (Update) operation
-const editSliderItem = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
-  // Extract the item data from the request body
-  const sliderItem = request.body;
-
-  try {
-    // Update the item in the database
-    await tables.Slider_item.updateSliderItem(id, sliderItem);
-
-    // Respond with HTTP 200 (OK)
-    response.status(200);
-  } catch (error) {
-    // Pass any errors to the error-handling middleware
-    next(error);
-  }
-};
-
-// The A of BREAD - Add (Create) operation
 const addSliderItem = async (request, response, next) => {
-  // Extract the item data from the request body
-  const sliderItem = request.body;
-
   try {
-    // Insert the item into the database
-    const insertId = await tables.Slider_item.createSliderItem(sliderItem);
+    const slider_item = request.body;
 
-    // Respond with the item ID in JSON format
-    response.status(201).json({
-      insertId,
-    });
+    if (!slider_item.title || !slider_item.image) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
+    const insertId = await tables.Slider_item.createSliderItem(slider_item);
+
+    if (!insertId) {
+      response.status(404).json({ message: "Slider item not found" });
+    } else {
+      response.status(201).json({
+        insertId,
+      });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The D of BREAD - Delete operation
 const destroySliderItem = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
   try {
-    // Delete the item from the database
-    await tables.Slider_item.deleteSliderItem(id);
+    const { id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    const affectedRows = await tables.Slider_item.deleteSliderItem(id);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Slider item not found" });
+    } else {
+      response.status(200).json({ message: "Slider item deleted" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };

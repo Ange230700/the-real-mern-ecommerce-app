@@ -22,7 +22,7 @@ const tables = {};
 // Register each repository as data access point for its table
 // tables.item = new ItemRepository();
 
-tables.User = new AuthRepository();
+tables.Auth = new AuthRepository();
 tables.User = new UserRepository();
 tables.Cart = new CartRepository();
 tables.Purchase = new PurchaseRepository();

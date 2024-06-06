@@ -5,28 +5,21 @@ class SliderItemRepository extends AbstractRepository {
     super({ table: "Slider_item" });
   }
 
-  async createSliderItem({ title, image }) {
-    const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (title, image) VALUES (?, ?)`,
-      [title, image]
+  async readAllSliderItems() {
+    const [slider_items] = await this.database.query(
+      `SELECT * FROM ${this.table}`
     );
 
-    return result.insertId;
+    return slider_items;
   }
 
   async readSliderItem(id) {
-    const [rows] = await this.database.query(
+    const [slider_items] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
     );
 
-    return rows[0];
-  }
-
-  async readAllSliderItems() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
-
-    return rows;
+    return slider_items[0];
   }
 
   async updateSliderItem(id, { title, image }) {
@@ -36,6 +29,15 @@ class SliderItemRepository extends AbstractRepository {
     );
 
     return result.affectedRows;
+  }
+
+  async createSliderItem({ title, image }) {
+    const [result] = await this.database.query(
+      `INSERT INTO ${this.table} (title, image) VALUES (?, ?)`,
+      [title, image]
+    );
+
+    return result.insertId;
   }
 
   async deleteSliderItem(id) {

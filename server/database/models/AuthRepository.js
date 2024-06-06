@@ -15,12 +15,12 @@ class AuthRepository extends AbstractRepository {
   }
 
   async findUserByEmail(email) {
-    const [rows] = await this.database.query(
+    const [users] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE email = ?`,
       [email]
     );
 
-    return rows[0];
+    return users[0];
   }
 }
 

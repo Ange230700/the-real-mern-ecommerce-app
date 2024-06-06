@@ -22,19 +22,23 @@ const {
 } = require("../../../controllers/purchaseActions");
 
 // Route to get a list of orders
-router.get("/admin", verifyTokenAndAdmin, browsePurchases);
+router.get("/user/:user_id", verifyTokenAndAdmin, browsePurchases);
 
 // Route to get a specific order by ID
-router.get("/order/user/:user_id", verifyTokenAndAuthorization, readPurchase);
+router.get(
+  "/order/:id/user/:user_id",
+  verifyTokenAndAuthorization,
+  readPurchase
+);
 
 // Route to edit a specific order by ID
-router.put("/order/user/:user_id", verifyTokenAndAdmin, editPurchase);
+router.put("/order/:id/user/:user_id", verifyTokenAndAdmin, editPurchase);
 
 // Route to add a new order
-router.post("/order/user/", verifyToken, addPurchase);
+router.post("/order/user/:user_id", verifyToken, addPurchase);
 
 // Route to delete a specific order by ID
-router.delete("/order/user/:user_id", verifyTokenAndAdmin, destroyPurchase);
+router.delete("/order/:id/user/:user_id", verifyTokenAndAdmin, destroyPurchase);
 
 /* ************************************************************************* */
 

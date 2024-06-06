@@ -1,92 +1,107 @@
-// Import access to database tables
 const tables = require("../../database/tables");
 
-// The B of BREAD - Browse (Read All) operation
 const browsePopularProducts = async (request, response, next) => {
   try {
-    // Fetch all items from the database
-    const popularProducts =
+    const popular_products =
       await tables.Popular_product.readAllPopularProducts();
 
-    // Respond with the items in JSON format
-    response.status(200).json(popularProducts);
-  } catch (error) {
-    // Pass any errors to the error-handling middleware
-    next(error);
-  }
-};
-
-// The R of BREAD - Read operation
-const readPopularProduct = async (request, response, next) => {
-  try {
-    // Fetch a specific item from the database based on the provided ID
-    const popularProduct = await tables.Popular_product.readPopularProduct(
-      request.params.id
-    );
-
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
-    if (popularProduct == null) {
-      response.status(404);
+    if (!popular_products) {
+      response.status(404).json({ message: "No popular products found" });
     } else {
-      response.json(popularProduct);
+      response.status(200).json(popular_products);
     }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The E of BREAD - Edit (Update) operation
-const editPopularProduct = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
-  // Extract the item data from the request body
-  const popularProduct = request.body;
-
+const readPopularProduct = async (request, response, next) => {
   try {
-    // Update the item in the database
-    await tables.Popular_product.updatePopularProduct(id, popularProduct);
+    const { id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    const popular_product = await tables.Popular_product.readPopularProduct(id);
+
+    if (!popular_product) {
+      response.status(404).json({ message: "Popular product not found" });
+    } else {
+      response.status(200).json(popular_product);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The A of BREAD - Add (Create) operation
-const addPopularProduct = async (request, response, next) => {
-  // Extract the item data from the request body
-  const popularProduct = request.body;
-
+const editPopularProduct = async (request, response, next) => {
   try {
-    // Insert the item into the database
+    const { id } = request.params;
+
+    const popularProduct = request.body;
+
+    if (
+      !popularProduct.title ||
+      !popularProduct.price ||
+      !popularProduct.image
+    ) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
+    const affectedRows = await tables.Popular_product.updatePopularProduct(
+      id,
+      popularProduct
+    );
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Popular product not found" });
+    } else {
+      response.status(200);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const addPopularProduct = async (request, response, next) => {
+  try {
+    const popularProduct = request.body;
+
+    if (
+      !popularProduct.title ||
+      !popularProduct.price ||
+      !popularProduct.image
+    ) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
     const insertId =
       await tables.Popular_product.createPopularProduct(popularProduct);
 
-    // Respond with the ID of the inserted item
-    response.status(201).json({
-      insertId,
-    });
+    if (!insertId) {
+      response.status(404).json({ message: "Popular product not found" });
+    } else {
+      response.status(201).json({
+        insertId,
+        message: "Popular product added",
+      });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The D of BREAD - Delete operation
 const destroyPopularProduct = async (request, response, next) => {
   try {
-    // Delete a specific item from the database based on the provided ID
-    await tables.Popular_product.deletePopularProduct(request.params.id);
+    const { id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    const affectedRows = await tables.Popular_product.deletePopularProduct(id);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Popular product not found" });
+    } else {
+      response.status(200);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };

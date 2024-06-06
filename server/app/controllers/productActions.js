@@ -72,6 +72,17 @@ const editProduct = async (request, response, next) => {
 
     const product = request.body;
 
+    if (
+      !product.title ||
+      !product.price ||
+      !product.image_url ||
+      !product.product_adjective ||
+      !product.product_material ||
+      !product.product_description
+    ) {
+      response.status(400).json({ message: "All fields are required" });
+    }
+
     const affectedRows = await tables.Product.updateProduct(id, product);
 
     if (!affectedRows) {
@@ -87,6 +98,17 @@ const editProduct = async (request, response, next) => {
 const addProduct = async (request, response, next) => {
   try {
     const product = request.body;
+
+    if (
+      !product.title ||
+      !product.price ||
+      !product.image_url ||
+      !product.product_adjective ||
+      !product.product_material ||
+      !product.product_description
+    ) {
+      response.status(400).json({ message: "All fields are required" });
+    }
 
     const insertId = await tables.Product.createProduct(product);
 

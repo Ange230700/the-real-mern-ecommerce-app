@@ -38,9 +38,13 @@ const editCartAsUser = async (request, response, next) => {
 
     const cart = request.body;
 
-    const result = await tables.Cart.updateCartAsUser(id, user_id, cart);
+    if (!cart.user_id) {
+      response.status(400).json({ message: "User ID is required" });
+    }
 
-    if (!result) {
+    const affectedRows = await tables.Cart.updateCartAsUser(id, user_id, cart);
+
+    if (!affectedRows) {
       response.status(404).json({ message: "Cart not updated" });
     } else {
       response.status(204).json({ message: "Cart updated" });
@@ -55,6 +59,10 @@ const addCartAsUser = async (request, response, next) => {
     const { user_id } = request.params;
 
     const cart = request.body;
+
+    if (!cart.user_id) {
+      response.status(400).json({ message: "User ID is required" });
+    }
 
     const insertId = await tables.Cart.createCartAsUser(user_id, cart);
 
@@ -72,9 +80,9 @@ const destroyCartAsUser = async (request, response, next) => {
   try {
     const { id, user_id } = request.params;
 
-    const result = await tables.Cart.deleteCartAsUser(id, user_id);
+    const affectedRows = await tables.Cart.deleteCartAsUser(id, user_id);
 
-    if (!result) {
+    if (!affectedRows) {
       response.status(404).json({ message: "Cart not deleted" });
     } else {
       response.status(204).json({ message: "Cart deleted" });

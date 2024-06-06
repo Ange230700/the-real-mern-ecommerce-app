@@ -6,18 +6,18 @@ class UserRepository extends AbstractRepository {
   }
 
   async readAllUsers() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
+    const [users] = await this.database.query(`SELECT * FROM ${this.table}`);
 
-    return rows;
+    return users;
   }
 
   async readUser(id) {
-    const [rows] = await this.database.query(
+    const [users] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
     );
 
-    return rows[0];
+    return users[0];
   }
 
   async updateUser(id, { username, email, password }) {

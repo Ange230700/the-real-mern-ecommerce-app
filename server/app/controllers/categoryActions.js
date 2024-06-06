@@ -1,16 +1,15 @@
-// Import access to database tables
 const tables = require("../../database/tables");
 
-// The B of BREAD - Browse (Read All) operation
 const browseCategories = async (request, response, next) => {
   try {
-    // Fetch all items from the database
     const categories = await tables.Category.readAllCategories();
 
-    // Respond with the items in JSON format
-    response.status(200).json(categories);
+    if (!categories) {
+      response.status(404).json({ message: "No categories found" });
+    } else {
+      response.status(200).json(categories);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
@@ -22,7 +21,7 @@ const browseCategoriesByProduct = async (request, response, next) => {
     const categoriesByProduct =
       await tables.Category.readAllCategoriesByProduct(product_id);
 
-    if (categoriesByProduct == null) {
+    if (!categoriesByProduct) {
       response.status(404);
     } else {
       response.status(200).json(categoriesByProduct);
@@ -32,21 +31,18 @@ const browseCategoriesByProduct = async (request, response, next) => {
   }
 };
 
-// The R of BREAD - Read operation
 const readCategory = async (request, response, next) => {
   try {
-    // Fetch a specific item from the database based on the provided ID
-    const category = await tables.Category.readCategory(request.params.id);
+    const { id } = request.params;
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
-    if (category == null) {
-      response.status(404);
+    const category = await tables.Category.readCategory(id);
+
+    if (!category) {
+      response.status(404).json({ message: "Category not found" });
     } else {
       response.json(category);
     }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
@@ -60,8 +56,8 @@ const readCategoryByProduct = async (request, response, next) => {
       product_id
     );
 
-    if (categoryByProduct == null) {
-      response.status(404);
+    if (!categoryByProduct) {
+      response.status(404).json({ message: "Category not found" });
     } else {
       response.status(200).json(categoryByProduct);
     }
@@ -70,63 +66,71 @@ const readCategoryByProduct = async (request, response, next) => {
   }
 };
 
-// The E of BREAD - Edit (Update) operation
 const editCategory = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
-  // Extract the item data from the request body
-  const category = request.body;
-
   try {
-    // Update the item in the database
-    await tables.Category.updateCategory(id, category);
+    const { id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    const category = request.body;
+
+    if (!category.image || !category.name) {
+      response
+        .status(400)
+        .json({ message: "Category name and image are required" });
+    }
+
+    const affectedRows = await tables.Category.updateCategory(id, category);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Category not found" });
+    } else {
+      response.status(200).json({ message: "Category updated" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The A of BREAD - Add (Create) operation
 const addCategory = async (request, response, next) => {
-  // Extract the item data from the request body
-  const category = request.body;
-
   try {
-    // Insert the item into the database
+    const category = request.body;
+
+    if (!category.image || !category.name) {
+      response
+        .status(400)
+        .json({ message: "Category name and image are required" });
+    }
+
     const insertId = await tables.Category.createCategory(category);
 
-    // Respond with HTTP 201 (Created) and the ID of the new item
-    response.status(201).json({
-      insertId,
-    });
+    if (!insertId) {
+      response.status(404).json({ message: "Category not found" });
+    } else {
+      response.status(201).json({
+        insertId,
+        message: "Category added",
+      });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The D of BREAD - Delete operation
 const destroyCategory = async (request, response, next) => {
-  // Extract the item ID from the request parameters
-  const { id } = request.params;
-
   try {
-    // Delete the item from the database
-    await tables.Category.deleteCategory(id);
+    const { id } = request.params;
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    const affectedRows = await tables.Category.deleteCategory(id);
+
+    if (!affectedRows) {
+      response.status(404).json({ message: "Category not found" });
+    } else {
+      response.status(200).json({ message: "Category deleted" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// Ready to export the controller functions
 module.exports = {
   browseCategories,
   browseCategoriesByProduct,

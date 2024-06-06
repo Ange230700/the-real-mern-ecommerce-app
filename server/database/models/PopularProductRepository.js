@@ -5,28 +5,21 @@ class PopularProductRepository extends AbstractRepository {
     super({ table: "Popular_product" });
   }
 
-  async createPopularProduct({ title, price, image }) {
-    const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (product_id) VALUES (?)`,
-      [title, price, image]
+  async readAllPopularProducts() {
+    const [popular_products] = await this.database.query(
+      `SELECT * FROM ${this.table}`
     );
 
-    return result.insertId;
+    return popular_products;
   }
 
   async readPopularProduct(id) {
-    const [rows] = await this.database.query(
+    const [popular_products] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
     );
 
-    return rows[0];
-  }
-
-  async readAllPopularProducts() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
-
-    return rows;
+    return popular_products[0];
   }
 
   async updatePopularProduct(id, { title, price, image }) {
@@ -36,6 +29,15 @@ class PopularProductRepository extends AbstractRepository {
     );
 
     return result.affectedRows;
+  }
+
+  async createPopularProduct({ title, price, image }) {
+    const [result] = await this.database.query(
+      `INSERT INTO ${this.table} (product_id) VALUES (?)`,
+      [title, price, image]
+    );
+
+    return result.insertId;
   }
 
   async deletePopularProduct(id) {

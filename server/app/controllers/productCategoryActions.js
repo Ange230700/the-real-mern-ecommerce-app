@@ -1,110 +1,111 @@
-// Import access to database tables
 const tables = require("../../database/tables");
 
-// The B of BREAD - Browse (Read All) operation
 const browseProductCategory = async (request, response, next) => {
   try {
-    // Fetch all items from the database
     const productCategoryDuos =
       await tables.Product_category.readAllProductCategory();
 
-    // Respond with the items in JSON format
-    response.status(200).json(productCategoryDuos);
+    if (!productCategoryDuos) {
+      response.status(404).json({ message: "No product_category duo found" });
+    } else {
+      response.status(200).json(productCategoryDuos);
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The R of BREAD - Read operation
 const readProductCategory = async (request, response, next) => {
   try {
     const { product_id, category_id } = request.params;
 
-    // Fetch a specific item from the database based on the provided ID
-    const productCategory = await tables.Product_category.readProductCategory(
-      product_id,
-      category_id
-    );
+    const productCategoryDuo =
+      await tables.Product_category.readProductCategory(
+        product_id,
+        category_id
+      );
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
-    if (productCategory == null) {
+    if (!productCategoryDuo) {
       response.status(404);
     } else {
-      response.json(productCategory);
+      response.json(productCategoryDuo);
     }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The E of BREAD - Edit (Update) operation
 const editProductCategory = async (request, response, next) => {
   try {
-    // Extract the item ID from the request parameters
     const { product_id, category_id } = request.params;
 
-    // Extract the item data from the request body
     const productCategory = request.body;
 
-    // Update the item in the database
-    await tables.Product_category.updateProductCategory(
+    if (!productCategory.product_id || !productCategory.category_id) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
+    const affectedRows = await tables.Product_category.updateProductCategory(
       product_id,
       category_id,
       productCategory
     );
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    if (!affectedRows) {
+      response.status(404).json({ message: "Product_category duo not found" });
+    } else {
+      response.status(200).json({ message: "Product_category duo updated" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The A of BREAD - Add (Create) operation
 const addProductCategory = async (request, response, next) => {
   try {
-    // Extract the item data from the request body
-    const productCategory = request.body;
+    const productCategoryDuo = request.body;
 
-    // Insert the item into the database
+    if (!productCategoryDuo.product_id || !productCategoryDuo.category_id) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
     const insertId =
-      await tables.Product_category.createProductCategory(productCategory);
+      await tables.Product_category.createProductCategory(productCategoryDuo);
 
-    // Respond with HTTP 201 (Created)
-    response.status(201).json({
-      insertId,
-    });
+    if (!insertId) {
+      response.status(404).json({ message: "Product_category duo not found" });
+    } else {
+      response.status(201).json({
+        insertId,
+        message: "Product_category duo added",
+      });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// The D of BREAD - Delete operation
 const destroyProductCategory = async (request, response, next) => {
   try {
-    // Extract the item ID from the request parameters
     const { product_id, category_id } = request.params;
 
-    // Delete the item from the database
-    await tables.Product_category.deleteProductCategory(
+    const affectedRows = await tables.Product_category.deleteProductCategory(
       product_id,
       category_id
     );
 
-    // Respond with HTTP 200 (OK)
-    response.status(200);
+    if (!affectedRows) {
+      response.status(404).json({ message: "Product_category duo not found" });
+    } else {
+      response.status(200).json({ message: "Product_category duo deleted" });
+    }
   } catch (error) {
-    // Pass any errors to the error-handling middleware
     next(error);
   }
 };
 
-// Ready to export the controller functions
 module.exports = {
   browseProductCategory,
   readProductCategory,
