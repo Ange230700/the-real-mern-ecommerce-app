@@ -49,7 +49,7 @@ const editSliderItem = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Slider item not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "Slider item updated" });
     }
   } catch (error) {
     next(error);

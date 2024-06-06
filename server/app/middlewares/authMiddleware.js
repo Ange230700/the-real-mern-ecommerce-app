@@ -19,7 +19,11 @@ const verifyToken = (request, response, next) => {
 
 const verifyTokenAndAuthorization = (request, response, next) => {
   verifyToken(request, response, () => {
-    if (request.user.id === request.params.id || request.user.is_admin) {
+    console.info(request.params);
+    if (
+      request.user.id === Number(request.params.id) ||
+      request.user.is_admin
+    ) {
       next();
     } else {
       response.status(401).json({ message: "Unauthorized" });

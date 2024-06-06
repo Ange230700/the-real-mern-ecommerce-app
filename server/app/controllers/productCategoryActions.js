@@ -26,7 +26,7 @@ const readProductCategory = async (request, response, next) => {
       );
 
     if (!productCategoryDuo) {
-      response.status(404);
+      response.status(404).json({ message: "Product_category duo not found" });
     } else {
       response.json(productCategoryDuo);
     }

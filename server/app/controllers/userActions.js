@@ -25,7 +25,7 @@ const readUser = async (request, response, next) => {
     const { password: userPassword, ...userWithoutPassword } = user;
 
     if (!user) {
-      response.status(404);
+      response.status(404).json({ message: "User not found" });
     } else {
       response.json(...userWithoutPassword);
     }
@@ -59,7 +59,7 @@ const editUser = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "User not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "User updated successfully" });
     }
   } catch (error) {
     next(error);
@@ -75,7 +75,7 @@ const destroyUser = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "User not found" });
     } else {
-      response.status(204);
+      response.status(204).json({ message: "User deleted successfully" });
     }
   } catch (error) {
     next(error);

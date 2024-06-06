@@ -23,7 +23,7 @@ const readPurchase = async (request, response, next) => {
     const purchase = await tables.Purchase.readPurchase(id, user_id);
 
     if (!purchase) {
-      response.status(404);
+      response.status(404).json({ message: "Purchase not found" });
     } else {
       response.status(200).json(purchase);
     }
@@ -52,7 +52,7 @@ const editPurchase = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Purchase not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "Purchase updated" });
     }
   } catch (error) {
     next(error);
@@ -91,7 +91,7 @@ const destroyPurchase = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Purchase not found" });
     } else {
-      response.status(204);
+      response.status(204).json({ message: "Purchase deleted" });
     }
   } catch (error) {
     next(error);

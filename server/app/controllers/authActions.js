@@ -41,10 +41,12 @@ const login = async (request, response) => {
 
     const user = await tables.Auth.findUserByEmail(email);
 
+    if (!user) {
+      response.status(404).json({ error: "User not found" });
+    }
+
     if (!user.email || !user.password) {
       response.status(401).json({ error: "Invalid email or password" });
-
-      return;
     }
 
     const decryptedPassword = CryptoJS.AES.decrypt(
@@ -60,20 +62,11 @@ const login = async (request, response) => {
       return;
     }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        is_admin: user.is_admin,
-      },
-      process.env.APP_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
-
     const { password: userPassword, ...userWithoutPassword } = user;
+
+    const token = jwt.sign(userWithoutPassword, process.env.APP_SECRET, {
+      expiresIn: "1h",
+    });
 
     response.status(200).json({ ...userWithoutPassword, token });
   } catch (error) {

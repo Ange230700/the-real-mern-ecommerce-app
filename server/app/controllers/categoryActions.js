@@ -22,7 +22,7 @@ const browseCategoriesByProduct = async (request, response, next) => {
       await tables.Category.readAllCategoriesByProduct(product_id);
 
     if (!categoriesByProduct) {
-      response.status(404);
+      response.status(404).json({ message: "No categories found" });
     } else {
       response.status(200).json(categoriesByProduct);
     }

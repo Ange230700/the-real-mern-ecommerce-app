@@ -88,7 +88,7 @@ const editProduct = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Product not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "Product updated" });
     }
   } catch (error) {
     next(error);

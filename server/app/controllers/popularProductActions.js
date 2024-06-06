@@ -54,7 +54,7 @@ const editPopularProduct = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Popular product not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "Popular product updated" });
     }
   } catch (error) {
     next(error);
@@ -99,7 +99,7 @@ const destroyPopularProduct = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Popular product not found" });
     } else {
-      response.status(200);
+      response.status(200).json({ message: "Popular product deleted" });
     }
   } catch (error) {
     next(error);
