@@ -5,11 +5,11 @@ const tables = require("../../database/tables");
 
 const register = async (request, response) => {
   try {
-    const { username, email, password } = request.body;
+    const { username, email, password, is_admin } = request.body;
 
     if (!username || !email || !password) {
       response.status(400).json({
-        error: "Make sure you provided a username, an email, and a password.",
+        error: "Make sure you provided all the required fields.",
       });
       return;
     }
@@ -23,6 +23,7 @@ const register = async (request, response) => {
       username,
       email,
       password: encryptedPassword,
+      is_admin,
     });
 
     if (!insertId) {
@@ -65,7 +66,7 @@ const login = async (request, response) => {
     const { password: userPassword, ...userWithoutPassword } = user;
 
     const token = jwt.sign(userWithoutPassword, process.env.APP_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     response.status(200).json({ ...userWithoutPassword, token });

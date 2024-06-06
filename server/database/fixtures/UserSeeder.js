@@ -9,6 +9,18 @@ class UserSeeder extends AbstractSeeder {
   // $ The run method - Populate the 'user' table with fake data
 
   run() {
+    const fakeAdmin = {
+      username: "admin",
+      email: "admin@admin.admin",
+      password: CryptoJS.AES.encrypt(
+        "admin",
+        process.env.APP_SECRET
+      ).toString(),
+      is_admin: true,
+    };
+
+    this.insert(fakeAdmin);
+
     const numberOfUsers = 10; // Change this value based on the number of users you want to generate
 
     for (let i = 0; i < numberOfUsers; i += 1) {

@@ -131,7 +131,7 @@ const destroyProduct = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Product not found" });
     } else {
-      response.status(204).json({ message: "Product deleted" });
+      response.status(200).json({ message: "Product deleted" });
     }
   } catch (error) {
     next(error);

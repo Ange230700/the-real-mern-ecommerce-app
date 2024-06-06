@@ -19,14 +19,13 @@ const verifyToken = (request, response, next) => {
 
 const verifyTokenAndAuthorization = (request, response, next) => {
   verifyToken(request, response, () => {
-    console.info(request.params);
     if (
       request.user.id === Number(request.params.id) ||
       request.user.is_admin
     ) {
       next();
     } else {
-      response.status(401).json({ message: "Unauthorized" });
+      response.status(401).json({ message: "Unauthorized." });
     }
   });
 };
@@ -36,7 +35,7 @@ const verifyTokenAndAdmin = (request, response, next) => {
     if (request.user.is_admin) {
       next();
     } else {
-      response.status(403).json({ message: "You are not allowed to do that!" });
+      response.status(401).json({ message: "You are not allowed to do that!" });
     }
   });
 };

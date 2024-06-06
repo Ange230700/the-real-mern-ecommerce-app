@@ -75,7 +75,7 @@ const destroyUser = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "User not found" });
     } else {
-      response.status(204).json({ message: "User deleted successfully" });
+      response.status(200).json({ message: "User deleted successfully" });
     }
   } catch (error) {
     next(error);

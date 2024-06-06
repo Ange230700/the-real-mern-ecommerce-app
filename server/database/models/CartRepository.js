@@ -5,10 +5,9 @@ class CartRepository extends AbstractRepository {
     super({ table: "Cart" });
   }
 
-  async readAllCartsAsUser(user_id) {
+  async readAllCarts() {
     const [carts] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
-      [user_id]
+      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id`
     );
 
     return carts;

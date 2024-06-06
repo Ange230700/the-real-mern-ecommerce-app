@@ -13,7 +13,7 @@ const {
 
 // Import cart-related actions
 const {
-  browseCartsAsUser,
+  browseCarts,
   readCartAsUser,
   addCartAsUser,
   editCartAsUser,
@@ -21,7 +21,8 @@ const {
 } = require("../../../controllers/cartActions");
 
 // Route to get a list of carts
-router.get("/user/:user_id", verifyTokenAndAuthorization, browseCartsAsUser);
+// router.get("/user/:user_id", verifyTokenAndAuthorization, browseCartsAsUser);
+router.get("/", verifyTokenAndAuthorization, browseCarts);
 
 // Route to get a specific cart by ID
 router.get(

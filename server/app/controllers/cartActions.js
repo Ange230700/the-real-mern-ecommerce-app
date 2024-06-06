@@ -1,10 +1,16 @@
 const tables = require("../../database/tables");
 
-const browseCartsAsUser = async (request, response, next) => {
+const browseCarts = async (request, response, next) => {
   try {
-    const { user_id } = request.params;
+    const { id } = request.user;
 
-    const carts = await tables.Cart.readAllCartsAsUser(user_id);
+    if (!id) {
+      response.status(400).json({ message: "User ID is required" });
+
+      return;
+    }
+
+    const carts = await tables.Cart.readAllCarts();
 
     if (!carts) {
       response.status(404).json({ message: "Carts not found" });
@@ -47,7 +53,7 @@ const editCartAsUser = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Cart not updated" });
     } else {
-      response.status(204).json({ message: "Cart updated" });
+      response.status(200).json({ message: "Cart updated" });
     }
   } catch (error) {
     next(error);
@@ -85,7 +91,7 @@ const destroyCartAsUser = async (request, response, next) => {
     if (!affectedRows) {
       response.status(404).json({ message: "Cart not deleted" });
     } else {
-      response.status(204).json({ message: "Cart deleted" });
+      response.status(200).json({ message: "Cart deleted" });
     }
   } catch (error) {
     next(error);
@@ -93,7 +99,7 @@ const destroyCartAsUser = async (request, response, next) => {
 };
 
 module.exports = {
-  browseCartsAsUser,
+  browseCarts,
   readCartAsUser,
   editCartAsUser,
   addCartAsUser,
