@@ -6,9 +6,7 @@ class UserSeeder extends AbstractSeeder {
     super({ table: "User", truncate: true });
   }
 
-  // $ The run method - Populate the 'user' table with fake data
-
-  run() {
+  async run() {
     const fakeAdmin = {
       username: "admin",
       email: "admin@admin.admin",
@@ -21,22 +19,24 @@ class UserSeeder extends AbstractSeeder {
 
     this.insert(fakeAdmin);
 
-    const numberOfUsers = 10; // Change this value based on the number of users you want to generate
+    const numberOfUsers = 10;
 
     for (let i = 0; i < numberOfUsers; i += 1) {
       const fakeUser = {
-        username: this.faker.internet.userName(), // Generate a fake username using faker library
-        email: this.faker.internet.email(), // Generate a fake email using faker library
+        username: this.faker.internet.userName(),
+        email: this.faker.internet.email(),
         password: CryptoJS.AES.encrypt(
           this.faker.internet.password(),
           process.env.APP_SECRET
-        ).toString(), // Generate a fake password using faker library
-        is_admin: this.faker.datatype.boolean(), // Generate a fake is_admin using faker library
-        refName: `user_${i}`, // Create a reference name for the user
+        ).toString(),
+        is_admin: this.faker.datatype.boolean(),
+        refName: `user_${i}`,
       };
 
       this.insert(fakeUser);
     }
+
+    await Promise.all(this.promises);
   }
 }
 
