@@ -44,34 +44,32 @@ const readCart = async (request, response, next) => {
   }
 };
 
-const editCart = async (request, response, next) => {
-  try {
-    const { cart_id, user_id } = request.params;
+// const editCart = async (request, response, next) => {
+//   try {
+//     const { cart_id, user_id } = request.params;
+//     const cart = request.body;
 
-    const cart = request.body;
+//     if (!user_id) {
+//       response.status(400).json({ message: "User ID is required" });
 
-    if (!user_id) {
-      response.status(400).json({ message: "User ID is required" });
+//       return;
+//     }
 
-      return;
-    }
+//     const affectedRows = await tables.Cart.updateCart(cart_id, user_id, cart);
 
-    const affectedRows = await tables.Cart.updateCart(cart_id, user_id, cart);
-
-    if (!affectedRows) {
-      response.status(404).json({ message: "Cart not updated" });
-    } else {
-      response.status(200).json({ message: "Cart updated" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
+//     if (!affectedRows) {
+//       response.status(404).json({ message: "Cart not updated" });
+//     } else {
+//       response.status(200).json({ message: "Cart updated" });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const addCart = async (request, response, next) => {
   try {
     const { user_id } = request.params;
-
     const cart = request.body;
 
     if (!user_id) {
@@ -111,7 +109,7 @@ const destroyCart = async (request, response, next) => {
 module.exports = {
   browseCarts,
   readCart,
-  editCart,
+  // editCart,
   addCart,
   destroyCart,
 };

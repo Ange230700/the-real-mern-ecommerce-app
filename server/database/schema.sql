@@ -12,25 +12,18 @@
 -- % Based on the conceptual data model above, give me the entire schema for the database. Mind the insertion of foreign keys based on one-to-one, one-to-many, and many-to-many relationships.
 -- Drop existing tables and junction tables if they exist to start with a clean slate
 DROP TABLE IF EXISTS `User`;
-
 DROP TABLE IF EXISTS `Cart`;
-
 DROP TABLE IF EXISTS `Product`;
-
 DROP TABLE IF EXISTS `Purchase`;
-
 DROP TABLE IF EXISTS `Slider_item`;
-
 DROP TABLE IF EXISTS `Category`;
-
 DROP TABLE IF EXISTS `Popular_product`;
 
 -- junction tables
 DROP TABLE IF EXISTS `Product_category`;
-
 DROP TABLE IF EXISTS `Product_order`;
 
--- $ Create the tables
+-- Create the tables
 CREATE TABLE
   `User` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -45,6 +38,9 @@ CREATE TABLE
   `Cart` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status` VARCHAR(50),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
   );

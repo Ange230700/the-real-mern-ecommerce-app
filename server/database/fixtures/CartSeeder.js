@@ -15,6 +15,7 @@ class CartSeeder extends AbstractSeeder {
     for (let i = 0; i < numberOfCarts; i += 1) {
       const fakeCart = {
         user_id: this.faker.number.int({ min: 1, max: lengthOfUserArray }),
+        status: this.faker.word.adjective(),
         refName: `cart_${i}`,
       };
 
