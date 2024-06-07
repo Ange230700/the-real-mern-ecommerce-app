@@ -5,27 +5,28 @@ class CartRepository extends AbstractRepository {
     super({ table: "Cart" });
   }
 
-  async readAllCarts() {
+  async readAllCarts(user_id) {
     const [carts] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id`
+      `SELECT * FROM ${this.table} WHERE ${this.table}.user_id = ?`,
+      [user_id]
     );
 
     return carts;
   }
 
-  async readCart(cart_id) {
+  async readCart(cart_id, user_id) {
     const [carts] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ?`,
-      [cart_id]
+      `SELECT * FROM ${this.table} WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [cart_id, user_id]
     );
 
     return carts[0];
   }
 
-  async updateCart(cart_id, { user_id }) {
+  async updateCart(cart_id, userId, { user_id }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET user_id = COALESCE(?, user_id) WHERE id = ?`,
-      [user_id, cart_id]
+      `UPDATE ${this.table} SET user_id = COALESCE(?, user_id) WHERE id = ? AND user_id = ?`,
+      [user_id, cart_id, userId]
     );
 
     return result.affectedRows;
@@ -44,10 +45,10 @@ class CartRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async deleteCart(id, user_id) {
+  async deleteCart(cart_id, user_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ? AND user_id = ?`,
-      [id, user_id]
+      [cart_id, user_id]
     );
 
     return result.affectedRows;

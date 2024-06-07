@@ -10,7 +10,7 @@ const browseCarts = async (request, response, next) => {
       return;
     }
 
-    const carts = await tables.Cart.readAllCarts();
+    const carts = await tables.Cart.readAllCarts(user_id);
 
     if (!carts) {
       response.status(404).json({ message: "Carts not found" });
@@ -32,7 +32,7 @@ const readCart = async (request, response, next) => {
       return;
     }
 
-    const cart = await tables.Cart.readCart(cart_id);
+    const cart = await tables.Cart.readCart(cart_id, user_id);
 
     if (!cart) {
       response.status(404).json({ message: "Cart not found" });
@@ -56,7 +56,7 @@ const editCart = async (request, response, next) => {
       return;
     }
 
-    const affectedRows = await tables.Cart.updateCart(cart_id, cart);
+    const affectedRows = await tables.Cart.updateCart(cart_id, user_id, cart);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Cart not updated" });
@@ -74,11 +74,13 @@ const addCart = async (request, response, next) => {
 
     const cart = request.body;
 
-    if (!cart.user_id) {
+    if (!user_id) {
       response.status(400).json({ message: "User ID is required" });
+
+      return;
     }
 
-    const insertId = await tables.Cart.createCartAsUser(user_id, cart);
+    const insertId = await tables.Cart.createCart(user_id, cart);
 
     if (!insertId) {
       response.status(404).json({ message: "Cart not created" });
@@ -92,9 +94,9 @@ const addCart = async (request, response, next) => {
 
 const destroyCart = async (request, response, next) => {
   try {
-    const { id, user_id } = request.params;
+    const { cart_id, user_id } = request.params;
 
-    const affectedRows = await tables.Cart.deleteCartAsUser(id, user_id);
+    const affectedRows = await tables.Cart.deleteCart(cart_id, user_id);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Cart not deleted" });

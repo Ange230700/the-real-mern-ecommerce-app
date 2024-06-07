@@ -42,7 +42,7 @@ router.put(
 
 // Route to delete a specific cart by ID
 router.delete(
-  "/cart/:id/user/:user_id",
+  "/cart/:cart_id/user/:user_id",
   verifyTokenAndAuthorization,
   destroyCart
 );
