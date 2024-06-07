@@ -12,15 +12,22 @@
 -- % Based on the conceptual data model above, give me the entire schema for the database. Mind the insertion of foreign keys based on one-to-one, one-to-many, and many-to-many relationships.
 -- Drop existing tables and junction tables if they exist to start with a clean slate
 DROP TABLE IF EXISTS `User`;
+
 DROP TABLE IF EXISTS `Cart`;
+
 DROP TABLE IF EXISTS `Product`;
+
 DROP TABLE IF EXISTS `Purchase`;
+
 DROP TABLE IF EXISTS `Slider_item`;
+
 DROP TABLE IF EXISTS `Category`;
+
 DROP TABLE IF EXISTS `Popular_product`;
 
 -- junction tables
 DROP TABLE IF EXISTS `Product_category`;
+
 DROP TABLE IF EXISTS `Product_order`;
 
 -- Create the tables
@@ -42,7 +49,7 @@ CREATE TABLE
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `status` VARCHAR(50),
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
+    CONSTRAINT FK_Cart_user_id FOREIGN KEY (`user_id`) REFERENCES `User` (`id`) ON DELETE CASCADE
   );
 
 CREATE TABLE
@@ -63,7 +70,7 @@ CREATE TABLE
     `user_id` INT NOT NULL,
     `total` DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
+    CONSTRAINT FK_Purchase_user_id FOREIGN KEY (`user_id`) REFERENCES `User` (`id`) ON DELETE CASCADE
   );
 
 CREATE TABLE
@@ -96,8 +103,8 @@ CREATE TABLE
   `Product_category` (
     `product_id` INT NOT NULL,
     `category_id` INT NOT NULL,
-    FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`),
-    FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`),
+    CONSTRAINT FK_Product_category_product_id FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE CASCADE,
+    CONSTRAINT FK_Product_category_category_id FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`) ON DELETE CASCADE,
     PRIMARY KEY (`product_id`, `category_id`)
   );
 
@@ -105,7 +112,7 @@ CREATE TABLE
   `Product_order` (
     `product_id` INT NOT NULL,
     `order_id` INT NOT NULL,
-    FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`),
-    FOREIGN KEY (`order_id`) REFERENCES `Purchase` (`id`),
+    CONSTRAINT FK_Product_order_product_id FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE CASCADE,
+    CONSTRAINT FK_Product_order_purchase_id FOREIGN KEY (`order_id`) REFERENCES `Purchase` (`id`) ON DELETE CASCADE,
     PRIMARY KEY (`product_id`, `order_id`)
   );

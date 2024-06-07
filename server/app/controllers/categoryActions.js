@@ -18,6 +18,11 @@ const browseCategoriesByProduct = async (request, response, next) => {
   try {
     const { product_id } = request.params;
 
+    if (!product_id) {
+      response.status(400).json({ message: "Product ID is required" });
+      return;
+    }
+
     const categoriesByProduct =
       await tables.Category.readAllCategoriesByProduct(product_id);
 
@@ -33,9 +38,14 @@ const browseCategoriesByProduct = async (request, response, next) => {
 
 const readCategory = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { category_id } = request.params;
 
-    const category = await tables.Category.readCategory(id);
+    if (!category_id) {
+      response.status(400).json({ message: "Category ID is required" });
+      return;
+    }
+
+    const category = await tables.Category.readCategory(category_id);
 
     if (!category) {
       response.status(404).json({ message: "Category not found" });
@@ -50,6 +60,13 @@ const readCategory = async (request, response, next) => {
 const readCategoryByProduct = async (request, response, next) => {
   try {
     const { category_id, product_id } = request.params;
+
+    if (!category_id || !product_id) {
+      response
+        .status(400)
+        .json({ message: "Category ID and Product ID required" });
+      return;
+    }
 
     const categoryByProduct = await tables.Category.readCategoryByProduct(
       category_id,
@@ -68,17 +85,19 @@ const readCategoryByProduct = async (request, response, next) => {
 
 const editCategory = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { category_id } = request.params;
+
+    if (!category_id) {
+      response.status(400).json({ message: "Category ID is required" });
+      return;
+    }
 
     const category = request.body;
 
-    if (!category.image || !category.name) {
-      response
-        .status(400)
-        .json({ message: "Category name and image are required" });
-    }
-
-    const affectedRows = await tables.Category.updateCategory(id, category);
+    const affectedRows = await tables.Category.updateCategory(
+      category_id,
+      category
+    );
 
     if (!affectedRows) {
       response.status(404).json({ message: "Category not found" });
@@ -117,9 +136,14 @@ const addCategory = async (request, response, next) => {
 
 const destroyCategory = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { category_id } = request.params;
 
-    const affectedRows = await tables.Category.deleteCategory(id);
+    if (!category_id) {
+      response.status(400).json({ message: "Category ID is required" });
+      return;
+    }
+
+    const affectedRows = await tables.Category.deleteCategory(category_id);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Category not found" });

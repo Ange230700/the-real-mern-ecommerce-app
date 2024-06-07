@@ -24,16 +24,16 @@ router.get("/", browseCategories);
 router.get("/product/:product_id", browseCategoriesByProduct);
 
 // Route to get a specific category by ID
-router.get("/category/:id", readCategory);
+router.get("/category/:category_id", readCategory);
 router.get("/category/:category_id/product/:product_id", readCategoryByProduct);
 
 // Route to add a new category
 router.post("/category", verifyTokenAndAdmin, addCategory);
 
 // Route to edit a specific category by ID
-router.put("/category/:id", verifyTokenAndAdmin, editCategory);
+router.put("/category/:category_id", verifyTokenAndAdmin, editCategory);
 
 // Route to delete a specific category by ID
-router.delete("/category/:id", verifyTokenAndAdmin, destroyCategory);
+router.delete("/category/:category_id", verifyTokenAndAdmin, destroyCategory);
 
 module.exports = router;

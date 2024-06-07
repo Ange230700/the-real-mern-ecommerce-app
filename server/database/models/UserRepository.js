@@ -13,28 +13,40 @@ class UserRepository extends AbstractRepository {
     return users;
   }
 
-  async readUser(id) {
+  async readUser(user_id) {
+    if (!user_id) {
+      throw new Error("User ID is required");
+    }
+
     const [users] = await this.database.query(
       `SELECT id AS userId, username, is_admin FROM ${this.table} WHERE id = ?`,
-      [id]
+      [user_id]
     );
 
     return users[0];
   }
 
-  async updateUser(id, { username, email, password, is_admin }) {
+  async updateUser(user_id, { username, email, password, is_admin }) {
+    if (!user_id) {
+      throw new Error("User ID is required");
+    }
+
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET username = COALESCE(?, username), email = COALESCE(?, email), password = COALESCE(?, password), is_admin = COALESCE(?, is_admin) WHERE id = ?`,
-      [username, email, password, is_admin, id]
+      [username, email, password, is_admin, user_id]
     );
 
     return result.affectedRows;
   }
 
-  async deleteUser(id) {
+  async deleteUser(user_id) {
+    if (!user_id) {
+      throw new Error("User ID is required");
+    }
+
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      [user_id]
     );
 
     return result.affectedRows;

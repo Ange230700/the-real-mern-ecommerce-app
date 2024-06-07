@@ -16,7 +16,7 @@ const {
   browseCarts,
   readCart,
   addCart,
-  // editCart,
+  editCart,
   destroyCart,
 } = require("../../../controllers/cartActions");
 
@@ -33,12 +33,12 @@ router.get(
 // Route to add a new cart
 router.post("/cart/user/:user_id", verifyToken, addCart);
 
-// // Route to edit a specific cart by ID
-// router.put(
-//   "/cart/:cart_id/user/:user_id",
-//   verifyTokenAndAuthorization,
-//   editCart
-// );
+// Route to edit a specific cart by ID
+router.put(
+  "/cart/:cart_id/user/:user_id",
+  verifyTokenAndAuthorization,
+  editCart
+);
 
 // Route to delete a specific cart by ID
 router.delete(

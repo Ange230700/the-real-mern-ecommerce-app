@@ -24,17 +24,17 @@ router.get("/", browseProducts);
 router.get("/category/:category_id", browseProductsByCategory);
 
 // Route to get a specific product by product ID and/or category ID
-router.get("/product/:id", readProduct);
+router.get("/product/:product_id", readProduct);
 router.get("/product/:product_id/category/:category_id", readProductByCategory);
 
 // Route to add a new product
 router.post("/product", verifyTokenAndAdmin, addProduct);
 
 // Route to edit a specific product by ID
-router.put("/product/:id", verifyTokenAndAdmin, editProduct);
+router.put("/product/:product_id", verifyTokenAndAdmin, editProduct);
 
 // Route to delete a specific product by ID
-router.delete("/product/:id", verifyTokenAndAdmin, destroyProduct);
+router.delete("/product/:product_id", verifyTokenAndAdmin, destroyProduct);
 
 /* ************************************************************************* */
 

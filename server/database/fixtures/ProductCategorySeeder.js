@@ -51,6 +51,8 @@ class ProductCategorySeeder extends AbstractSeeder {
 
       this.insert(fakeProductCategory);
     }
+
+    await Promise.all(this.promises);
   }
 }
 

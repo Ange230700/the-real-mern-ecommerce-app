@@ -19,6 +19,11 @@ const readProductCategory = async (request, response, next) => {
   try {
     const { product_id, category_id } = request.params;
 
+    if (!product_id || !category_id) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
     const productCategoryDuo =
       await tables.Product_category.readProductCategory(
         product_id,
@@ -35,33 +40,6 @@ const readProductCategory = async (request, response, next) => {
   }
 };
 
-const editProductCategory = async (request, response, next) => {
-  try {
-    const { product_id, category_id } = request.params;
-
-    const productCategory = request.body;
-
-    if (!productCategory.product_id || !productCategory.category_id) {
-      response.status(400).json({ message: "Missing required fields" });
-      return;
-    }
-
-    const affectedRows = await tables.Product_category.updateProductCategory(
-      product_id,
-      category_id,
-      productCategory
-    );
-
-    if (!affectedRows) {
-      response.status(404).json({ message: "Product_category duo not found" });
-    } else {
-      response.status(200).json({ message: "Product_category duo updated" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
 const addProductCategory = async (request, response, next) => {
   try {
     const productCategoryDuo = request.body;
@@ -71,14 +49,14 @@ const addProductCategory = async (request, response, next) => {
       return;
     }
 
-    const insertId =
+    const affectedRows =
       await tables.Product_category.createProductCategory(productCategoryDuo);
 
-    if (!insertId) {
+    if (!affectedRows) {
       response.status(404).json({ message: "Product_category duo not found" });
     } else {
       response.status(201).json({
-        insertId,
+        affectedRows,
         message: "Product_category duo added",
       });
     }
@@ -90,6 +68,11 @@ const addProductCategory = async (request, response, next) => {
 const destroyProductCategory = async (request, response, next) => {
   try {
     const { product_id, category_id } = request.params;
+
+    if (!product_id || !category_id) {
+      response.status(400).json({ message: "Missing required fields" });
+      return;
+    }
 
     const affectedRows = await tables.Product_category.deleteProductCategory(
       product_id,
@@ -109,7 +92,6 @@ const destroyProductCategory = async (request, response, next) => {
 module.exports = {
   browseProductCategory,
   readProductCategory,
-  editProductCategory,
   addProductCategory,
   destroyProductCategory,
 };

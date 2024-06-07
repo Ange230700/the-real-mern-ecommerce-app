@@ -50,6 +50,8 @@ class ProductOrderSeeder extends AbstractSeeder {
 
       this.insert(fakeProductOrder);
     }
+
+    await Promise.all(this.promises);
   }
 }
 

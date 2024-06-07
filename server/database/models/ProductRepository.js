@@ -13,7 +13,7 @@ class ProductRepository extends AbstractRepository {
 
   async readAllProductsByCategory(category_id) {
     const [productsByCategory] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.category_id = ?`,
+      `SELECT ${this.table}.title, ${this.table}.price, ${this.table}.image_url, ${this.table}.product_adjective, ${this.table}.product_material, ${this.table}.product_description, Category.name, Category.image, Product_category.product_id, Product_category.category_id FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id JOIN Category ON product_category.category_id = Category.id WHERE Category.id = ?`,
       [category_id]
     );
 
@@ -31,7 +31,7 @@ class ProductRepository extends AbstractRepository {
 
   async readProductByCategory(product_id, category_id) {
     const [productsByCategory] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id WHERE product_category.product_id = ? AND product_category.category_id = ?`,
+      `SELECT ${this.table}.title, ${this.table}.price, ${this.table}.image_url, ${this.table}.product_adjective, ${this.table}.product_material, ${this.table}.product_description, Category.name, Category.image, Product_category.product_id, Product_category.category_id FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.product_id JOIN Category ON product_category.category_id = Category.id WHERE product_category.product_id = ? AND product_category.category_id = ?`,
       [product_id, category_id]
     );
 
@@ -39,7 +39,7 @@ class ProductRepository extends AbstractRepository {
   }
 
   async updateProduct(
-    id,
+    product_id,
     {
       title,
       price,
@@ -50,7 +50,7 @@ class ProductRepository extends AbstractRepository {
     }
   ) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET title = ?, price = ?, image_url = ?, product_adjective = ?, product_material = ?, product_description = ? WHERE id = ?`,
+      `UPDATE ${this.table} SET title = COALESCE(?, title), price = COALESCE(?, price), image_url = COALESCE(?, image_url), product_adjective = COALESCE(?, product_adjective), product_material = COALESCE(?, product_material), product_description = COALESCE(?, product_description) WHERE id = ?`,
       [
         title,
         price,
@@ -58,7 +58,7 @@ class ProductRepository extends AbstractRepository {
         product_adjective,
         product_material,
         product_description,
-        id,
+        product_id,
       ]
     );
 
@@ -88,10 +88,10 @@ class ProductRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async deleteProduct(id) {
+  async deleteProduct(product_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      [product_id]
     );
 
     return result.affectedRows;

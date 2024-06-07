@@ -17,9 +17,15 @@ const browsePopularProducts = async (request, response, next) => {
 
 const readPopularProduct = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { popular_product_id } = request.params;
 
-    const popular_product = await tables.Popular_product.readPopularProduct(id);
+    if (!popular_product_id) {
+      response.status(400).json({ message: "Missing popular product ID" });
+      return;
+    }
+
+    const popular_product =
+      await tables.Popular_product.readPopularProduct(popular_product_id);
 
     if (!popular_product) {
       response.status(404).json({ message: "Popular product not found" });
@@ -33,22 +39,18 @@ const readPopularProduct = async (request, response, next) => {
 
 const editPopularProduct = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { popular_product_id } = request.params;
 
-    const popularProduct = request.body;
-
-    if (
-      !popularProduct.title ||
-      !popularProduct.price ||
-      !popularProduct.image
-    ) {
-      response.status(400).json({ message: "Missing required fields" });
+    if (!popular_product_id) {
+      response.status(400).json({ message: "Missing popular product ID" });
       return;
     }
 
+    const popular_product = request.body;
+
     const affectedRows = await tables.Popular_product.updatePopularProduct(
-      id,
-      popularProduct
+      popular_product_id,
+      popular_product
     );
 
     if (!affectedRows) {
@@ -63,19 +65,19 @@ const editPopularProduct = async (request, response, next) => {
 
 const addPopularProduct = async (request, response, next) => {
   try {
-    const popularProduct = request.body;
+    const popular_product = request.body;
 
     if (
-      !popularProduct.title ||
-      !popularProduct.price ||
-      !popularProduct.image
+      !popular_product.title ||
+      !popular_product.price ||
+      !popular_product.image
     ) {
       response.status(400).json({ message: "Missing required fields" });
       return;
     }
 
     const insertId =
-      await tables.Popular_product.createPopularProduct(popularProduct);
+      await tables.Popular_product.createPopularProduct(popular_product);
 
     if (!insertId) {
       response.status(404).json({ message: "Popular product not found" });
@@ -92,9 +94,15 @@ const addPopularProduct = async (request, response, next) => {
 
 const destroyPopularProduct = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { popular_product_id } = request.params;
 
-    const affectedRows = await tables.Popular_product.deletePopularProduct(id);
+    if (!popular_product_id) {
+      response.status(400).json({ message: "Missing popular product ID" });
+      return;
+    }
+
+    const affectedRows =
+      await tables.Popular_product.deletePopularProduct(popular_product_id);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Popular product not found" });

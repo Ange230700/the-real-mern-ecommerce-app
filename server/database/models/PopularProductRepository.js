@@ -13,19 +13,19 @@ class PopularProductRepository extends AbstractRepository {
     return popular_products;
   }
 
-  async readPopularProduct(id) {
+  async readPopularProduct(popular_product_id) {
     const [popular_products] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
-      [id]
+      [popular_product_id]
     );
 
     return popular_products[0];
   }
 
-  async updatePopularProduct(id, { title, price, image }) {
+  async updatePopularProduct(popular_product_id, { title, price, image }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET title = ?, price = ?, image = ? WHERE id = ?`,
-      [title, price, image, id]
+      `UPDATE ${this.table} SET title = COALESCE(?, title), price = COALESCE(?, price), image = COALESCE(?, image) WHERE id = ?`,
+      [title, price, image, popular_product_id]
     );
 
     return result.affectedRows;
@@ -33,17 +33,17 @@ class PopularProductRepository extends AbstractRepository {
 
   async createPopularProduct({ title, price, image }) {
     const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (product_id) VALUES (?)`,
+      `INSERT INTO ${this.table} (title, price, image) VALUES (?, ?, ?)`,
       [title, price, image]
     );
 
     return result.insertId;
   }
 
-  async deletePopularProduct(id) {
+  async deletePopularProduct(popular_product_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      [popular_product_id]
     );
 
     return result.affectedRows;

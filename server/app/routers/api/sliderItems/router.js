@@ -21,15 +21,19 @@ const {
 router.get("/", browseSliderItems);
 
 // Route to get a specific sliderItem by ID
-router.get("/slider_item/:id", readSliderItem);
+router.get("/slider_item/:slider_item_id", readSliderItem);
 
 // Route to add a new sliderItem
 router.post("/slider_item", verifyTokenAndAdmin, addSliderItem);
 
 // Route to edit a specific sliderItem by ID
-router.put("/slider_item/:id", verifyTokenAndAdmin, editSliderItem);
+router.put("/slider_item/:slider_item_id", verifyTokenAndAdmin, editSliderItem);
 
 // Route to delete a specific sliderItem by ID
-router.delete("/slider_item/:id", verifyTokenAndAdmin, destroySliderItem);
+router.delete(
+  "/slider_item/:slider_item_id",
+  verifyTokenAndAdmin,
+  destroySliderItem
+);
 
 module.exports = router;

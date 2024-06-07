@@ -29,7 +29,10 @@ const register = async (request, response) => {
     if (!insertId) {
       response.status(400).json({ message: "User registration failed." });
     } else {
-      response.status(201).json({ message: "User registered successfully." });
+      response.status(201).json({
+        insertId,
+        message: "User registered successfully.",
+      });
     }
   } catch (error) {
     response.status(500).json({ error: error.message });

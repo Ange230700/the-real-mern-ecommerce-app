@@ -23,14 +23,18 @@ class CartRepository extends AbstractRepository {
     return carts[0];
   }
 
-  // async updateCart(cart_id, userId, { user_id, status }) {
-  //   const [result] = await this.database.query(
-  //     `UPDATE ${this.table} SET user_id = COALESCE(?, user_id), status = COALESCE(?, status) WHERE id = ? AND user_id = ?`,
-  //     [user_id, status, cart_id, userId]
-  //   );
+  async updateCart(cart_id, userId, { status }) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
 
-  //   return result.affectedRows;
-  // }
+    const [result] = await this.database.query(
+      `UPDATE ${this.table} SET status = COALESCE(?, status) WHERE id = ? AND user_id = ?`,
+      [status, cart_id, userId]
+    );
+
+    return result.affectedRows;
+  }
 
   async createCart(userId, { user_id, status }) {
     if (!userId) {

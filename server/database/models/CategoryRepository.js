@@ -15,7 +15,7 @@ class ProductRepository extends AbstractRepository {
 
   async readAllCategoriesByProduct(product_id) {
     const [categoriesByProduct] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.product_id = ?`,
+      `SELECT Product.title, Product.price, Product.image_url, Product.product_adjective, Product.product_material, Product.product_description, ${this.table}.name, ${this.table}.image, Product_category.product_id, Product_category.category_id FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id JOIN Product ON Product.id = product_category.product_id WHERE Product.id = ?`,
       [product_id]
     );
 
@@ -33,17 +33,17 @@ class ProductRepository extends AbstractRepository {
 
   async readCategoryByProduct(category_id, product_id) {
     const [categoriesByProduct] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id WHERE product_category.category_id = ? AND product_category.product_id = ?`,
+      `SELECT Product.title, Product.price, Product.image_url, Product.product_adjective, Product.product_material, Product.product_description, ${this.table}.name, ${this.table}.image, Product_category.product_id, Product_category.category_id FROM ${this.table} JOIN product_category ON ${this.table}.id = product_category.category_id JOIN Product ON Product.id = product_category.product_id WHERE product_category.category_id = ? AND product_category.product_id = ?`,
       [category_id, product_id]
     );
 
     return categoriesByProduct[0];
   }
 
-  async updateCategory(id, { name, image }) {
+  async updateCategory(category_id, { name, image }) {
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET name = ?, image = ? WHERE id = ?`,
-      [name, image, id]
+      `UPDATE ${this.table} SET name = COALESCE(?, name), image = COALESCE(?, image) WHERE id = ?`,
+      [name, image, category_id]
     );
 
     return result.affectedRows;
@@ -58,10 +58,10 @@ class ProductRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async deleteCategory(id) {
+  async deleteCategory(category_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
-      [id]
+      [category_id]
     );
 
     return result.affectedRows;

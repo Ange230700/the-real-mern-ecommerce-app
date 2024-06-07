@@ -20,6 +20,11 @@ const readUser = async (request, response, next) => {
   try {
     const { user_id } = request.params;
 
+    if (!user_id) {
+      response.status(400).json({ message: "User ID is required" });
+      return;
+    }
+
     const user = await tables.User.readUser(user_id);
 
     const { password: userPassword, ...userWithoutPassword } = user;
@@ -27,7 +32,6 @@ const readUser = async (request, response, next) => {
     if (!user) {
       response.status(404).json({ message: "User not found" });
     } else {
-      // response.json(...userWithoutPassword);
       response.json(userWithoutPassword);
     }
   } catch (error) {
@@ -40,6 +44,11 @@ const editUser = async (request, response, next) => {
     const { user_id } = request.params;
     const { password } = request.body;
 
+    if (!user_id) {
+      response.status(400).json({ message: "User ID is required" });
+      return;
+    }
+
     if (password) {
       const encryptedPassword = CryptoJS.AES.encrypt(
         password,
@@ -50,10 +59,6 @@ const editUser = async (request, response, next) => {
     }
 
     const user = request.body;
-
-    if (!user.username || !user.email || !user.password) {
-      response.status(400).json({ message: "All fields are required" });
-    }
 
     const affectedRows = await tables.User.updateUser(user_id, user);
 
@@ -70,6 +75,11 @@ const editUser = async (request, response, next) => {
 const destroyUser = async (request, response, next) => {
   try {
     const { user_id } = request.params;
+
+    if (!user_id) {
+      response.status(400).json({ message: "User ID is required" });
+      return;
+    }
 
     const affectedRows = await tables.User.deleteUser(user_id);
 

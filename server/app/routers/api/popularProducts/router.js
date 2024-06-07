@@ -21,17 +21,21 @@ const {
 router.get("/", browsePopularProducts);
 
 // Route to get a specific popularProduct by ID
-router.get("/popular_product/:id", readPopularProduct);
+router.get("/popular_product/:popular_product_id", readPopularProduct);
 
 // Route to add a new popularProduct
 router.post("/popular_product", verifyTokenAndAdmin, addPopularProduct);
 
 // Route to edit a specific popularProduct by ID
-router.put("/popular_product/:id", verifyTokenAndAdmin, editPopularProduct);
+router.put(
+  "/popular_product/:popular_product_id",
+  verifyTokenAndAdmin,
+  editPopularProduct
+);
 
 // Route to delete a specific popularProduct by ID
 router.delete(
-  "/popular_product/:id",
+  "/popular_product/:popular_product_id",
   verifyTokenAndAdmin,
   destroyPopularProduct
 );

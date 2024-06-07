@@ -12,7 +12,6 @@ const { verifyTokenAndAdmin } = require("../../../middlewares/authMiddleware");
 const {
   browseProductCategory,
   readProductCategory,
-  editProductCategory,
   addProductCategory,
   destroyProductCategory,
 } = require("../../../controllers/productCategoryActions");
@@ -25,13 +24,6 @@ router.get("/product/:product_id/category/:category_id", readProductCategory);
 
 // Route to add a new productCategory
 router.post("/", verifyTokenAndAdmin, addProductCategory);
-
-// Route to edit a specific productCategory by ID
-router.put(
-  "/product/:product_id/category/:category_id",
-  verifyTokenAndAdmin,
-  editProductCategory
-);
 
 // Route to delete a specific productCategory by ID
 router.delete(

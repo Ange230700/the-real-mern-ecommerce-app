@@ -16,9 +16,14 @@ const browseSliderItems = async (request, response, next) => {
 
 const readSliderItem = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { slider_item_id } = request.params;
 
-    const slider_item = await tables.Slider_item.readSliderItem(id);
+    if (!slider_item_id) {
+      response.status(400).json({ message: "Slider item ID is required" });
+      return;
+    }
+
+    const slider_item = await tables.Slider_item.readSliderItem(slider_item_id);
 
     if (!slider_item) {
       response.status(404).json({ message: "Slider item not found" });
@@ -32,17 +37,16 @@ const readSliderItem = async (request, response, next) => {
 
 const editSliderItem = async (request, response, next) => {
   try {
-    const { id } = request.params;
-
+    const { slider_item_id } = request.params;
     const slider_item = request.body;
 
-    if (!slider_item.title || !slider_item.image) {
-      response.status(400).json({ message: "Missing required fields" });
+    if (!slider_item_id) {
+      response.status(400).json({ message: "Slider item ID is required" });
       return;
     }
 
     const affectedRows = await tables.Slider_item.updateSliderItem(
-      id,
+      slider_item_id,
       slider_item
     );
 
@@ -72,6 +76,7 @@ const addSliderItem = async (request, response, next) => {
     } else {
       response.status(201).json({
         insertId,
+        message: "Slider item added",
       });
     }
   } catch (error) {
@@ -81,9 +86,15 @@ const addSliderItem = async (request, response, next) => {
 
 const destroySliderItem = async (request, response, next) => {
   try {
-    const { id } = request.params;
+    const { slider_item_id } = request.params;
 
-    const affectedRows = await tables.Slider_item.deleteSliderItem(id);
+    if (!slider_item_id) {
+      response.status(400).json({ message: "Slider item ID is required" });
+      return;
+    }
+
+    const affectedRows =
+      await tables.Slider_item.deleteSliderItem(slider_item_id);
 
     if (!affectedRows) {
       response.status(404).json({ message: "Slider item not found" });

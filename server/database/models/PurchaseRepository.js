@@ -7,26 +7,30 @@ class PurchaseRepository extends AbstractRepository {
 
   async readAllPurchases(user_id) {
     const [purchases] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
+      `SELECT ${this.table}.user_id, ${this.table}.total, User.username, User.is_admin FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ? AND ${this.table}.user_id = User.id`,
       [user_id]
     );
 
     return purchases;
   }
 
-  async readPurchase(id, user_id) {
+  async readPurchase(order_id, user_id) {
     const [purchases] = await this.database.query(
-      `SELECT * FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
-      [id, user_id]
+      `SELECT ${this.table}.user_id, ${this.table}.total, User.username, User.is_admin FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.id = ? AND ${this.table}.user_id = ?`,
+      [order_id, user_id]
     );
 
     return purchases[0];
   }
 
-  async updatePurchase(id, userId, { user_id, total }) {
+  async updatePurchase(order_id, userId, { user_id, total }) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
     const [result] = await this.database.query(
-      `UPDATE ${this.table} SET user_id = ?, total = ? WHERE id = ? AND user_id = ?`,
-      [user_id, total, id, userId]
+      `UPDATE ${this.table} SET total = COALESCE(?, total) WHERE id = ? AND user_id = ?`,
+      [user_id, total, order_id, userId]
     );
 
     return result.affectedRows;
@@ -37,6 +41,10 @@ class PurchaseRepository extends AbstractRepository {
       throw new Error("User ID is required");
     }
 
+    if (user_id !== Number(userId)) {
+      throw new Error("User ID is invalid");
+    }
+
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (user_id, total) VALUES (?, ?)`,
       [user_id, total]
@@ -45,10 +53,10 @@ class PurchaseRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async deletePurchase(id, user_id) {
+  async deletePurchase(order_id, user_id) {
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ? AND user_id = ?`,
-      [id, user_id]
+      [order_id, user_id]
     );
 
     return result.affectedRows;
