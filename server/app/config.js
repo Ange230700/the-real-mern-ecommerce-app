@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const express = require("express");
 const path = require("path");
-const stripe = require("./stripeConfig");
+const stripe = require("./config/stripeConfig");
 
 const app = express();
 
@@ -258,15 +258,15 @@ app.use(logErrors);
 
 /* ************************************************************************* */
 
-function checkEnv() {
-  if (!process.env.PRICE) {
-    console.warn(
-      "⚠️ The price ID is not defined. You won't be able to create a Checkout Session without a price ID."
-    );
-    process.exit(0);
-  }
-}
+// function checkEnv() {
+//   if (!process.env.PRICE) {
+//     console.warn(
+//       "⚠️ The price ID is not defined. You won't be able to create a Checkout Session without a price ID."
+//     );
+//     process.exit(0);
+//   }
+// }
 
-checkEnv();
+// checkEnv();
 
 module.exports = app;

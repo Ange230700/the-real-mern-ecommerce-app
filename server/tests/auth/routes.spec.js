@@ -1,4 +1,6 @@
-const { app, request, database, jwt } = require("../config");
+require("dotenv").config();
+const CryptoJS = require("crypto-js");
+const { app, request, database, jwt, tables } = require("../config");
 
 describe("Auth API", () => {
   afterAll(async () => {
@@ -13,10 +15,26 @@ describe("Auth API", () => {
         password: "password123",
       };
 
+      expect(process.env.APP_SECRET).toBeDefined();
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        user.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      const insertId = await tables.Auth.createUser({
+        username: user.username,
+        email: user.email,
+        password: encryptedPassword,
+      });
+
       const response = await request(app).post("/api/auth/register").send(user);
 
       expect(response.status).toBe(201);
-      expect(response.body.message).toBe("User registered successfully.");
+      expect(response.body).toEqual({
+        insertId,
+        message: "User registered successfully.",
+      });
     });
   });
 
