@@ -2,8 +2,8 @@ require("dotenv").config();
 
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const stripe = require("../app/stripeConfig");
 const app = require("../app/config");
 const database = require("../database/client");
 const tables = require("../database/tables");

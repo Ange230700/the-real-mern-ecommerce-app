@@ -1,18 +1,16 @@
+require("dotenv").config();
 // Load the express module to create a web application
 
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const cors = require("cors");
 const express = require("express");
 const path = require("path");
-const cors = require("cors");
+const stripe = require("./stripeConfig");
 
 const app = express();
 
 // Configure it
-
-/* ============================ STRIPE ===================================== */
-
-// Load the Stripe module and configure it with the secret key
-
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 /* ************************************************************************* */
 
@@ -64,6 +62,9 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
+app.use(morgan("dev"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   express.json({
     // We need the raw body to verify webhook signatures.
@@ -75,7 +76,7 @@ app.use(
     },
   })
 );
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 // app.use(express.text());
 // app.use(express.raw());
 
@@ -217,6 +218,22 @@ app.post("/webhook", async (req, res) => {
   }
 
   return res.sendStatus(200);
+});
+
+app.post("/api/checkout/payment", async (req, res) => {
+  const { tokenId, amount } = req.body;
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      payment_method: tokenId,
+      confirm: true,
+    });
+    res.status(200).send({ success: paymentIntent });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });
 
 /* ************************************************************************* */
