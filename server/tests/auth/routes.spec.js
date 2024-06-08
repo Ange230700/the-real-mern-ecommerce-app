@@ -1,4 +1,4 @@
-const { app, request, database } = require("../config");
+const { app, request, database, jwt } = require("../config");
 
 describe("Auth API", () => {
   afterAll(async () => {
@@ -31,6 +31,18 @@ describe("Auth API", () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("token");
+
+      const { token } = response.body;
+
+      jwt.verify.mockImplementation((token_arg, secret, callback) =>
+        callback(null, { email: user.email })
+      );
+
+      const authResponse = await request(app)
+        .get("/api/auth")
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(authResponse.status).toBe(200);
     });
 
     it("should return 404 for non-existent user", async () => {

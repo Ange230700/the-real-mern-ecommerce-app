@@ -1,4 +1,5 @@
-const { app, request, database } = require("../config");
+const { app, request, database, jwt } = require("../config");
+const generateToken = require("../utils/generateToken");
 
 describe("Users API", () => {
   afterAll(async () => {
@@ -8,10 +9,18 @@ describe("Users API", () => {
   describe("GET /api/users", () => {
     it("should fetch all users", async () => {
       const rows = [{ userId: 1, username: "john_doe", is_admin: false }];
-
       jest.spyOn(database, "query").mockResolvedValueOnce([rows]);
 
-      const response = await request(app).get("/api/users");
+      const user = { userId: 1, username: "john_doe", is_admin: true };
+      const token = generateToken(user);
+
+      jwt.verify.mockImplementation((token_arg, secret, callback) =>
+        callback(null, user)
+      );
+
+      const response = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(rows);
@@ -21,10 +30,17 @@ describe("Users API", () => {
   describe("GET /api/users/user/:user_id", () => {
     it("should fetch a single user by ID", async () => {
       const user = { userId: 1, username: "john_doe", is_admin: false };
+      const token = generateToken(user);
 
       jest.spyOn(database, "query").mockResolvedValueOnce([[user]]);
 
-      const response = await request(app).get("/api/users/user/1");
+      jwt.verify.mockImplementation((token_arg, secret, callback) =>
+        callback(null, user)
+      );
+
+      const response = await request(app)
+        .get("/api/users/user/1")
+        .set("Authorization", `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(user);

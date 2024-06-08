@@ -8,6 +8,12 @@ const app = express();
 
 // Configure it
 
+/* ============================ STRIPE ===================================== */
+
+// Load the Stripe module and configure it with the secret key
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 /* ************************************************************************* */
 
 // CORS Handling: Why is the current code commented out and do I need to define specific allowed origins for my project?
@@ -58,8 +64,18 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
-app.use(express.json());
-// app.use(express.urlencoded());
+app.use(
+  express.json({
+    // We need the raw body to verify webhook signatures.
+    // Let's compute it only when hitting the Stripe webhook endpoint.
+    verify(req, res, buf) {
+      if (req.originalUrl.startsWith("/api/webhooks")) {
+        req.rawBody = buf.toString();
+      }
+    },
+  })
+);
+app.use(express.urlencoded({ extended: true }));
 // app.use(express.text());
 // app.use(express.raw());
 
@@ -131,6 +147,78 @@ app.get("*", (_, res) => {
   res.sendFile(path.join(reactBuildPath, "/index.html"));
 });
 
+// Fetch the Checkout Session to display the JSON result on the success page
+
+app.get("/checkout-session", async (req, res) => {
+  const { sessionId } = req.query;
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  res.send(session);
+});
+
+app.post("/create-checkout-session", async (req, res) => {
+  const domainURL = process.env.DOMAIN;
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    line_items: [
+      {
+        price: process.env.PRICE,
+        quantity: 1,
+      },
+    ],
+    // ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+    success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${domainURL}/canceled.html`,
+    // automatic_tax: { enabled: true },
+  });
+
+  return res.redirect(303, session.url);
+});
+
+// Webhook handler for asynchronous events.
+app.post("/webhook", async (req, res) => {
+  let event;
+
+  // Check if webhook signing is configured.
+  if (process.env.STRIPE_WEBHOOK_SECRET) {
+    // Retrieve the event by verifying the signature using the raw body and secret.
+    const signature = req.headers["stripe-signature"];
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.rawBody,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error(`⚠️ Webhook signature verification failed.`);
+      return res.sendStatus(400);
+    }
+  } else {
+    // Webhook signing is recommended, but if the secret is not defined in `.env`, retrieve the event directly from the request body.
+    event = req.body;
+  }
+
+  if (event.type === "checkout.session.completed") {
+    console.info(`🔔  Payment received!`);
+
+    // Note: If you need access to the line items, for instance to
+    // automate fulfillment based on the the ID of the Price, you'll
+    // need to refetch the Checkout Session here, and expand the line items:
+    //
+    // const session = await stripe.checkout.sessions.retrieve(
+    //   'cs_test_KdjLtDPfAjT1gq374DMZ3rHmZ9OoSlGRhyz8yTypH76KpN4JXkQpD2G0',
+    //   {
+    //     expand: ['line_items'],
+    //   }
+    // );
+    //
+    // const lineItems = session.line_items;
+  }
+
+  return res.sendStatus(200);
+});
+
 /* ************************************************************************* */
 
 // Middleware for Error Logging (Uncomment to enable)
@@ -152,5 +240,16 @@ app.use(logErrors);
 */
 
 /* ************************************************************************* */
+
+function checkEnv() {
+  if (!process.env.PRICE) {
+    console.warn(
+      "⚠️ The price ID is not defined. You won't be able to create a Checkout Session without a price ID."
+    );
+    process.exit(0);
+  }
+}
+
+checkEnv();
 
 module.exports = app;
