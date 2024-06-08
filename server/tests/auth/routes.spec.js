@@ -1,6 +1,7 @@
 require("dotenv").config();
 const CryptoJS = require("crypto-js");
-const { app, request, database, jwt, tables } = require("../config");
+const database = require("../../database/client");
+const { app, request, jwt, tables } = require("../config");
 
 describe("Auth API", () => {
   afterAll(async () => {

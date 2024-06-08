@@ -5,19 +5,10 @@ const jwt = require("jsonwebtoken");
 
 const CryptoJS = require("../app/config/cryptoConfig");
 const stripe = require("../app/config/stripeConfig");
+
 const app = require("../app/config");
 const database = require("../database/client");
 const tables = require("../database/tables");
-
-jest.mock("jsonwebtoken", () => ({
-  verify: jest.fn(),
-}));
-
-jest.mock("stripe", () => () => ({
-  paymentIntents: {
-    create: jest.fn(),
-  },
-}));
 
 afterEach(() => {
   jest.restoreAllMocks();
