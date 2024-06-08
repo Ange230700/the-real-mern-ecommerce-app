@@ -12,6 +12,12 @@ jest.mock("jsonwebtoken", () => ({
   verify: jest.fn(),
 }));
 
+jest.mock("stripe", () => () => ({
+  paymentIntents: {
+    create: jest.fn(),
+  },
+}));
+
 afterEach(() => {
   jest.restoreAllMocks();
 });

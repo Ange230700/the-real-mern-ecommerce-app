@@ -31,9 +31,7 @@ describe("Payment API", () => {
 
       jest
         .spyOn(stripe.paymentIntents, "create")
-        .mockImplementationOnce((_, callback) => {
-          callback(stripeError, null);
-        });
+        .mockRejectedValueOnce(stripeError);
 
       const response = await request(app)
         .post("/api/checkout/payment")

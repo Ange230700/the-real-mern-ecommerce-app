@@ -13,7 +13,6 @@ describe("Users API", () => {
 
       const user = { userId: 1, username: "john_doe", is_admin: true };
       const token = generateToken(user);
-
       jwt.verify.mockImplementation((token_arg, secret, callback) =>
         callback(null, user)
       );
@@ -31,9 +30,7 @@ describe("Users API", () => {
     it("should fetch a single user by ID", async () => {
       const user = { userId: 1, username: "john_doe", is_admin: false };
       const token = generateToken(user);
-
       jest.spyOn(database, "query").mockResolvedValueOnce([[user]]);
-
       jwt.verify.mockImplementation((token_arg, secret, callback) =>
         callback(null, user)
       );
@@ -60,11 +57,8 @@ describe("Users API", () => {
     it("should update an existing user", async () => {
       const user = { username: "john_doe_updated" };
       const result = [{ affectedRows: 1 }];
-
       jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
       const response = await request(app).put("/api/users/user/1").send(user);
-
       expect(response.status).toBe(200);
       expect(response.body.message).toEqual("User updated successfully");
     });
@@ -73,11 +67,8 @@ describe("Users API", () => {
   describe("DELETE /api/users/user/:user_id", () => {
     it("should delete a user", async () => {
       const result = [{ affectedRows: 1 }];
-
       jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
       const response = await request(app).delete("/api/users/user/1");
-
       expect(response.status).toBe(200);
       expect(response.body.message).toEqual("User deleted successfully");
     });
