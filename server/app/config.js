@@ -1,12 +1,9 @@
 require("dotenv").config();
 // Load the express module to create a web application
 
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
 const cors = require("cors");
 const express = require("express");
 const path = require("path");
-const stripe = require("./config/stripeConfig");
 
 const app = express();
 
@@ -62,20 +59,7 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
-app.use(morgan("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  express.json({
-    // We need the raw body to verify webhook signatures.
-    // Let's compute it only when hitting the Stripe webhook endpoint.
-    verify(req, res, buf) {
-      if (req.originalUrl.startsWith("/api/webhooks")) {
-        req.rawBody = buf.toString();
-      }
-    },
-  })
-);
+app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.text());
 // app.use(express.raw());
@@ -93,8 +77,9 @@ app.use(
 
 // Then, require the module and use it as middleware in your Express application:
 
-// const cookieParser = require("cookie-parser");
-// app.use(cookieParser());
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser());
 
 // Once `cookie-parser` is set up, you can read and set cookies in your routes.
 // For example, to set a cookie named "username" with the value "john":
@@ -148,100 +133,13 @@ app.get("*", (_, res) => {
   res.sendFile(path.join(reactBuildPath, "/index.html"));
 });
 
-// Fetch the Checkout Session to display the JSON result on the success page
-
-app.get("/checkout-session", async (req, res) => {
-  const { sessionId } = req.query;
-  const session = await stripe.checkout.sessions.retrieve(sessionId);
-  res.send(session);
-});
-
-app.post("/create-checkout-session", async (req, res) => {
-  const domainURL = process.env.DOMAIN;
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    line_items: [
-      {
-        price: process.env.PRICE,
-        quantity: 1,
-      },
-    ],
-    // ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-    success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${domainURL}/canceled.html`,
-    // automatic_tax: { enabled: true },
-  });
-
-  return res.redirect(303, session.url);
-});
-
-// Webhook handler for asynchronous events.
-app.post("/webhook", async (req, res) => {
-  let event;
-
-  // Check if webhook signing is configured.
-  if (process.env.STRIPE_WEBHOOK_SECRET) {
-    // Retrieve the event by verifying the signature using the raw body and secret.
-    const signature = req.headers["stripe-signature"];
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.rawBody,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (err) {
-      console.error(`⚠️ Webhook signature verification failed.`);
-      return res.sendStatus(400);
-    }
-  } else {
-    // Webhook signing is recommended, but if the secret is not defined in `.env`, retrieve the event directly from the request body.
-    event = req.body;
-  }
-
-  if (event.type === "checkout.session.completed") {
-    console.info(`🔔  Payment received!`);
-
-    // Note: If you need access to the line items, for instance to
-    // automate fulfillment based on the the ID of the Price, you'll
-    // need to refetch the Checkout Session here, and expand the line items:
-    //
-    // const session = await stripe.checkout.sessions.retrieve(
-    //   'cs_test_KdjLtDPfAjT1gq374DMZ3rHmZ9OoSlGRhyz8yTypH76KpN4JXkQpD2G0',
-    //   {
-    //     expand: ['line_items'],
-    //   }
-    // );
-    //
-    // const lineItems = session.line_items;
-  }
-
-  return res.sendStatus(200);
-});
-
-app.post("/api/checkout/payment", async (req, res) => {
-  const { tokenId, amount } = req.body;
-
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: "usd",
-      payment_method: tokenId,
-      confirm: true,
-    });
-    res.status(200).send({ success: paymentIntent });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-});
-
 /* ************************************************************************* */
 
 // Middleware for Error Logging (Uncomment to enable)
 // Important: Error-handling middleware should be defined last, after other app.use() and routes calls.
 
 /*
+ */
 // Define a middleware function to log errors
 const logErrors = (err, req, res, next) => {
   // Log the error to the console for debugging purposes
@@ -254,19 +152,7 @@ const logErrors = (err, req, res, next) => {
 
 // Mount the logErrors middleware globally
 app.use(logErrors);
-*/
 
 /* ************************************************************************* */
-
-// function checkEnv() {
-//   if (!process.env.PRICE) {
-//     console.warn(
-//       "⚠️ The price ID is not defined. You won't be able to create a Checkout Session without a price ID."
-//     );
-//     process.exit(0);
-//   }
-// }
-
-// checkEnv();
 
 module.exports = app;

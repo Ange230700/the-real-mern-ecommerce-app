@@ -40,7 +40,7 @@ const migrate = async () => {
     await database.query(sql);
 
     // Close the database connection
-    database.end();
+    await database.end();
 
     console.info(`${DB_NAME} updated from '${path.normalize(schema)}' 🆙`);
   } catch (err) {

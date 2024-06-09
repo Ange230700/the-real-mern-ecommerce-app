@@ -1,7 +1,7 @@
 const CryptoJS = require("crypto-js");
-const jwt = require("jsonwebtoken");
 
 const tables = require("../../database/tables");
+const { duration, createToken } = require("../middlewares/authMiddleware");
 
 const register = async (request, response) => {
   try {
@@ -26,11 +26,20 @@ const register = async (request, response) => {
       is_admin,
     });
 
+    const token = createToken({ username, is_admin });
+
+    response.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: duration,
+    });
+
     if (!insertId) {
       response.status(400).json({ message: "User registration failed." });
     } else {
       response.status(201).json({
         insertId,
+        token,
         message: "User registered successfully.",
       });
     }
@@ -43,14 +52,14 @@ const login = async (request, response) => {
   try {
     const { email, password } = request.body;
 
+    if (!email || !password) {
+      return response.status(400).json({ error: "Invalid email or password" });
+    }
+
     const user = await tables.Auth.findUserByEmail(email);
 
     if (!user) {
       return response.status(404).json({ error: "User not found" });
-    }
-
-    if (!user.email || !user.password) {
-      return response.status(401).json({ error: "Invalid email or password" });
     }
 
     const decryptedPassword = CryptoJS.AES.decrypt(
@@ -66,9 +75,7 @@ const login = async (request, response) => {
 
     const { password: userPassword, ...userWithoutPassword } = user;
 
-    const token = jwt.sign(userWithoutPassword, process.env.APP_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = createToken(userWithoutPassword);
 
     return response.status(200).json({ ...userWithoutPassword, token });
   } catch (error) {

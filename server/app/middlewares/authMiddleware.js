@@ -1,19 +1,27 @@
 const jwt = require("jsonwebtoken");
 
+const duration = 3 * 24 * 60 * 60;
+const createToken = (user) =>
+  jwt.sign(user, process.env.APP_SECRET, { expiresIn: duration });
+
 const verifyToken = (request, response, next) => {
-  const authHeader = request.headers.token;
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
+  // const authHeader = request.headers.token;
+  const { token } = request.cookies;
+
+  if (token) {
+    // const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.APP_SECRET, (err, user) => {
       if (err) {
         response.status(403).json({ message: "Token is not valid!" });
+        next();
+      } else {
+        request.user = user;
+        next();
       }
-
-      request.user = user;
-      next();
     });
   } else {
     response.status(400).json({ message: "You are not authenticated!" });
+    next();
   }
 };
 
@@ -41,6 +49,7 @@ const verifyTokenAndAdmin = (request, response, next) => {
 };
 
 module.exports = {
+  createToken,
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
