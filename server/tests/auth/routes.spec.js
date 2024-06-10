@@ -1,4 +1,4 @@
-const { app, request } = require("../config");
+const { app, request, CryptoJS } = require("../config");
 const database = require("../../database/client");
 
 describe("Auth API", () => {
@@ -13,6 +13,15 @@ describe("Auth API", () => {
         email: "test.user@example.com",
         password: "password123",
       };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        user.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      user.password = encryptedPassword;
+
+      expect(user.password).toBe(encryptedPassword);
 
       const response = await request(app).post("/api/auth/register").send(user);
 
