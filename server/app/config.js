@@ -35,10 +35,11 @@ app.use(
   cors({
     origin: [
       process.env.CLIENT_URL, // keep this one, after checking the value in `server/.env`
-      "http://mysite.com",
-      "http://another-domain.com",
+      // "http://mysite.com",
+      // "http://another-domain.com",
       "http://192.168.0.25:3004",
       "http://192.168.0.28:3000",
+      // "http://localhost:3000",
       // "http://vps-80a85dd9.vps.ovh.net:5004",
     ],
   })

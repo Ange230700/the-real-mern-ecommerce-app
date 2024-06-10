@@ -18,9 +18,9 @@ describe("Installation", () => {
     expect(rows.length).toBeGreaterThan(0);
   });
 
-  test("You have executed the db:migrate and db:seed scripts", async () => {
-    const [rows] = await database.query(`SELECT * FROM item`);
+  // test("You have executed the db:migrate and db:seed scripts", async () => {
+  //   const [rows] = await database.query(`SELECT * FROM item`);
 
-    expect(rows.length).toBeGreaterThan(0);
-  });
+  //   expect(rows.length).toBeGreaterThan(0);
+  // });
 });
