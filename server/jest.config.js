@@ -122,14 +122,7 @@ const config = {
   runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [
-    "dotenv/config",
-    "<rootDir>/server/database/client.js",
-    "<rootDir>/server/database/schema.sql",
-    "<rootDir>/server/database/fixtures",
-    "<rootDir>/server/.env",
-    "<rootDir>/server/app/config.js",
-  ],
+  setupFiles: ["dotenv/config", "<rootDir>/server/jest.setup.js"],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [],
