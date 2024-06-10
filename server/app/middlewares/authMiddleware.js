@@ -7,6 +7,7 @@ const createToken = (user) =>
 const verifyToken = (request, response, next) => {
   // const authHeader = request.headers.token;
   const { token } = request.cookies;
+  console.info("token ==>", token);
 
   if (token) {
     // const token = authHeader.split(" ")[1];
