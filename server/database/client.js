@@ -3,13 +3,6 @@ require("dotenv").config({ path: "./server/.env" });
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
-// console.info("Environment Variables Loaded in Database Client:");
-// console.info("DB_HOST:", DB_HOST);
-// console.info("DB_PORT:", DB_PORT);
-// console.info("DB_USER:", DB_USER);
-// console.info("DB_PASSWORD:", DB_PASSWORD);
-// console.info("DB_NAME:", DB_NAME);
-
 const client = mysql.createPool({
   host: DB_HOST,
   port: DB_PORT,

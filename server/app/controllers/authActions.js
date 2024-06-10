@@ -44,6 +44,7 @@ const register = async (request, response) => {
       });
     }
   } catch (error) {
+    console.error("Registration error:", error); // Add this line to log the error
     response.status(500).json({ error: error.message });
   }
 };

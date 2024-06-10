@@ -15,8 +15,8 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-afterAll((done) => {
-  database.end().then(done);
+afterAll(async () => {
+  await database.end();
 });
 
 module.exports = { app, database, request, tables, jwt, stripe, CryptoJS };

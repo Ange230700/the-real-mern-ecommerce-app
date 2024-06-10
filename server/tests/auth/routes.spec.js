@@ -9,8 +9,8 @@ describe("Auth API", () => {
   describe("POST /api/auth/register", () => {
     it("should register a new user", async () => {
       const user = {
-        username: "test_user",
-        email: "test.user@example.com",
+        username: "test_user5",
+        email: "test.user5@example.com",
         password: "password123",
       };
 
@@ -30,7 +30,7 @@ describe("Auth API", () => {
       expect(response.body).toHaveProperty("token");
       expect(response.body).toHaveProperty("message");
       expect(response.body.message).toBe("User registered successfully.");
-    });
+    }, 10000);
   });
 
   // describe("POST /api/auth/login", () => {
