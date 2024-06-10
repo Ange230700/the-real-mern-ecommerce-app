@@ -5,41 +5,48 @@ describe("AuthRepository", () => {
     await database.end();
   });
 
-  test("createUser => insert into", async () => {
+  test("createUser", async () => {
     const user = {
-      username: "testuser",
-      email: "testuser@example.com",
-      password: "encryptedpassword",
+      username: "test_user13",
+      email: "test.user13@example.com",
+      password: "password13",
     };
-    const result = [{ insertId: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
 
     const insertId = await tables.Auth.createUser(user);
 
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO User (username, email, password) VALUES (?, ?, ?)",
-      [user.username, user.email, user.password]
-    );
-    expect(insertId).toBe(result[0].insertId);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
   });
 
-  test("findUserByEmail => select with email", async () => {
+  test("findUserByEmail", async () => {
     const user = {
-      userId: 1,
-      username: "testuser",
-      email: "testuser@example.com",
-      password: "encryptedpassword",
+      username: "test_user14",
+      email: "test.user14@example.com",
+      password: "password14",
     };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([[user]]);
+    const insertId = await tables.Auth.createUser(user);
 
-    const foundUser = await tables.Auth.findUserByEmail("testuser@example.com");
+    const foundUser = await tables.Auth.findUserByEmail(user.email);
 
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT id AS userId, username, email, password, is_admin FROM User WHERE email = ?",
-      ["testuser@example.com"]
-    );
-    expect(foundUser).toEqual(user);
+    expect(foundUser).toBeTruthy();
+
+    expect(foundUser).toHaveProperty("userId");
+    expect(foundUser).toHaveProperty("username");
+    expect(foundUser).toHaveProperty("email");
+    expect(foundUser).toHaveProperty("password");
+    expect(foundUser).toHaveProperty("is_admin");
+
+    expect(foundUser.userId).toBe(insertId);
+    expect(foundUser.username).toBe(user.username);
+    expect(foundUser.email).toBe(user.email);
+    expect(foundUser.password).toBe(user.password);
+    expect(foundUser.is_admin).toBe(0);
+
+    expect(typeof foundUser.userId).toBe("number");
+    expect(typeof foundUser.username).toBe("string");
+    expect(typeof foundUser.email).toBe("string");
+    expect(typeof foundUser.password).toBe("string");
+    expect(typeof foundUser.is_admin).toBe("number");
   });
 });
