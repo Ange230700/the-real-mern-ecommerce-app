@@ -68,16 +68,16 @@ describe("Auth API", () => {
         {},
       ];
 
-      usersWithMissingFields.forEach(async (user) => {
-        if (Object.keys(user).length) {
-          if (user.password) {
+      usersWithMissingFields.forEach(async (userWithMissingFields) => {
+        if (Object.keys(userWithMissingFields).length) {
+          if (userWithMissingFields.password) {
             const encryptedPassword = CryptoJS.AES.encrypt(
-              user.password,
+              userWithMissingFields.password,
               process.env.APP_SECRET
             ).toString();
 
             const userWithEncryptedPassword = {
-              ...user,
+              ...userWithMissingFields,
               password: encryptedPassword,
             };
 
@@ -86,7 +86,7 @@ describe("Auth API", () => {
 
           const response = await request(app)
             .post("/api/auth/register")
-            .send(user);
+            .send(userWithMissingFields);
 
           expect(response.status).toBe(400);
           expect(response.body).toHaveProperty("error");
@@ -96,7 +96,7 @@ describe("Auth API", () => {
         } else {
           const response = await request(app)
             .post("/api/auth/register")
-            .send(user);
+            .send(userWithMissingFields);
 
           expect(response.status).toBe(400);
           expect(response.body).toHaveProperty("error");
@@ -111,55 +111,106 @@ describe("Auth API", () => {
   describe("POST /api/auth/login", () => {
     it("should log in a user", async () => {
       const user = {
-        email: "test.user1@example.com",
-        password: CryptoJS.AES.encrypt(
-          "password1",
-          process.env.APP_SECRET
-        ).toString(),
+        username: "test_user8",
+        email: "test.user8@example.com",
+        password: "password8",
       };
 
-      const decryptedPassword = CryptoJS.AES.decrypt(
+      const encryptedPassword = CryptoJS.AES.encrypt(
         user.password,
         process.env.APP_SECRET
-      );
+      ).toString();
 
-      const OriginalPassword = decryptedPassword.toString(CryptoJS.enc.Utf8);
+      user.password = encryptedPassword;
+
+      expect(user.password).toBe(encryptedPassword);
+
+      await request(app).post("/api/auth/register").send(user);
+
+      const userCredentials = {
+        email: user.email,
+        password: user.password,
+      };
+
+      const response = await request(app)
+        .post("/api/auth/login")
+        .send(userCredentials);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("token");
+    });
+
+    it("should return an error for invalid entries", async () => {
+      const sampleUsersToRegister = [
+        {
+          username: "test_user9",
+          email: "test.user9@example.com",
+          password: "password9",
+        },
+        {
+          username: "test_user10",
+          email: "test.user10@example.com",
+          password: "password10",
+        },
+        {
+          username: "test_user11",
+          email: "test.user11@example.com",
+          password: "password11",
+        },
+      ];
+
+      sampleUsersToRegister.forEach(async (sampleUserToRegister) => {
+        if (Object.keys(sampleUserToRegister).length) {
+          const encryptedPassword = CryptoJS.AES.encrypt(
+            sampleUserToRegister.password,
+            process.env.APP_SECRET
+          ).toString();
+
+          const userWithEncryptedPassword = {
+            ...sampleUserToRegister,
+            password: encryptedPassword,
+          };
+
+          await request(app)
+            .post("/api/auth/register")
+            .send(userWithEncryptedPassword);
+        }
+      });
+
+      const usersWithInvalidEmailOrPassword = [
+        {
+          email: "test.user9@example.com",
+        },
+        {
+          password: "password10",
+        },
+        {},
+      ];
+
+      usersWithInvalidEmailOrPassword.forEach(
+        async (userWithInvalidEmailOrPassword) => {
+          const response = await request(app)
+            .post("/api/auth/login")
+            .send(userWithInvalidEmailOrPassword);
+
+          expect(response.status).toBe(400);
+          expect(response.body).toHaveProperty("error");
+          expect(response.body.error).toBe("Invalid email or password");
+        }
+      );
+    });
+
+    it("should return an error for not found user", async () => {
+      const user = {
+        email: "test.user12@example.com",
+        password: "password12",
+      };
 
       const response = await request(app).post("/api/auth/login").send(user);
 
-      expect(OriginalPassword).toBe("password1");
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("token");
-      expect(response.body.message).toBe("User logged in successfully");
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty("error");
+      expect(response.body.error).toBe("User not found");
     });
-
-    // it("should return an error for not found user", async () => {
-    //   const usersWithInvalidEmailOrPassword = [
-    //     {
-    //       email: "test.user2@example.com",
-    //     },
-    //     {
-    //       password: "password3",
-    //     },
-    //   ];
-
-    //   usersWithInvalidEmailOrPassword.forEach(async (user) => {
-    //     const response = await request(app).post("/api/auth/login").send(user);
-
-    //     expect(response.status).toBe(400);
-    //     expect(response.body).toHaveProperty("error");
-    //     expect(response.body.error).toBe("Invalid email or password");
-    //   });
-    // });
-
-    // it("should return an error for not found user", async () => {
-    //   const user = null;
-
-    //   const response = await request(app).post("/api/auth/login").send(user);
-
-    //   expect(response.status).toBe(404);
-    //   expect(response.body).toHaveProperty("error");
-    //   expect(response.body.error).toBe("User not found");
-    // });
   });
 });
