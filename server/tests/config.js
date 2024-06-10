@@ -16,7 +16,11 @@ afterEach(() => {
 });
 
 afterAll(async () => {
-  await database.end();
+  try {
+    await database.end();
+  } catch (err) {
+    console.error("Error closing database connection:", err.message);
+  }
 });
 
 module.exports = { app, database, request, tables, jwt, stripe, CryptoJS };

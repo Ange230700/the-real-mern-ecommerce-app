@@ -3,14 +3,18 @@ const database = require("../../database/client");
 
 describe("Auth API", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
   describe("POST /api/auth/register", () => {
     it("should register a new user", async () => {
       const user = {
-        username: "test_user7",
-        email: "test.user7@example.com",
+        username: "test_user12",
+        email: "test.user12@example.com",
         password: "password123",
       };
 
