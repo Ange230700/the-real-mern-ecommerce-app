@@ -31,12 +31,12 @@ client.checkConnection = () => {
 client.databaseName = DB_NAME;
 
 client.on("connection", (connection) => {
-  console.info("Database connection established");
+  console.warn("Database connection established");
   connection.on("error", (err) => {
     console.error("Database connection error:", err.message);
   });
   connection.on("end", () => {
-    console.info("Database connection ended");
+    console.warn("Database connection ended");
   });
 });
 

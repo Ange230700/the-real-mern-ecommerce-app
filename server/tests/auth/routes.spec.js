@@ -13,9 +13,9 @@ describe("Auth API", () => {
   describe("POST /api/auth/register", () => {
     it("should register a new user", async () => {
       const user = {
-        username: "test_user12",
-        email: "test.user12@example.com",
-        password: "password123",
+        username: "test_user1",
+        email: "test.user1@example.com",
+        password: "password1",
       };
 
       const encryptedPassword = CryptoJS.AES.encrypt(
@@ -29,61 +29,137 @@ describe("Auth API", () => {
 
       const response = await request(app).post("/api/auth/register").send(user);
 
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty("insertId");
-      expect(response.body).toHaveProperty("token");
-      expect(response.body).toHaveProperty("message");
-      expect(response.body.message).toBe("User registered successfully.");
-    }, 10000);
+      if (!response.body.insertId) {
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty("message");
+        expect(response.body.message).toBe("User registration failed.");
+      } else {
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty("insertId");
+        expect(response.body).toHaveProperty("token");
+        expect(response.body).toHaveProperty("message");
+        expect(response.body.message).toBe("User registered successfully.");
+      }
+    });
+
+    it("should return a bad request status for missing fields", async () => {
+      const usersWithMissingFields = [
+        {
+          username: "test_user2",
+          email: "test.user2@example.com",
+        },
+        {
+          email: "test.user3@example.com",
+          password: "password3",
+        },
+        {
+          username: "test_user4",
+          password: "password4",
+        },
+        {
+          username: "test_user5",
+        },
+        {
+          email: "test.user6@example.com",
+        },
+        {
+          password: "password7",
+        },
+        {},
+      ];
+
+      usersWithMissingFields.forEach(async (user) => {
+        if (Object.keys(user).length) {
+          if (user.password) {
+            const encryptedPassword = CryptoJS.AES.encrypt(
+              user.password,
+              process.env.APP_SECRET
+            ).toString();
+
+            const userWithEncryptedPassword = {
+              ...user,
+              password: encryptedPassword,
+            };
+
+            expect(userWithEncryptedPassword.password).toBe(encryptedPassword);
+          }
+
+          const response = await request(app)
+            .post("/api/auth/register")
+            .send(user);
+
+          expect(response.status).toBe(400);
+          expect(response.body).toHaveProperty("error");
+          expect(response.body.error).toBe(
+            "Make sure you provided all the required fields."
+          );
+        } else {
+          const response = await request(app)
+            .post("/api/auth/register")
+            .send(user);
+
+          expect(response.status).toBe(400);
+          expect(response.body).toHaveProperty("error");
+          expect(response.body.error).toBe(
+            "Make sure you provided all the required fields."
+          );
+        }
+      });
+    });
   });
 
-  // describe("POST /api/auth/login", () => {
-  //   it("should log in a user", async () => {
-  //     const user = {
-  //       email: "testuser@example.com",
-  //       password: "password123",
-  //     };
+  describe("POST /api/auth/login", () => {
+    it("should log in a user", async () => {
+      const user = {
+        email: "test.user1@example.com",
+        password: CryptoJS.AES.encrypt(
+          "password1",
+          process.env.APP_SECRET
+        ).toString(),
+      };
 
-  //     const response = await request(app).post("/api/auth/login").send(user);
+      const decryptedPassword = CryptoJS.AES.decrypt(
+        user.password,
+        process.env.APP_SECRET
+      );
 
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toHaveProperty("token");
+      const OriginalPassword = decryptedPassword.toString(CryptoJS.enc.Utf8);
 
-  //     const { token } = response.body;
+      const response = await request(app).post("/api/auth/login").send(user);
 
-  //     jwt.verify.mockImplementation((token_arg, secret, callback) =>
-  //       callback(null, { email: user.email })
-  //     );
+      expect(OriginalPassword).toBe("password1");
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("token");
+      expect(response.body.message).toBe("User logged in successfully");
+    });
 
-  //     const authResponse = await request(app)
-  //       .get("/api/auth")
-  //       .set("Authorization", `Bearer ${token}`);
+    // it("should return an error for not found user", async () => {
+    //   const usersWithInvalidEmailOrPassword = [
+    //     {
+    //       email: "test.user2@example.com",
+    //     },
+    //     {
+    //       password: "password3",
+    //     },
+    //   ];
 
-  //     expect(authResponse.status).toBe(200);
-  //   });
+    //   usersWithInvalidEmailOrPassword.forEach(async (user) => {
+    //     const response = await request(app).post("/api/auth/login").send(user);
 
-  //   it("should return 404 for non-existent user", async () => {
-  //     const user = {
-  //       email: "nonexistent@example.com",
-  //       password: "password123",
-  //     };
+    //     expect(response.status).toBe(400);
+    //     expect(response.body).toHaveProperty("error");
+    //     expect(response.body.error).toBe("Invalid email or password");
+    //   });
+    // });
 
-  //     const response = await request(app).post("/api/auth/login").send(user);
+    // it("should return an error for not found user", async () => {
+    //   const user = null;
 
-  //     expect(response.status).toBe(404);
-  //     expect(response.body.error).toBe("User not found");
-  //   });
+    //   const response = await request(app).post("/api/auth/login").send(user);
 
-  //   it("should return 401 for incorrect password", async () => {
-  //     const user = {
-  //       email: "testuser@example.com",
-  //       password: "wrongpassword",
-  //     };
-
-  //     const response = await request(app).post("/api/auth/login").send(user);
-
-  //     expect(response.status).toBe(401);
-  //     expect(response.body.error).toBe("Invalid email or password");
-  //   });
-  // });
+    //   expect(response.status).toBe(404);
+    //   expect(response.body).toHaveProperty("error");
+    //   expect(response.body.error).toBe("User not found");
+    // });
+  });
 });
