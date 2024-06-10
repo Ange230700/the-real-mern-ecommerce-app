@@ -9,8 +9,8 @@ describe("Auth API", () => {
   describe("POST /api/auth/register", () => {
     it("should register a new user", async () => {
       const user = {
-        username: "test_user5",
-        email: "test.user5@example.com",
+        username: "test_user7",
+        email: "test.user7@example.com",
         password: "password123",
       };
 
