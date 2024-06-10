@@ -30,16 +30,57 @@ describe("Auth API", () => {
       const response = await request(app).post("/api/auth/register").send(user);
 
       if (!response.body.insertId) {
-        expect(response.status).toBe(400);
+        expect(response.body.insertId).toBeFalsy();
+
         expect(response.body).toHaveProperty("message");
+
+        expect(response.status).toBe(400);
+
+        expect(typeof response.body.message).toBe("string");
+
         expect(response.body.message).toBe("User registration failed.");
       } else {
+        expect(response.body.insertId).toBeTruthy();
+        expect(response.body.token).toBeTruthy();
+
         expect(response.status).toBe(201);
+        expect(response.body.message).toBe("User registered successfully.");
+
         expect(response.body).toHaveProperty("insertId");
         expect(response.body).toHaveProperty("token");
         expect(response.body).toHaveProperty("message");
-        expect(response.body.message).toBe("User registered successfully.");
+
+        expect(typeof response.body.insertId).toBe("number");
+        expect(typeof response.body.token).toBe("string");
+        expect(typeof response.body.message).toBe("string");
       }
+    });
+
+    it("should return an error for duplicate email", async () => {
+      const user = {
+        username: "test_user1",
+        email: "test.user1@example.com",
+        password: "password1",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        user.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      user.password = encryptedPassword;
+
+      await request(app).post("/api/auth/register").send(user);
+
+      const response = await request(app).post("/api/auth/register").send(user);
+
+      expect(response.status).toBe(400);
+
+      expect(response.body).toHaveProperty("error");
+
+      expect(response.body.error).toBe("Email already in use");
+
+      expect(typeof response.body.error).toBe("string");
     });
 
     it("should return a bad request status for missing fields", async () => {
@@ -93,6 +134,7 @@ describe("Auth API", () => {
           expect(response.body.error).toBe(
             "Make sure you provided all the required fields."
           );
+          expect(typeof response.body.error).toBe("string");
         } else {
           const response = await request(app)
             .post("/api/auth/register")
@@ -103,6 +145,7 @@ describe("Auth API", () => {
           expect(response.body.error).toBe(
             "Make sure you provided all the required fields."
           );
+          expect(typeof response.body.error).toBe("string");
         }
       });
     });
@@ -138,6 +181,7 @@ describe("Auth API", () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("token");
+      expect(typeof response.body.token).toBe("string");
     });
 
     it("should return an error for invalid entries", async () => {
@@ -195,6 +239,7 @@ describe("Auth API", () => {
 
           expect(response.status).toBe(400);
           expect(response.body).toHaveProperty("error");
+          expect(typeof response.body.error).toBe("string");
           expect(response.body.error).toBe("Invalid email or password");
         }
       );
@@ -210,6 +255,7 @@ describe("Auth API", () => {
 
       expect(response.status).toBe(404);
       expect(response.body).toHaveProperty("error");
+      expect(typeof response.body.error).toBe("string");
       expect(response.body.error).toBe("User not found");
     });
   });

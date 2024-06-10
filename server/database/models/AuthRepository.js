@@ -6,6 +6,11 @@ class AuthRepository extends AbstractRepository {
   }
 
   async createUser({ username, email, password }) {
+    const existingUser = await this.findUserByEmail(email);
+    if (existingUser) {
+      throw new Error("Email already in use");
+    }
+
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (username, email, password) VALUES (?, ?, ?)`,
       [username, email, password]

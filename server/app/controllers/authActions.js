@@ -1,5 +1,4 @@
 const CryptoJS = require("crypto-js");
-
 const tables = require("../../database/tables");
 const { duration, createToken } = require("../middlewares/authMiddleware");
 
@@ -8,10 +7,9 @@ const register = async (request, response) => {
     const { username, email, password, is_admin } = request.body;
 
     if (!username || !email || !password) {
-      response.status(400).json({
+      return response.status(400).json({
         error: "Make sure you provided all the required fields.",
       });
-      return;
     }
 
     const encryptedPassword = CryptoJS.AES.encrypt(
@@ -34,18 +32,17 @@ const register = async (request, response) => {
       maxAge: duration,
     });
 
-    if (!insertId) {
-      response.status(400).json({ message: "User registration failed." });
-    } else {
-      response.status(201).json({
-        insertId,
-        token,
-        message: "User registered successfully.",
-      });
-    }
+    return response.status(201).json({
+      insertId,
+      token,
+      message: "User registered successfully.",
+    });
   } catch (error) {
-    console.error("Registration error:", error); // Add this line to log the error
-    response.status(500).json({ error: error.message });
+    console.error("Registration error:", error.message);
+    if (error.message === "Email already in use") {
+      return response.status(400).json({ error: error.message });
+    }
+    return response.status(500).json({ error: error.message });
   }
 };
 
