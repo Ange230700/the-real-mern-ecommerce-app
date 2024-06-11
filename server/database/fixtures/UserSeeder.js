@@ -19,7 +19,15 @@ class UserSeeder extends AbstractSeeder {
 
     this.insert(fakeAdmin);
 
-    const numberOfUsers = 2;
+    const fakeTestUser = {
+      username: "user",
+      email: "user@user.user",
+      password: CryptoJS.AES.encrypt("user", process.env.APP_SECRET).toString(),
+    };
+
+    this.insert(fakeTestUser);
+
+    const numberOfUsers = 3;
 
     if (!numberOfUsers) {
       return;

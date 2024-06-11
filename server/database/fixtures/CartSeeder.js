@@ -10,11 +10,14 @@ class CartSeeder extends AbstractSeeder {
   async run() {
     const lengthOfUserArray = await new UserSeeder().count();
 
-    const numberOfCarts = lengthOfUserArray;
+    const numberOfCarts = 2;
 
-    if (!lengthOfUserArray) {
-      return;
-    }
+    const fakeTestCart = {
+      user_id: 2,
+      status: "active",
+    };
+
+    this.insert(fakeTestCart);
 
     for (let i = 0; i < numberOfCarts; i += 1) {
       const fakeCart = {

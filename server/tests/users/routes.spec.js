@@ -1,108 +1,6 @@
-const { app, request, database, CryptoJS } = require("../config");
+const { app, request, database } = require("../config");
 
 describe("Users API", () => {
-  beforeAll(async () => {
-    const adminUser = {
-      username: "test_admin1",
-      email: "test.admin1@example.com",
-      password: CryptoJS.AES.encrypt(
-        "password1",
-        process.env.APP_SECRET
-      ).toString(),
-      is_admin: true,
-    };
-
-    await database.query(
-      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
-      [
-        adminUser.username,
-        adminUser.email,
-        adminUser.password,
-        adminUser.is_admin,
-      ]
-    );
-
-    const adminUser2 = {
-      username: "test_admin2",
-      email: "test.admin2@example.com",
-      password: CryptoJS.AES.encrypt(
-        "password2",
-        process.env.APP_SECRET
-      ).toString(),
-      is_admin: true,
-    };
-
-    await database.query(
-      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
-      [
-        adminUser2.username,
-        adminUser2.email,
-        adminUser2.password,
-        adminUser2.is_admin,
-      ]
-    );
-
-    const adminUser3 = {
-      username: "test_admin3",
-      email: "test.admin3@example.com",
-      password: CryptoJS.AES.encrypt(
-        "password3",
-        process.env.APP_SECRET
-      ).toString(),
-      is_admin: true,
-    };
-
-    await database.query(
-      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
-      [
-        adminUser3.username,
-        adminUser3.email,
-        adminUser3.password,
-        adminUser3.is_admin,
-      ]
-    );
-
-    const nonAdminUser = {
-      username: "test_user15",
-      email: "test.user15@example.com",
-      password: CryptoJS.AES.encrypt(
-        "password15",
-        process.env.APP_SECRET
-      ).toString(),
-      is_admin: false,
-    };
-
-    await database.query(
-      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
-      [
-        nonAdminUser.username,
-        nonAdminUser.email,
-        nonAdminUser.password,
-        nonAdminUser.is_admin,
-      ]
-    );
-
-    const nonAdminUser2 = {
-      username: "test_user16",
-      email: "test.user16@example.com",
-      password: CryptoJS.AES.encrypt(
-        "password16",
-        process.env.APP_SECRET
-      ).toString(),
-      is_admin: false,
-    };
-
-    await database.query(
-      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
-      [
-        nonAdminUser2.username,
-        nonAdminUser2.email,
-        nonAdminUser2.password,
-        nonAdminUser2.is_admin,
-      ]
-    );
-  });
-
   afterAll(async () => {
     try {
       await database.end();
@@ -114,8 +12,8 @@ describe("Users API", () => {
   describe("GET /api/users", () => {
     it("should fetch all users as an admin", async () => {
       const adminUserCredentials = {
-        email: "test.admin1@example.com",
-        password: "password1",
+        email: "admin@admin.admin",
+        password: "admin",
       };
 
       const adminLoginResponse = await request(app)
@@ -142,8 +40,8 @@ describe("Users API", () => {
 
     it("should be unauthorized for non-admin users", async () => {
       const userCredentials = {
-        email: "test.user15@example.com",
-        password: "password15",
+        email: "user@user.user",
+        password: "user",
       };
 
       const userLoginResponse = await request(app)
@@ -167,8 +65,8 @@ describe("Users API", () => {
   describe("GET /api/users/:user_id", () => {
     it("should fetch a user by ID as an admin", async () => {
       const adminUserCredentials = {
-        email: "test.admin2@example.com",
-        password: "password2",
+        email: "admin@admin.admin",
+        password: "admin",
       };
 
       const adminLoginResponse = await request(app)
@@ -180,7 +78,7 @@ describe("Users API", () => {
       const adminToken = adminLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/users/user/13")
+        .get("/api/users/user/2")
         .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);
@@ -191,8 +89,8 @@ describe("Users API", () => {
 
     it("should be unauthorized for non-admin users", async () => {
       const userCredentials = {
-        email: "test.user16@example.com",
-        password: "password16",
+        email: "user@user.user",
+        password: "user",
       };
 
       const userLoginResponse = await request(app)
@@ -204,12 +102,82 @@ describe("Users API", () => {
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/users/user/13")
+        .get("/api/users/user/2")
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty("message");
       expect(response.body.message).toBe("You are not allowed to do that!");
+    });
+  });
+
+  describe("PUT /api/users/:user_id", () => {
+    it("should edit an authenticated user's own profile", async () => {
+      const userCredentials = {
+        email: "user@user.user",
+        password: "user",
+      };
+
+      const userLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(userCredentials);
+
+      expect(userLoginResponse.body).toHaveProperty("token");
+
+      const userToken = userLoginResponse.body.token;
+
+      const updatedUser = {
+        username: "updated_user17",
+        email: "user@user.user",
+        password: "user",
+      };
+
+      const response = await request(app)
+        .put("/api/users/user/2")
+        .set("Cookie", `token=${userToken}`)
+        .send(updatedUser);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("User updated successfully");
+    });
+  });
+
+  describe("DELETE /api/users/:user_id", () => {
+    it("should delete an authenticated user's own profile", async () => {
+      const userToRegister = {
+        username: "user2",
+        email: "user2@user2.user2",
+        password: "user2",
+      };
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
+      const userCredentials = {
+        email: "user2@user2.user2",
+        password: "user2",
+      };
+
+      const userLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(userCredentials);
+
+      expect(userLoginResponse.body).toHaveProperty("token");
+
+      const userToken = userLoginResponse.body.token;
+
+      const response = await request(app)
+        .delete("/api/users/user/6")
+        .set("Cookie", `token=${userToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("User deleted successfully");
     });
   });
 });

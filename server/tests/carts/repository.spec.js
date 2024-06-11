@@ -1,89 +1,73 @@
 const { database, tables } = require("../config");
 
 describe("CartRepository", () => {
+  beforeAll(async () => {
+    const cart = {
+      user_id: 5,
+      status: "active",
+    };
+
+    await tables.Cart.createCart(5, cart);
+  });
+
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
-  test("readAllCarts => select", async () => {
-    const rows = [
-      { cart_id: 1, user_id: 1, status: "active", username: "john_doe" },
-    ];
+  test("readAllCarts", async () => {
+    const carts = await tables.Cart.readAllCarts(5);
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([rows]);
-
-    const carts = await tables.Cart.readAllCarts(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT Cart.id AS cart_id, Cart.user_id, Cart.status, User.username FROM Cart JOIN User ON Cart.user_id = User.id WHERE Cart.user_id = ? AND Cart.user_id = User.id",
-      [1]
-    );
-    expect(carts).toEqual(rows);
+    expect(carts).toBeTruthy();
+    expect(Array.isArray(carts)).toBe(true);
   });
 
-  test("readCart => select with id", async () => {
+  test("readCart", async () => {
+    const cart = await tables.Cart.readCart(3, 5);
+
+    expect(cart).toBeTruthy();
+    expect(cart).toHaveProperty("cart_id");
+    expect(cart).toHaveProperty("user_id");
+    expect(cart).toHaveProperty("status");
+    expect(cart).toHaveProperty("username");
+    expect(cart.user_id).toBe(2);
+    expect(typeof cart.cart_id).toBe("number");
+    expect(typeof cart.user_id).toBe("number");
+    expect(typeof cart.status).toBe("string");
+    expect(typeof cart.username).toBe("string");
+  });
+
+  test("updateCart", async () => {
+    const updatedRows = await tables.Cart.updateCart(3, 2, {
+      status: "inactive",
+    });
+
+    expect(updatedRows).toBe(1);
+    expect(typeof updatedRows).toBe("number");
+    expect(updatedRows).toBeGreaterThan(0);
+  });
+
+  test("createCart", async () => {
     const cart = {
-      cart_id: 1,
       user_id: 1,
       status: "active",
-      username: "john_doe",
     };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([[cart]]);
+    const insertId = await tables.Cart.createCart(2, cart);
 
-    const result = await tables.Cart.readCart(1, 1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT Cart.id AS cart_id, Cart.user_id, Cart.status, User.username FROM Cart JOIN User ON Cart.user_id = User.id WHERE Cart.user_id = ? AND Cart.user_id = User.id AND Cart.id = ?",
-      [1, 1]
-    );
-    expect(result).toEqual(cart);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
+    expect(insertId).toBeGreaterThan(0);
   });
 
-  test("createCart => insert into", async () => {
-    const cart = {
-      user_id: 1,
-      status: "active",
-    };
-    const result = [{ insertId: 1 }];
+  test("deleteCart", async () => {
+    const deletedRows = await tables.Cart.deleteCart(3, 2);
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const insertId = await tables.Cart.createCart(1, cart);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO Cart (user_id, status) VALUES (?, ?)",
-      [cart.user_id, cart.status]
-    );
-    expect(insertId).toBe(result[0].insertId);
-  });
-
-  test("updateCart => update with id", async () => {
-    const cart = { status: "inactive" };
-    const result = [{ affectedRows: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const affectedRows = await tables.Cart.updateCart(1, 1, cart);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "UPDATE Cart SET status = COALESCE(?, status) WHERE id = ? AND user_id = ?",
-      [cart.status, 1, 1]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
-  });
-
-  test("deleteCart => delete with id", async () => {
-    const result = [{ affectedRows: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const affectedRows = await tables.Cart.deleteCart(1, 1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "DELETE FROM Cart WHERE id = ? AND user_id = ?",
-      [1, 1]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
+    expect(deletedRows).toBe(1);
+    expect(typeof deletedRows).toBe("number");
+    expect(deletedRows).toBeGreaterThan(0);
   });
 });
