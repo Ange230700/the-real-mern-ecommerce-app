@@ -19,7 +19,11 @@ class UserSeeder extends AbstractSeeder {
 
     this.insert(fakeAdmin);
 
-    const numberOfUsers = 10;
+    const numberOfUsers = 2;
+
+    if (!numberOfUsers) {
+      return;
+    }
 
     for (let i = 0; i < numberOfUsers; i += 1) {
       const fakeUser = {

@@ -8,11 +8,9 @@ const verifyToken = (request, response, next) => {
   const { token } = request.cookies;
 
   if (token) {
-    // const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.APP_SECRET, (err, user) => {
       if (err) {
         response.status(403).json({ message: "Token is not valid!" });
-        next();
       } else {
         request.user = user;
         next();
@@ -20,7 +18,6 @@ const verifyToken = (request, response, next) => {
     });
   } else {
     response.status(400).json({ message: "You are not authenticated!" });
-    next();
   }
 };
 
