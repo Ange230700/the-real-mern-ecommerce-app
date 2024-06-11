@@ -32,7 +32,7 @@ const readUser = async (request, response, next) => {
     if (!user) {
       response.status(404).json({ message: "User not found" });
     } else {
-      response.json(userWithoutPassword);
+      response.status(200).json(userWithoutPassword);
     }
   } catch (error) {
     next(error);

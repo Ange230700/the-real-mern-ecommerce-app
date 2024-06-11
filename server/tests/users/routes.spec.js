@@ -1,7 +1,50 @@
 const { app, request, database, CryptoJS } = require("../config");
-// const generateToken = require("../utils/generateToken");
 
 describe("Users API", () => {
+  beforeAll(async () => {
+    // Insert a known admin user
+    const adminUser = {
+      username: "test_admin1",
+      email: "test.admin1@example.com",
+      password: CryptoJS.AES.encrypt(
+        "password1",
+        process.env.APP_SECRET
+      ).toString(),
+      is_admin: true,
+    };
+
+    await database.query(
+      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
+      [
+        adminUser.username,
+        adminUser.email,
+        adminUser.password,
+        adminUser.is_admin,
+      ]
+    );
+
+    // Insert another known admin user
+    const adminUser2 = {
+      username: "test_admin2",
+      email: "test.admin2@example.com",
+      password: CryptoJS.AES.encrypt(
+        "password2",
+        process.env.APP_SECRET
+      ).toString(),
+      is_admin: true,
+    };
+
+    await database.query(
+      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
+      [
+        adminUser2.username,
+        adminUser2.email,
+        adminUser2.password,
+        adminUser2.is_admin,
+      ]
+    );
+  });
+
   afterAll(async () => {
     try {
       await database.end();
@@ -12,137 +55,83 @@ describe("Users API", () => {
 
   describe("GET /api/users", () => {
     it("should fetch all users as an admin", async () => {
-      const sampleUsersToRegister = [
-        {
-          username: "test_user15",
-          email: "test.user15@example.com",
-          password: "password15",
-        },
-        {
-          username: "test_user15",
-          email: "test.user15@example.com",
-          password: "password15",
-        },
-        {
-          username: "test_user15",
-          email: "test.user15@example.com",
-          password: "password15",
-        },
-        {
-          username: "test_admin1",
-          email: "test.admin1@example.com",
-          password: "password1",
-          is_admin: true,
-        },
-      ];
-
-      sampleUsersToRegister.forEach(async (sampleUserToRegister) => {
-        const encryptedPassword = CryptoJS.AES.encrypt(
-          sampleUserToRegister.password,
-          process.env.APP_SECRET
-        ).toString();
-
-        const userWithEncryptedPassword = {
-          ...sampleUserToRegister,
-          password: encryptedPassword,
-        };
-
-        await request(app)
-          .post("/api/auth/register")
-          .send(userWithEncryptedPassword);
-      });
-
       const adminUserCredentials = {
         email: "test.admin1@example.com",
         password: "password1",
       };
 
-      const admin = await request(app)
+      const adminLoginResponse = await request(app)
         .post("/api/auth/login")
         .send(adminUserCredentials);
 
-      expect(admin.body).toHaveProperty("token");
+      expect(adminLoginResponse.body).toHaveProperty("token");
 
-      if (!admin.body.token) {
-        expect(admin.body.token).toBeFalsy();
-        expect(admin.body).toHaveProperty("message");
-        expect(admin.body.message).toBe("You are not authenticated!");
-        expect(admin.status).toBe(400);
-      } else {
-        const { token, ...theAdmin } = admin.body;
+      const adminToken = adminLoginResponse.body.token;
 
-        expect(admin.status).toBe(200);
-        expect(typeof token).toBe("string");
-        expect(typeof theAdmin).toBe("object");
-      }
+      const response = await request(app)
+        .get("/api/users")
+        .set("Cookie", `token=${adminToken}`);
 
-      const response = await request(app).get("/api/users");
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body.length).toBeGreaterThan(0);
+      response.body.forEach((user) => {
+        expect(user).toHaveProperty("userId");
+        expect(user).toHaveProperty("username");
+        expect(user).toHaveProperty("is_admin");
+      });
+    });
 
-      if (!response.body) {
-        expect(response.body).toBeFalsy();
-        expect(response.status).toBe(404);
-        expect(response.body).toHaveProperty("message");
-        expect(response.body.message).toBe("No users found");
-        expect(response.body).toHaveProperty("length");
-        expect(response.body.length).toBe(0);
-      } else {
-        expect(response.body).toBeTruthy();
-        expect(response.status).toBe(200);
-        expect(typeof response.body).toBe("object");
-        expect(response.body).toHaveProperty("length");
-        expect(response.body.length).toBeGreaterThan(0);
-        expect(response.body[0]).toHaveProperty("userId");
-        expect(response.body[1]).toHaveProperty("username");
-        expect(response.body[2]).toHaveProperty("is_admin");
-      }
+    it("should be unauthorized for non-admin users", async () => {
+      const userCredentials = {
+        email: "test.user1@example.com",
+        password: "password1",
+      };
+
+      const userLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(userCredentials);
+
+      expect(userLoginResponse.body).toHaveProperty("token");
+
+      const userToken = userLoginResponse.body.token;
+
+      const response = await request(app)
+        .get("/api/users")
+        .set("Cookie", `token=${userToken}`);
+
+      expect(response.status).toBe(401);
+      expect(Array.isArray(response.body)).toBe(false);
+      expect(response.body.length).toBeFalsy();
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("You are not allowed to do that!");
     });
   });
 
-  // describe("GET /api/users/user/:user_id", () => {
-  //   it("should fetch a single user by ID", async () => {
-  //     const user = { userId: 1, username: "john_doe", is_admin: false };
-  //     const token = generateToken(user);
-  //     jest.spyOn(database, "query").mockResolvedValueOnce([[user]]);
-  //     jwt.verify.mockImplementation((token_arg, secret, callback) =>
-  //       callback(null, user)
-  //     );
+  // describe("GET /api/users/:user_id", () => {
+  //   it("should fetch a user by ID as an admin", async () => {
+  //     const adminUserCredentials = {
+  //       email: "test.admin2@example.com",
+  //       password: "password2",
+  //     };
 
-  //     const response = await request(app)
-  //       .get("/api/users/user/1")
-  //       .set("Authorization", `Bearer ${token}`);
+  //     const adminLoginResponse = await request(app)
+  //       .post("/api/auth/login")
+  //       .send(adminUserCredentials);
 
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toEqual(user);
-  //   });
+  //     expect(adminLoginResponse.body).toHaveProperty("token");
 
-  //   it("should return 404 if user not found", async () => {
-  //     jest.spyOn(database, "query").mockResolvedValueOnce([[]]);
+  //     const adminToken = adminLoginResponse.body.token;
 
-  //     const response = await request(app).get("/api/users/user/0");
+  //     const usersResponse = await request(app)
+  //       .get("/api/users")
+  //       .set("Cookie", `token=${adminToken}`);
 
-  //     expect(response.status).toBe(404);
-  //     expect(response.body.message).toEqual("User not found");
-  //   });
-  // });
-
-  // describe("PUT /api/users/user/:user_id", () => {
-  //   it("should update an existing user", async () => {
-  //     const user = { username: "john_doe_updated" };
-  //     const result = [{ affectedRows: 1 }];
-  //     jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-  //     const response = await request(app).put("/api/users/user/1").send(user);
-  //     expect(response.status).toBe(200);
-  //     expect(response.body.message).toEqual("User updated successfully");
-  //   });
-  // });
-
-  // describe("DELETE /api/users/user/:user_id", () => {
-  //   it("should delete a user", async () => {
-  //     const result = [{ affectedRows: 1 }];
-  //     jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-  //     const response = await request(app).delete("/api/users/user/1");
-  //     expect(response.status).toBe(200);
-  //     expect(response.body.message).toEqual("User deleted successfully");
+  //     expect(usersResponse.status).toBe(200);
+  //     expect(typeof usersResponse.body).toBe("object");
+  //     expect(usersResponse.body).toHaveProperty("userId");
+  //     expect(usersResponse.body).toHaveProperty("username");
+  //     expect(usersResponse.body).toHaveProperty("is_admin");
   //   });
   // });
 });
