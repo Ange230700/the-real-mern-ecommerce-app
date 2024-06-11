@@ -31,7 +31,6 @@ describe("Users API", () => {
         "password2",
         process.env.APP_SECRET
       ).toString(),
-      is_admin: true,
     };
 
     await database.query(
@@ -41,6 +40,27 @@ describe("Users API", () => {
         adminUser2.email,
         adminUser2.password,
         adminUser2.is_admin,
+      ]
+    );
+
+    // Insert a known non-admin user
+    const nonAdminUser = {
+      username: "test_user15",
+      email: "test.user15@example.com",
+      password: CryptoJS.AES.encrypt(
+        "password15",
+        process.env.APP_SECRET
+      ).toString(),
+      is_admin: false,
+    };
+
+    await database.query(
+      `INSERT INTO User (username, email, password, is_admin) VALUES (?, ?, ?, ?)`,
+      [
+        nonAdminUser.username,
+        nonAdminUser.email,
+        nonAdminUser.password,
+        nonAdminUser.is_admin,
       ]
     );
   });
@@ -84,8 +104,8 @@ describe("Users API", () => {
 
     it("should be unauthorized for non-admin users", async () => {
       const userCredentials = {
-        email: "test.user1@example.com",
-        password: "password1",
+        email: "test.user15@example.com",
+        password: "password15",
       };
 
       const userLoginResponse = await request(app)
@@ -101,37 +121,34 @@ describe("Users API", () => {
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(401);
-      expect(Array.isArray(response.body)).toBe(false);
-      expect(response.body.length).toBeFalsy();
       expect(response.body).toHaveProperty("message");
       expect(response.body.message).toBe("You are not allowed to do that!");
     });
   });
 
-  // describe("GET /api/users/:user_id", () => {
-  //   it("should fetch a user by ID as an admin", async () => {
-  //     const adminUserCredentials = {
-  //       email: "test.admin2@example.com",
-  //       password: "password2",
-  //     };
+  describe("GET /api/users/:user_id", () => {
+    it("should fetch a user by ID as an admin", async () => {
+      const adminUserCredentials = {
+        email: "test.admin2@example.com",
+        password: "password2",
+      };
 
-  //     const adminLoginResponse = await request(app)
-  //       .post("/api/auth/login")
-  //       .send(adminUserCredentials);
+      const adminLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(adminUserCredentials);
 
-  //     expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body).toHaveProperty("token");
 
-  //     const adminToken = adminLoginResponse.body.token;
+      const adminToken = adminLoginResponse.body.token;
 
-  //     const usersResponse = await request(app)
-  //       .get("/api/users")
-  //       .set("Cookie", `token=${adminToken}`);
+      const response = await request(app)
+        .get("/api/users/user/1")
+        .set("Cookie", `token=${adminToken}`);
 
-  //     expect(usersResponse.status).toBe(200);
-  //     expect(typeof usersResponse.body).toBe("object");
-  //     expect(usersResponse.body).toHaveProperty("userId");
-  //     expect(usersResponse.body).toHaveProperty("username");
-  //     expect(usersResponse.body).toHaveProperty("is_admin");
-  //   });
-  // });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("userId");
+      expect(response.body).toHaveProperty("username");
+      expect(response.body).toHaveProperty("is_admin");
+    });
+  });
 });

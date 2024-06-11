@@ -1,5 +1,4 @@
-const { app, request, CryptoJS } = require("../config");
-const database = require("../../database/client");
+const { app, request, database, CryptoJS } = require("../config");
 
 describe("Auth API", () => {
   afterAll(async () => {
