@@ -12,9 +12,9 @@ describe("Auth API", () => {
   describe("POST /api/auth/register", () => {
     it("should register a new user", async () => {
       const user = {
-        username: "test_user1",
-        email: "test.user1@example.com",
-        password: "password1",
+        username: "user1",
+        email: "user1@user1.user1",
+        password: "user1",
       };
 
       const encryptedPassword = CryptoJS.AES.encrypt(
@@ -42,9 +42,9 @@ describe("Auth API", () => {
 
     it("should return an error for duplicate email", async () => {
       const user = {
-        username: "user",
-        email: "user@user.user",
-        password: "user",
+        username: "user1",
+        email: "user1@user1.user1",
+        password: "user1",
       };
 
       const encryptedPassword = CryptoJS.AES.encrypt(
@@ -53,8 +53,6 @@ describe("Auth API", () => {
       ).toString();
 
       user.password = encryptedPassword;
-
-      await request(app).post("/api/auth/register").send(user);
 
       const response = await request(app).post("/api/auth/register").send(user);
 
@@ -121,9 +119,29 @@ describe("Auth API", () => {
 
   describe("POST /api/auth/login", () => {
     it("should log in a user", async () => {
+      const userToRegister = {
+        username: "user222",
+        email: "user222@user222.user222",
+        password: "user222",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
       const userCredentials = {
-        email: "user@user.user",
-        password: "user",
+        email: "user222@user222.user222",
+        password: "user222",
       };
 
       const response = await request(app)

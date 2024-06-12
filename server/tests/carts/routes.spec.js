@@ -1,4 +1,4 @@
-const { app, request, database } = require("../config");
+const { app, request, database, CryptoJS } = require("../config");
 
 describe("Carts API", () => {
   afterAll(async () => {
@@ -11,9 +11,29 @@ describe("Carts API", () => {
 
   describe("GET /api/carts/user/:user_id", () => {
     it("should fetch all carts for an authenticated user", async () => {
+      const userToRegister = {
+        username: "user9000",
+        email: "user9000@user9000.user9000",
+        password: "user9000",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
       const userCredentials = {
-        email: "user@user.user",
-        password: "user",
+        email: "user9000@user9000.user9000",
+        password: "user9000",
       };
 
       const userLoginResponse = await request(app)
@@ -26,7 +46,7 @@ describe("Carts API", () => {
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/carts/user/2")
+        .get(`/api/carts/user/${userRegistrationResponse.body.insertId}`)
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);

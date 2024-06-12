@@ -1,4 +1,4 @@
-const { app, request, database } = require("../config");
+const { app, request, database, CryptoJS } = require("../config");
 
 describe("Users API", () => {
   afterAll(async () => {
@@ -11,9 +11,30 @@ describe("Users API", () => {
 
   describe("GET /api/users", () => {
     it("should fetch all users as an admin", async () => {
+      const adminUserToRegister = {
+        username: "admin6",
+        email: "admin6@admin6.admin6",
+        password: "admin6",
+        is_admin: true,
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        adminUserToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      adminUserToRegister.password = encryptedPassword;
+
+      const adminUserRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(adminUserToRegister);
+
+      expect(adminUserRegistrationResponse.status).toBe(201);
+      expect(adminUserRegistrationResponse.body).toHaveProperty("insertId");
+
       const adminUserCredentials = {
-        email: "admin@admin.admin",
-        password: "admin",
+        email: "admin6@admin6.admin6",
+        password: "admin6",
       };
 
       const adminLoginResponse = await request(app)
@@ -21,6 +42,7 @@ describe("Users API", () => {
         .send(adminUserCredentials);
 
       expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body.token).toBeTruthy();
 
       const adminToken = adminLoginResponse.body.token;
 
@@ -39,9 +61,29 @@ describe("Users API", () => {
     });
 
     it("should be unauthorized for non-admin users", async () => {
+      const userToRegister = {
+        username: "user3",
+        email: "user3@user3.user3",
+        password: "user3",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
       const userCredentials = {
-        email: "user@user.user",
-        password: "user",
+        email: "user3@user3.user3",
+        password: "user3",
       };
 
       const userLoginResponse = await request(app)
@@ -49,6 +91,7 @@ describe("Users API", () => {
         .send(userCredentials);
 
       expect(userLoginResponse.body).toHaveProperty("token");
+      expect(userLoginResponse.body.token).toBeTruthy();
 
       const userToken = userLoginResponse.body.token;
 
@@ -64,9 +107,30 @@ describe("Users API", () => {
 
   describe("GET /api/users/:user_id", () => {
     it("should fetch a user by ID as an admin", async () => {
+      const adminUserToRegister = {
+        username: "admin7",
+        email: "admin7@admin7.admin7",
+        password: "admin7",
+        is_admin: true,
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        adminUserToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      adminUserToRegister.password = encryptedPassword;
+
+      const adminUserRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(adminUserToRegister);
+
+      expect(adminUserRegistrationResponse.status).toBe(201);
+      expect(adminUserRegistrationResponse.body).toHaveProperty("insertId");
+
       const adminUserCredentials = {
-        email: "admin@admin.admin",
-        password: "admin",
+        email: "admin7@admin7.admin7",
+        password: "admin7",
       };
 
       const adminLoginResponse = await request(app)
@@ -74,11 +138,12 @@ describe("Users API", () => {
         .send(adminUserCredentials);
 
       expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body.token).toBeTruthy();
 
       const adminToken = adminLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/users/user/2")
+        .get(`/api/users/user/${adminUserRegistrationResponse.body.insertId}`)
         .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);
@@ -88,9 +153,29 @@ describe("Users API", () => {
     });
 
     it("should be unauthorized for non-admin users", async () => {
+      const userToRegister = {
+        username: "user40",
+        email: "user40@user40.user40",
+        password: "user40",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
       const userCredentials = {
-        email: "user@user.user",
-        password: "user",
+        email: "user40@user40.user40",
+        password: "user40",
       };
 
       const userLoginResponse = await request(app)
@@ -98,11 +183,12 @@ describe("Users API", () => {
         .send(userCredentials);
 
       expect(userLoginResponse.body).toHaveProperty("token");
+      expect(userLoginResponse.body.token).toBeTruthy();
 
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/users/user/2")
+        .get(`/api/users/user/${userRegistrationResponse.body.insertId}`)
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(401);
@@ -113,9 +199,29 @@ describe("Users API", () => {
 
   describe("PUT /api/users/:user_id", () => {
     it("should edit an authenticated user's own profile", async () => {
+      const userToRegister = {
+        username: "user100",
+        email: "user100@user100.user100",
+        password: "user100",
+      };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
+
+      const userRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(userToRegister);
+
+      expect(userRegistrationResponse.status).toBe(201);
+      expect(userRegistrationResponse.body).toHaveProperty("insertId");
+
       const userCredentials = {
-        email: "user@user.user",
-        password: "user",
+        email: "user100@user100.user100",
+        password: "user100",
       };
 
       const userLoginResponse = await request(app)
@@ -123,17 +229,18 @@ describe("Users API", () => {
         .send(userCredentials);
 
       expect(userLoginResponse.body).toHaveProperty("token");
+      expect(userLoginResponse.body.token).toBeTruthy();
 
       const userToken = userLoginResponse.body.token;
 
       const updatedUser = {
         username: "updated_user17",
-        email: "user@user.user",
-        password: "user",
+        email: "user100@user1000.user10",
+        password: "user1000",
       };
 
       const response = await request(app)
-        .put("/api/users/user/2")
+        .put(`/api/users/user/${userRegistrationResponse.body.insertId}`)
         .set("Cookie", `token=${userToken}`)
         .send(updatedUser);
 
@@ -150,6 +257,13 @@ describe("Users API", () => {
         email: "user2@user2.user2",
         password: "user2",
       };
+
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        userToRegister.password,
+        process.env.APP_SECRET
+      ).toString();
+
+      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -168,11 +282,12 @@ describe("Users API", () => {
         .send(userCredentials);
 
       expect(userLoginResponse.body).toHaveProperty("token");
+      expect(userLoginResponse.body.token).toBeTruthy();
 
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .delete("/api/users/user/6")
+        .delete(`/api/users/user/${userRegistrationResponse.body.insertId}`)
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);

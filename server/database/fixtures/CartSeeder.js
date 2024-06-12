@@ -14,7 +14,7 @@ class CartSeeder extends AbstractSeeder {
 
     const fakeTestCart = {
       user_id: 2,
-      status: "active",
+      status: "test",
     };
 
     this.insert(fakeTestCart);

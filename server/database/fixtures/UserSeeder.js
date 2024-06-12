@@ -27,7 +27,7 @@ class UserSeeder extends AbstractSeeder {
 
     this.insert(fakeTestUser);
 
-    const numberOfUsers = 3;
+    const numberOfUsers = 1;
 
     if (!numberOfUsers) {
       return;
