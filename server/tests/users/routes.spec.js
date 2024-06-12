@@ -1,4 +1,4 @@
-const { app, request, database, CryptoJS } = require("../config");
+const { app, request, database } = require("../config");
 
 describe("Users API", () => {
   afterAll(async () => {
@@ -17,13 +17,6 @@ describe("Users API", () => {
         password: "admin6",
         is_admin: true,
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        adminUserToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      adminUserToRegister.password = encryptedPassword;
 
       const adminUserRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -48,7 +41,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get("/api/users")
-        .set("Cookie", `token=${adminToken}`);
+        .set("Cookie", [`token=${adminToken}`]);
 
       expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
@@ -66,13 +59,6 @@ describe("Users API", () => {
         email: "user3@user3.user3",
         password: "user3",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -97,7 +83,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get("/api/users")
-        .set("Cookie", `token=${userToken}`);
+        .set("Cookie", [`token=${userToken}`]);
 
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty("message");
@@ -113,13 +99,6 @@ describe("Users API", () => {
         password: "admin7",
         is_admin: true,
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        adminUserToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      adminUserToRegister.password = encryptedPassword;
 
       const adminUserRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -144,7 +123,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get(`/api/users/user/${adminUserRegistrationResponse.body.insertId}`)
-        .set("Cookie", `token=${adminToken}`);
+        .set("Cookie", [`token=${adminToken}`]);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("userId");
@@ -158,13 +137,6 @@ describe("Users API", () => {
         email: "user40@user40.user40",
         password: "user40",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -189,7 +161,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", `token=${userToken}`);
+        .set("Cookie", [`token=${userToken}`]);
 
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty("message");
@@ -204,13 +176,6 @@ describe("Users API", () => {
         email: "user100@user100.user100",
         password: "user100",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -241,7 +206,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .put(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", `token=${userToken}`)
+        .set("Cookie", [`token=${userToken}`])
         .send(updatedUser);
 
       expect(response.status).toBe(200);
@@ -257,13 +222,6 @@ describe("Users API", () => {
         email: "user2@user2.user2",
         password: "user2",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
@@ -288,7 +246,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .delete(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", `token=${userToken}`);
+        .set("Cookie", [`token=${userToken}`]);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("message");

@@ -1,4 +1,4 @@
-const { app, request, database, CryptoJS } = require("../config");
+const { app, request, database } = require("../config");
 
 describe("Carts API", () => {
   afterAll(async () => {
@@ -16,13 +16,6 @@ describe("Carts API", () => {
         email: "user9000@user9000.user9000",
         password: "user9000",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")

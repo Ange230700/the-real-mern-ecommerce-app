@@ -1,4 +1,4 @@
-const { app, request, database, CryptoJS } = require("../config");
+const { app, request, database } = require("../config");
 
 describe("Auth API", () => {
   afterAll(async () => {
@@ -16,15 +16,6 @@ describe("Auth API", () => {
         email: "user1@user1.user1",
         password: "user1",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        user.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      user.password = encryptedPassword;
-
-      expect(user.password).toBe(encryptedPassword);
 
       const response = await request(app).post("/api/auth/register").send(user);
 
@@ -46,13 +37,6 @@ describe("Auth API", () => {
         email: "user1@user1.user1",
         password: "user1",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        user.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      user.password = encryptedPassword;
 
       const response = await request(app).post("/api/auth/register").send(user);
 
@@ -89,20 +73,6 @@ describe("Auth API", () => {
       ];
 
       usersWithMissingFields.forEach(async (userWithMissingFields) => {
-        if (Object.keys(userWithMissingFields).length) {
-          const encryptedPassword = CryptoJS.AES.encrypt(
-            userWithMissingFields.password,
-            process.env.APP_SECRET
-          ).toString();
-
-          const userWithEncryptedPassword = {
-            ...userWithMissingFields,
-            password: encryptedPassword,
-          };
-
-          expect(userWithEncryptedPassword.password).toBe(encryptedPassword);
-        }
-
         const response = await request(app)
           .post("/api/auth/register")
           .send(userWithMissingFields);
@@ -124,13 +94,6 @@ describe("Auth API", () => {
         email: "user222@user222.user222",
         password: "user222",
       };
-
-      const encryptedPassword = CryptoJS.AES.encrypt(
-        userToRegister.password,
-        process.env.APP_SECRET
-      ).toString();
-
-      userToRegister.password = encryptedPassword;
 
       const userRegistrationResponse = await request(app)
         .post("/api/auth/register")
