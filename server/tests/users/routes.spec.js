@@ -41,7 +41,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get("/api/users")
-        .set("Cookie", [`token=${adminToken}`]);
+        .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
@@ -83,7 +83,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get("/api/users")
-        .set("Cookie", [`token=${userToken}`]);
+        .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty("message");
@@ -123,7 +123,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get(`/api/users/user/${adminUserRegistrationResponse.body.insertId}`)
-        .set("Cookie", [`token=${adminToken}`]);
+        .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("userId");
@@ -161,7 +161,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .get(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", [`token=${userToken}`]);
+        .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty("message");
@@ -206,7 +206,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .put(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", [`token=${userToken}`])
+        .set("Cookie", `token=${userToken}`)
         .send(updatedUser);
 
       expect(response.status).toBe(200);
@@ -246,7 +246,7 @@ describe("Users API", () => {
 
       const response = await request(app)
         .delete(`/api/users/user/${userRegistrationResponse.body.insertId}`)
-        .set("Cookie", [`token=${userToken}`]);
+        .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("message");

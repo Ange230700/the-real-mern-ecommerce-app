@@ -22,6 +22,7 @@ describe("UserRepository", () => {
       username: "user909",
       email: "user909@user909.user909",
       password: "user909",
+      is_admin: 0,
     };
 
     const encryptedPassword = CryptoJS.AES.encrypt(
@@ -50,6 +51,7 @@ describe("UserRepository", () => {
       username: "user989",
       email: "user989@user989.user989",
       password: "user989",
+      is_admin: 0,
     };
 
     const encryptedPassword = CryptoJS.AES.encrypt(

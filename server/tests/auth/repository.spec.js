@@ -1,4 +1,4 @@
-const { database, tables, CryptoJS } = require("../config");
+const { database, tables } = require("../config");
 
 describe("AuthRepository", () => {
   afterAll(async () => {
@@ -14,14 +14,8 @@ describe("AuthRepository", () => {
       username: "user0000",
       email: "user0000@user0000.user0000",
       password: "user0000",
+      is_admin: 0,
     };
-
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      user.password,
-      process.env.APP_SECRET
-    ).toString();
-
-    user.password = encryptedPassword;
 
     const insertId = await tables.Auth.createUser(user);
 
