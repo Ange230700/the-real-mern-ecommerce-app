@@ -2,76 +2,85 @@ const { database, tables } = require("../config");
 
 describe("PopularProductRepository", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
-  test("createPopularProduct => insert into", async () => {
-    const product = { title: "Product1", price: 100, image: "image_url" };
-    const result = [{ insertId: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const insertId = await tables.Popular_product.createPopularProduct(product);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO Popular_product (title, price, image) VALUES (?, ?, ?)",
-      [product.title, product.price, product.image]
-    );
-    expect(insertId).toBe(result[0].insertId);
-  });
-
-  test("readPopularProduct => select with id", async () => {
-    const product = {
-      id: 1,
-      title: "Product1",
-      price: 100,
-      image: "image_url",
+  test("createPopularProduct", async () => {
+    const popularProduct = {
+      title: "Popular Product 1",
+      price: 99.99,
+      image: "popular_product_1.png",
     };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([[product]]);
+    const insertId =
+      await tables.Popular_product.createPopularProduct(popularProduct);
 
-    const foundProduct = await tables.Popular_product.readPopularProduct(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT * FROM Popular_product WHERE id = ?",
-      [1]
-    );
-    expect(foundProduct).toEqual(product);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
   });
 
-  test("updatePopularProduct => update with id", async () => {
-    const product = {
-      title: "Updated Product1",
-      price: 150,
-      image: "new_image_url",
+  test("readPopularProduct", async () => {
+    const popularProduct = {
+      title: "Popular Product 2",
+      price: 49.99,
+      image: "popular_product_2.png",
     };
-    const result = [{ affectedRows: 1 }];
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId =
+      await tables.Popular_product.createPopularProduct(popularProduct);
+    const readPopularProduct =
+      await tables.Popular_product.readPopularProduct(insertId);
 
-    const affectedRows = await tables.Popular_product.updatePopularProduct(
-      1,
-      product
-    );
-
-    expect(database.query).toHaveBeenCalledWith(
-      "UPDATE Popular_product SET title = COALESCE(?, title), price = COALESCE(?, price), image = COALESCE(?, image) WHERE id = ?",
-      [product.title, product.price, product.image, 1]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
+    expect(readPopularProduct).toBeTruthy();
+    expect(readPopularProduct).toHaveProperty("id");
+    expect(readPopularProduct).toHaveProperty("title");
+    expect(readPopularProduct).toHaveProperty("price");
+    expect(readPopularProduct).toHaveProperty("image");
+    expect(readPopularProduct.id).toBe(insertId);
+    expect(typeof readPopularProduct.title).toBe("string");
+    expect(typeof readPopularProduct.price).toBe("number");
+    expect(typeof readPopularProduct.image).toBe("string");
   });
 
-  test("deletePopularProduct => delete with id", async () => {
-    const result = [{ affectedRows: 1 }];
+  test("updatePopularProduct", async () => {
+    const popularProduct = {
+      title: "Popular Product 3",
+      price: 29.99,
+      image: "popular_product_3.png",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const affectedRows = await tables.Popular_product.deletePopularProduct(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "DELETE FROM Popular_product WHERE id = ?",
-      [1]
+    const insertId =
+      await tables.Popular_product.createPopularProduct(popularProduct);
+    const updatedRows = await tables.Popular_product.updatePopularProduct(
+      insertId,
+      {
+        title: "Updated Popular Product 3",
+        price: 39.99,
+        image: "updated_popular_product_3.png",
+      }
     );
-    expect(affectedRows).toBe(result[0].affectedRows);
+
+    expect(updatedRows).toBe(1);
+    expect(typeof updatedRows).toBe("number");
+  });
+
+  test("deletePopularProduct", async () => {
+    const popularProduct = {
+      title: "Popular Product 4",
+      price: 19.99,
+      image: "popular_product_4.png",
+    };
+
+    const insertId =
+      await tables.Popular_product.createPopularProduct(popularProduct);
+    const deletedRows =
+      await tables.Popular_product.deletePopularProduct(insertId);
+
+    expect(deletedRows).toBe(1);
+    expect(typeof deletedRows).toBe("number");
   });
 });

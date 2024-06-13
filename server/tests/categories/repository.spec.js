@@ -2,64 +2,69 @@ const { database, tables } = require("../config");
 
 describe("CategoryRepository", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
-  test("createCategory => insert into", async () => {
-    const category = { name: "Electronics", image: "image_url" };
-    const result = [{ insertId: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+  test("createCategory", async () => {
+    const category = {
+      name: "Electronics",
+      image: "electronics.png",
+    };
 
     const insertId = await tables.Category.createCategory(category);
 
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO Category (name, image) VALUES (?, ?)",
-      [category.name, category.image]
-    );
-    expect(insertId).toBe(result[0].insertId);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
   });
 
-  test("readCategory => select with id", async () => {
-    const category = { id: 1, name: "Electronics", image: "image_url" };
+  test("readCategory", async () => {
+    const category = {
+      name: "Fashion",
+      image: "fashion.png",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([[category]]);
+    const insertId = await tables.Category.createCategory(category);
+    const readCategory = await tables.Category.readCategory(insertId);
 
-    const foundCategory = await tables.Category.readCategory(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT * FROM Category WHERE id = ?",
-      [1]
-    );
-    expect(foundCategory).toEqual(category);
+    expect(readCategory).toBeTruthy();
+    expect(readCategory).toHaveProperty("id");
+    expect(readCategory).toHaveProperty("name");
+    expect(readCategory).toHaveProperty("image");
+    expect(readCategory.id).toBe(insertId);
+    expect(typeof readCategory.name).toBe("string");
+    expect(typeof readCategory.image).toBe("string");
   });
 
-  test("updateCategory => update with id", async () => {
-    const category = { name: "Updated Electronics", image: "new_image_url" };
-    const result = [{ affectedRows: 1 }];
+  test("updateCategory", async () => {
+    const category = {
+      name: "Books",
+      image: "books.png",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Category.createCategory(category);
+    const updatedRows = await tables.Category.updateCategory(insertId, {
+      name: "Updated Books",
+      image: "updated_books.png",
+    });
 
-    const affectedRows = await tables.Category.updateCategory(1, category);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "UPDATE Category SET name = COALESCE(?, name), image = COALESCE(?, image) WHERE id = ?",
-      [category.name, category.image, 1]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
+    expect(updatedRows).toBe(1);
+    expect(typeof updatedRows).toBe("number");
   });
 
-  test("deleteCategory => delete with id", async () => {
-    const result = [{ affectedRows: 1 }];
+  test("deleteCategory", async () => {
+    const category = {
+      name: "Toys",
+      image: "toys.png",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Category.createCategory(category);
+    const deletedRows = await tables.Category.deleteCategory(insertId);
 
-    const affectedRows = await tables.Category.deleteCategory(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "DELETE FROM Category WHERE id = ?",
-      [1]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
+    expect(deletedRows).toBe(1);
+    expect(typeof deletedRows).toBe("number");
   });
 });

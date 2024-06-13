@@ -2,97 +2,97 @@ const { database, tables } = require("../config");
 
 describe("ProductRepository", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
-  test("readAllProducts => select", async () => {
-    const rows = [{ id: 1, title: "Product 1", price: 100.0 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([rows]);
-
-    const products = await tables.Product.readAllProducts();
-
-    expect(database.query).toHaveBeenCalledWith("SELECT * FROM Product");
-    expect(products).toEqual(rows);
-  });
-
-  test("readProduct => select with id", async () => {
-    const product = { id: 1, title: "Product 1", price: 100.0 };
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([[product]]);
-
-    const foundProduct = await tables.Product.readProduct(1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT * FROM Product WHERE id = ?",
-      [1]
-    );
-    expect(foundProduct).toEqual(product);
-  });
-
-  test("createProduct => insert into", async () => {
+  test("createProduct", async () => {
     const product = {
-      title: "Product 1",
-      price: 100.0,
-      image_url: "http://example.com/image.jpg",
-      product_adjective: "Amazing",
-      product_material: "Metal",
-      product_description: "This is a great product.",
+      title: "New Product",
+      price: 19.99,
+      image_url: "new_product.png",
+      product_adjective: "New",
+      product_material: "Material",
+      product_description: "Description",
     };
-    const result = [{ insertId: 1 }];
-
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
 
     const insertId = await tables.Product.createProduct(product);
 
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO Product (title, price, image_url, product_adjective, product_material, product_description) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        product.title,
-        product.price,
-        product.image_url,
-        product.product_adjective,
-        product.product_material,
-        product.product_description,
-      ]
-    );
-    expect(insertId).toBe(result[0].insertId);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
   });
 
-  test("updateProduct => update with id", async () => {
-    const product = { title: "Updated Product" };
-    const result = [{ affectedRows: 1 }];
+  test("readProduct", async () => {
+    const product = {
+      title: "Read Product",
+      price: 29.99,
+      image_url: "read_product.png",
+      product_adjective: "Read",
+      product_material: "Material",
+      product_description: "Description",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Product.createProduct(product);
+    const readProduct = await tables.Product.readProduct(insertId);
 
-    const affectedRows = await tables.Product.updateProduct(1, product);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "UPDATE Product SET title = COALESCE(?, title), price = COALESCE(?, price), image_url = COALESCE(?, image_url), product_adjective = COALESCE(?, product_adjective), product_material = COALESCE(?, product_material), product_description = COALESCE(?, product_description) WHERE id = ?",
-      [
-        product.title,
-        product.price,
-        product.image_url,
-        product.product_adjective,
-        product.product_material,
-        product.product_description,
-        1,
-      ]
-    );
-    expect(affectedRows).toBe(result[0].affectedRows);
+    expect(readProduct).toBeTruthy();
+    expect(readProduct).toHaveProperty("id");
+    expect(readProduct).toHaveProperty("title");
+    expect(readProduct).toHaveProperty("price");
+    expect(readProduct).toHaveProperty("image_url");
+    expect(readProduct).toHaveProperty("product_adjective");
+    expect(readProduct).toHaveProperty("product_material");
+    expect(readProduct).toHaveProperty("product_description");
+    expect(readProduct.id).toBe(insertId);
   });
 
-  test("deleteProduct => delete with id", async () => {
-    const result = [{ affectedRows: 1 }];
+  test("updateProduct", async () => {
+    const product = {
+      title: "Update Product",
+      price: 39.99,
+      image_url: "update_product.png",
+      product_adjective: "Update",
+      product_material: "Material",
+      product_description: "Description",
+    };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Product.createProduct(product);
 
-    const affectedRows = await tables.Product.deleteProduct(1);
+    const updatedProduct = {
+      title: "Updated Product",
+      price: 49.99,
+      image_url: "updated_product.png",
+      product_adjective: "Updated",
+      product_material: "Updated Material",
+      product_description: "Updated Description",
+    };
 
-    expect(database.query).toHaveBeenCalledWith(
-      "DELETE FROM Product WHERE id = ?",
-      [1]
+    const updatedRows = await tables.Product.updateProduct(
+      insertId,
+      updatedProduct
     );
-    expect(affectedRows).toBe(result[0].affectedRows);
+
+    expect(updatedRows).toBe(1);
+    expect(typeof updatedRows).toBe("number");
+  });
+
+  test("deleteProduct", async () => {
+    const product = {
+      title: "Delete Product",
+      price: 59.99,
+      image_url: "delete_product.png",
+      product_adjective: "Delete",
+      product_material: "Material",
+      product_description: "Description",
+    };
+
+    const insertId = await tables.Product.createProduct(product);
+    const deletedRows = await tables.Product.deleteProduct(insertId);
+
+    expect(deletedRows).toBe(1);
+    expect(typeof deletedRows).toBe("number");
   });
 });

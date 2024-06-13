@@ -2,64 +2,64 @@ const { database, tables } = require("../config");
 
 describe("PurchaseRepository", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
-  test("createPurchase => insert into", async () => {
-    const purchase = { user_id: 1, total: 100 };
-    const result = [{ insertId: 1 }];
+  test("createPurchase", async () => {
+    const user = { user_id: 1, total: 100 };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
 
-    const insertId = await tables.Purchase.createPurchase(1, purchase);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "INSERT INTO Purchase (user_id, total) VALUES (?, ?)",
-      [purchase.user_id, purchase.total]
-    );
-    expect(insertId).toBe(result[0].insertId);
+    expect(insertId).toBeTruthy();
+    expect(typeof insertId).toBe("number");
   });
 
-  test("readPurchase => select with ids", async () => {
-    const purchase = { id: 1, user_id: 1, total: 100 };
+  test("readPurchase", async () => {
+    const user = { user_id: 1, total: 200 };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([[purchase]]);
-
-    const foundPurchase = await tables.Purchase.readPurchase(1, 1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "SELECT * FROM Purchase WHERE id = ? AND user_id = ?",
-      [1, 1]
+    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
+    const readPurchase = await tables.Purchase.readPurchase(
+      insertId,
+      user.user_id
     );
-    expect(foundPurchase).toEqual(purchase);
+
+    expect(readPurchase).toBeTruthy();
+    expect(readPurchase).toHaveProperty("user_id");
+    expect(readPurchase).toHaveProperty("total");
+    expect(readPurchase.user_id).toBe(user.user_id);
+    expect(readPurchase.total).toBe(user.total);
   });
 
-  test("updatePurchase => update with ids", async () => {
-    const purchase = { user_id: 1, total: 150 };
-    const result = [{ affectedRows: 1 }];
+  test("updatePurchase", async () => {
+    const user = { user_id: 1, total: 300 };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
 
-    const affectedRows = await tables.Purchase.updatePurchase(1, 1, purchase);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "UPDATE Purchase SET total = COALESCE(?, total) WHERE id = ? AND user_id = ?",
-      [purchase.total, 1, 1]
+    const updatedPurchase = { user_id: 1, total: 400 };
+    const updatedRows = await tables.Purchase.updatePurchase(
+      insertId,
+      user.user_id,
+      updatedPurchase
     );
-    expect(affectedRows).toBe(result[0].affectedRows);
+
+    expect(updatedRows).toBe(1);
+    expect(typeof updatedRows).toBe("number");
   });
 
-  test("deletePurchase => delete with ids", async () => {
-    const result = [{ affectedRows: 1 }];
+  test("deletePurchase", async () => {
+    const user = { user_id: 1, total: 500 };
 
-    jest.spyOn(database, "query").mockResolvedValueOnce([result]);
-
-    const affectedRows = await tables.Purchase.deletePurchase(1, 1);
-
-    expect(database.query).toHaveBeenCalledWith(
-      "DELETE FROM Purchase WHERE id = ? AND user_id = ?",
-      [1, 1]
+    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
+    const deletedRows = await tables.Purchase.deletePurchase(
+      insertId,
+      user.user_id
     );
-    expect(affectedRows).toBe(result[0].affectedRows);
+
+    expect(deletedRows).toBe(1);
+    expect(typeof deletedRows).toBe("number");
   });
 });

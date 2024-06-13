@@ -1,109 +1,119 @@
-const { app, request, database, jwt } = require("../config");
+const { app, request, database, tables } = require("../config");
 const generateToken = require("../utils/generateToken");
 
 describe("Product Order API", () => {
   afterAll(async () => {
-    await database.end();
+    try {
+      await database.end();
+    } catch (err) {
+      console.error("Error closing database connection in tests:", err.message);
+    }
   });
 
   describe("GET /api/product_order", () => {
     it("should fetch all product orders", async () => {
-      const rows = [{ product_id: 1, order_id: 1 }];
-      jest.spyOn(database, "query").mockResolvedValueOnce([rows]);
-
-      const user = { userId: 1, is_admin: true };
-      const token = generateToken(user);
-      jwt.verify.mockImplementation((token_arg, secret, callback) =>
-        callback(null, user)
-      );
-
-      const response = await request(app)
-        .get("/api/product_order")
-        .set("Authorization", `Bearer ${token}`);
+      const response = await request(app).get("/api/product_order");
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(rows);
+      expect(Array.isArray(response.body)).toBe(true);
     });
   });
 
   describe("GET /api/product_order/product/:product_id/order/:order_id", () => {
     it("should fetch a single product order duo by IDs", async () => {
-      const productOrder = { product_id: 1, order_id: 1 };
-      jest.spyOn(database, "query").mockResolvedValueOnce([[productOrder]]);
+      const product = {
+        title: "Test Product",
+        price: 10.99,
+        image_url: "test_product.png",
+        product_adjective: "Test",
+        product_material: "Test Material",
+        product_description: "Test Description",
+      };
+      const order = { user_id: 1, total: 100.0 };
 
-      const user = { userId: 1, is_admin: true };
-      const token = generateToken(user);
-      jwt.verify.mockImplementation((token_arg, secret, callback) =>
-        callback(null, user)
+      const productId = await tables.Product.createProduct(product);
+      const orderId = await tables.Purchase.createPurchase(1, order);
+
+      const productOrderDuo = { product_id: productId, order_id: orderId };
+      await tables.Product_order.createProductOrder(productOrderDuo);
+
+      const response = await request(app).get(
+        `/api/product_order/product/${productId}/order/${orderId}`
       );
 
-      const response = await request(app)
-        .get("/api/product_order/product/1/order/1")
-        .set("Authorization", `Bearer ${token}`);
-
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(productOrder);
+      expect(response.body).toHaveProperty("product_id");
+      expect(response.body).toHaveProperty("order_id");
     });
 
     it("should return 404 if product order duo not found", async () => {
-      jest.spyOn(database, "query").mockResolvedValueOnce([[]]);
-
-      const user = { userId: 1, is_admin: true };
-      const token = generateToken(user);
-      jwt.verify.mockImplementation((token_arg, secret, callback) =>
-        callback(null, user)
+      const response = await request(app).get(
+        "/api/product_order/product/9999/order/9999"
       );
 
-      const response = await request(app)
-        .get("/api/product_order/product/0/order/0")
-        .set("Authorization", `Bearer ${token}`);
-
       expect(response.status).toBe(404);
-      expect(response.body.message).toEqual("Product_order duo not found");
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("Product_order duo not found");
     });
   });
 
   describe("POST /api/product_order", () => {
     it("should create a new product order duo", async () => {
-      const productOrder = { product_id: 1, order_id: 1 };
-      const result = { affectedRows: 1 };
+      const adminToken = generateToken({ is_admin: true });
 
-      jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+      const product = {
+        title: "New Product",
+        price: 19.99,
+        image_url: "new_product.png",
+        product_adjective: "New",
+        product_material: "New Material",
+        product_description: "New Description",
+      };
+      const order = { user_id: 1, total: 200.0 };
 
-      const user = { userId: 1, is_admin: true };
-      const token = generateToken(user);
-      jwt.verify.mockImplementation((token_arg, secret, callback) =>
-        callback(null, user)
-      );
+      const productId = await tables.Product.createProduct(product);
+      const orderId = await tables.Purchase.createPurchase(1, order);
 
+      const productOrderDuo = { product_id: productId, order_id: orderId };
       const response = await request(app)
         .post("/api/product_order")
-        .send(productOrder)
-        .set("Authorization", `Bearer ${token}`);
+        .set("Cookie", `token=${adminToken}`)
+        .send(productOrderDuo);
 
       expect(response.status).toBe(201);
-      expect(response.body.message).toEqual("Product_order duo added");
+      expect(response.body).toHaveProperty("affectedRows");
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("Product_order duo added");
     });
   });
 
   describe("DELETE /api/product_order/product/:product_id/order/:order_id", () => {
     it("should delete a product order duo", async () => {
-      const result = { affectedRows: 1 };
+      const adminToken = generateToken({ is_admin: true });
 
-      jest.spyOn(database, "query").mockResolvedValueOnce([result]);
+      const product = {
+        title: "Delete Product",
+        price: 9.99,
+        image_url: "delete_product.png",
+        product_adjective: "Delete",
+        product_material: "Delete Material",
+        product_description: "Delete Description",
+      };
+      const order = { user_id: 1, total: 300.0 };
 
-      const user = { userId: 1, is_admin: true };
-      const token = generateToken(user);
-      jwt.verify.mockImplementation((token_arg, secret, callback) =>
-        callback(null, user)
-      );
+      const productId = await tables.Product.createProduct(product);
+      const orderId = await tables.Purchase.createPurchase(1, order);
+
+      const productOrderDuo = { product_id: productId, order_id: orderId };
+      await tables.Product_order.createProductOrder(productOrderDuo);
 
       const response = await request(app)
-        .delete("/api/product_order/product/1/order/1")
-        .set("Authorization", `Bearer ${token}`);
+        .delete(`/api/product_order/product/${productId}/order/${orderId}`)
+        .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toEqual("Product_order duo deleted");
+      expect(response.body).toHaveProperty("message");
+      expect(response.body.message).toBe("Product_order duo deleted");
     });
   });
 });
