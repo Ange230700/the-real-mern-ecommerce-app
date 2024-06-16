@@ -42,7 +42,11 @@ describe("PopularProductRepository", () => {
     expect(readPopularProduct).toHaveProperty("image");
     expect(readPopularProduct.id).toBe(insertId);
     expect(typeof readPopularProduct.title).toBe("string");
-    expect(typeof readPopularProduct.price).toBe("number");
+
+    const price = Number(readPopularProduct.price);
+    expect(typeof price).toBe("number");
+    expect(price).toBe(popularProduct.price);
+
     expect(typeof readPopularProduct.image).toBe("string");
   });
 
