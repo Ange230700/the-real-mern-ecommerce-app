@@ -9,7 +9,7 @@ describe("Product Order API", () => {
     }
   });
 
-  describe("GET /api/product_order", () => {
+  describe("GET /api/product_order/user/:user_id", () => {
     it("should fetch all product orders", async () => {
       const userToRegister = {
         username: "user33333",
@@ -39,7 +39,9 @@ describe("Product Order API", () => {
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/product_order")
+        .get(
+          `/api/product_order/user/${userRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);
@@ -53,7 +55,7 @@ describe("Product Order API", () => {
     });
   });
 
-  describe("GET /api/product_order/product/:product_id/order/:order_id", () => {
+  describe("GET /api/product_order/product/:product_id/order/:order_id/user/:user_id", () => {
     it("should fetch a single product order duo by IDs", async () => {
       const userToRegister = {
         username: "user44444",
@@ -105,7 +107,9 @@ describe("Product Order API", () => {
       await tables.Product_order.createProductOrder(productOrderDuo);
 
       const response = await request(app)
-        .get(`/api/product_order/product/${productId}/order/${orderId}`)
+        .get(
+          `/api/product_order/product/${productId}/order/${orderId}/user/${userRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);
@@ -142,7 +146,9 @@ describe("Product Order API", () => {
       const userToken = userLoginResponse.body.token;
 
       const response = await request(app)
-        .get("/api/product_order/product/9999/order/9999")
+        .get(
+          `/api/product_order/product/9999/order/9999/user/${userRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(404);
@@ -151,7 +157,7 @@ describe("Product Order API", () => {
     });
   });
 
-  describe("POST /api/product_order", () => {
+  describe("POST /api/product_order/user/:user_id", () => {
     it("should create a new product order duo", async () => {
       const userToRegister = {
         username: "user54321",
@@ -188,14 +194,22 @@ describe("Product Order API", () => {
         product_material: "New Material",
         product_description: "New Description",
       };
-      const order = { user_id: 1, total: 200.0 };
+      const order = {
+        user_id: userRegistrationResponse.body.insertId,
+        total: 200.0,
+      };
 
       const productId = await tables.Product.createProduct(product);
-      const orderId = await tables.Purchase.createPurchase(1, order);
+      const orderId = await tables.Purchase.createPurchase(
+        userRegistrationResponse.body.insertId,
+        order
+      );
 
       const productOrderDuo = { product_id: productId, order_id: orderId };
       const response = await request(app)
-        .post("/api/product_order")
+        .post(
+          `/api/product_order/user/${userRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${userToken}`)
         .send(productOrderDuo);
 
@@ -206,7 +220,7 @@ describe("Product Order API", () => {
     });
   });
 
-  describe("DELETE /api/product_order/product/:product_id/order/:order_id", () => {
+  describe("DELETE /api/product_order/product/:product_id/order/:order_id/user/:user_id", () => {
     it("should delete a product order duo", async () => {
       const userToRegister = {
         username: "user091",
@@ -258,7 +272,9 @@ describe("Product Order API", () => {
       await tables.Product_order.createProductOrder(productOrderDuo);
 
       const response = await request(app)
-        .delete(`/api/product_order/product/${productId}/order/${orderId}`)
+        .delete(
+          `/api/product_order/product/${productId}/order/${orderId}/user/${userRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${userToken}`);
 
       expect(response.status).toBe(200);
