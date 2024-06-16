@@ -1,5 +1,4 @@
 const { app, request, database, tables } = require("../config");
-const generateToken = require("../utils/generateToken");
 
 describe("Products API", () => {
   afterAll(async () => {
@@ -50,9 +49,35 @@ describe("Products API", () => {
     });
   });
 
-  describe("POST /api/products/product", () => {
+  describe("POST /api/products/product/user/:user_id", () => {
     it("should add a new product", async () => {
-      const adminToken = generateToken({ is_admin: true });
+      const adminToRegister = {
+        username: "admin898989",
+        email: "admin898989@admin898989.admin898989",
+        password: "admin898989",
+        is_admin: true,
+      };
+
+      const adminRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(adminToRegister);
+
+      expect(adminRegistrationResponse.status).toBe(201);
+      expect(adminRegistrationResponse.body).toHaveProperty("insertId");
+
+      const adminCredentials = {
+        email: "admin898989@admin898989.admin898989",
+        password: "admin898989",
+      };
+
+      const adminLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(adminCredentials);
+
+      expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body.token).toBeTruthy();
+
+      const adminToken = adminLoginResponse.body.token;
 
       const product = {
         title: "New Product",
@@ -63,7 +88,9 @@ describe("Products API", () => {
         product_description: "New Description",
       };
       const response = await request(app)
-        .post("/api/products/product")
+        .post(
+          `/api/products/product/user/${adminRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${adminToken}`)
         .send(product);
 
@@ -74,9 +101,35 @@ describe("Products API", () => {
     });
   });
 
-  describe("PUT /api/products/product/:product_id", () => {
+  describe("PUT /api/products/product/:product_id/user/:user_id", () => {
     it("should update an existing product", async () => {
-      const adminToken = generateToken({ is_admin: true });
+      const adminToRegister = {
+        username: "admin989898",
+        email: "admin989898@admin989898.admin989898",
+        password: "admin989898",
+        is_admin: true,
+      };
+
+      const adminRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(adminToRegister);
+
+      expect(adminRegistrationResponse.status).toBe(201);
+      expect(adminRegistrationResponse.body).toHaveProperty("insertId");
+
+      const adminCredentials = {
+        email: "admin989898@admin989898.admin989898",
+        password: "admin989898",
+      };
+
+      const adminLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(adminCredentials);
+
+      expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body.token).toBeTruthy();
+
+      const adminToken = adminLoginResponse.body.token;
 
       const product = {
         title: "Update Product",
@@ -97,7 +150,9 @@ describe("Products API", () => {
         product_description: "Updated Description",
       };
       const response = await request(app)
-        .put(`/api/products/product/${productId}`)
+        .put(
+          `/api/products/product/${productId}/user/${adminRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${adminToken}`)
         .send(updatedProduct);
 
@@ -107,9 +162,35 @@ describe("Products API", () => {
     });
   });
 
-  describe("DELETE /api/products/product/:product_id", () => {
+  describe("DELETE /api/products/product/:product_id/user/:user_id", () => {
     it("should delete a product", async () => {
-      const adminToken = generateToken({ is_admin: true });
+      const adminToRegister = {
+        username: "admin195",
+        email: "admin195@admin195.admin195",
+        password: "admin195",
+        is_admin: true,
+      };
+
+      const adminRegistrationResponse = await request(app)
+        .post("/api/auth/register")
+        .send(adminToRegister);
+
+      expect(adminRegistrationResponse.status).toBe(201);
+      expect(adminRegistrationResponse.body).toHaveProperty("insertId");
+
+      const adminCredentials = {
+        email: "admin195@admin195.admin195",
+        password: "admin195",
+      };
+
+      const adminLoginResponse = await request(app)
+        .post("/api/auth/login")
+        .send(adminCredentials);
+
+      expect(adminLoginResponse.body).toHaveProperty("token");
+      expect(adminLoginResponse.body.token).toBeTruthy();
+
+      const adminToken = adminLoginResponse.body.token;
 
       const product = {
         title: "Delete Product",
@@ -122,7 +203,9 @@ describe("Products API", () => {
       const productId = await tables.Product.createProduct(product);
 
       const response = await request(app)
-        .delete(`/api/products/product/${productId}`)
+        .delete(
+          `/api/products/product/${productId}/user/${adminRegistrationResponse.body.insertId}`
+        )
         .set("Cookie", `token=${adminToken}`);
 
       expect(response.status).toBe(200);

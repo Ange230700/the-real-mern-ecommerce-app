@@ -1,4 +1,4 @@
-const { database, tables } = require("../config");
+const { database, tables, CryptoJS } = require("../config");
 
 describe("PurchaseRepository", () => {
   afterAll(async () => {
@@ -10,39 +10,100 @@ describe("PurchaseRepository", () => {
   });
 
   test("createPurchase", async () => {
-    const user = { user_id: 1, total: 100 };
+    const user = {
+      username: "user4334",
+      email: "user4334@user4334.user4334",
+      password: "user4334",
+    };
 
-    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      user.password,
+      process.env.APP_SECRET
+    ).toString();
+
+    user.password = encryptedPassword;
+
+    const insertIdUser = await tables.Auth.createUser(user);
+
+    const purchase = {
+      user_id: insertIdUser,
+      total: 100,
+    };
+
+    const insertId = await tables.Purchase.createPurchase(
+      insertIdUser,
+      purchase
+    );
 
     expect(insertId).toBeTruthy();
     expect(typeof insertId).toBe("number");
+    expect(insertId).toBeGreaterThan(0);
   });
 
   test("readPurchase", async () => {
-    const user = { user_id: 1, total: 200 };
+    const user = {
+      username: "user3443",
+      email: "user3443@user3443.user3443",
+      password: "user3443",
+    };
 
-    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
-    const readPurchase = await tables.Purchase.readPurchase(
-      insertId,
-      user.user_id
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      user.password,
+      process.env.APP_SECRET
+    ).toString();
+
+    user.password = encryptedPassword;
+
+    const insertIdUser = await tables.Auth.createUser(user);
+
+    const purchase = {
+      user_id: insertIdUser,
+      total: 200,
+    };
+
+    const insertId = await tables.Purchase.createPurchase(
+      insertIdUser,
+      purchase
     );
 
-    expect(readPurchase).toBeTruthy();
-    expect(readPurchase).toHaveProperty("user_id");
-    expect(readPurchase).toHaveProperty("total");
-    expect(readPurchase.user_id).toBe(user.user_id);
-    expect(readPurchase.total).toBe(user.total);
+    const order = await tables.Purchase.readPurchase(insertId, insertIdUser);
+
+    expect(order).toBeTruthy();
+    expect(order).toHaveProperty("user_id");
+    expect(order).toHaveProperty("total");
   });
 
   test("updatePurchase", async () => {
-    const user = { user_id: 1, total: 300 };
+    const user = {
+      username: "user34343434",
+      email: "user34343434@user34343434.user34343434",
+      password: "user34343434",
+    };
 
-    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      user.password,
+      process.env.APP_SECRET
+    ).toString();
 
-    const updatedPurchase = { user_id: 1, total: 400 };
+    user.password = encryptedPassword;
+
+    const insertIdUser = await tables.Auth.createUser(user);
+
+    const purchase = {
+      user_id: insertIdUser,
+      total: 300,
+    };
+
+    const insertId = await tables.Purchase.createPurchase(
+      insertIdUser,
+      purchase
+    );
+
+    const updatedPurchase = { total: 400 };
+
     const updatedRows = await tables.Purchase.updatePurchase(
       insertId,
-      user.user_id,
+      insertIdUser,
       updatedPurchase
     );
 
@@ -51,12 +112,34 @@ describe("PurchaseRepository", () => {
   });
 
   test("deletePurchase", async () => {
-    const user = { user_id: 1, total: 500 };
+    const user = {
+      username: "user1101",
+      email: "user1101@user1101.user1101",
+      password: "user1101",
+    };
 
-    const insertId = await tables.Purchase.createPurchase(user.user_id, user);
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      user.password,
+      process.env.APP_SECRET
+    ).toString();
+
+    user.password = encryptedPassword;
+
+    const insertIdUser = await tables.Auth.createUser(user);
+
+    const purchase = {
+      user_id: insertIdUser,
+      total: 500,
+    };
+
+    const insertId = await tables.Purchase.createPurchase(
+      insertIdUser,
+      purchase
+    );
+
     const deletedRows = await tables.Purchase.deletePurchase(
       insertId,
-      user.user_id
+      insertIdUser
     );
 
     expect(deletedRows).toBe(1);

@@ -129,7 +129,7 @@ const addProduct = async (request, response, next) => {
     if (!insertId) {
       response.status(404).json({ message: "Product not added" });
     } else {
-      response.status(200).json({
+      response.status(201).json({
         insertId,
         message: "Product added",
       });
