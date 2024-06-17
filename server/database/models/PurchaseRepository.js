@@ -7,7 +7,7 @@ class PurchaseRepository extends AbstractRepository {
 
   async readAllPurchases(user_id) {
     const [purchases] = await this.database.query(
-      `SELECT ${this.table}.user_id, ${this.table}.total, User.username, User.is_admin FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ? AND ${this.table}.user_id = User.id`,
+      `SELECT ${this.table}.user_id, ${this.table}.total, User.username, User.is_admin FROM ${this.table} JOIN User ON ${this.table}.user_id = User.id WHERE ${this.table}.user_id = ?`,
       [user_id]
     );
 
