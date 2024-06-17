@@ -17,6 +17,7 @@ const createPaymentIntent = async (request, response, next) => {
 
     response.status(200).send({ success: paymentIntent });
   } catch (error) {
+    // console.error("Stripe error:", error); // Add detailed logging
     response.status(500).send({ error: error.message });
   }
 };
