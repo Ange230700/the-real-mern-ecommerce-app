@@ -25,11 +25,11 @@
     "lint": "lint-staged",
     "prebuild": "npm install --legacy-peer-deps",
     "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspace=server  --if-present",
+    "test": "npx jest",
     "clean": "cross-env-shell \"rm -rf ./client/node_modules ./client/package-lock.json ./server/node_modules ./server/package-lock.json ./node_modules ./package-lock.json\"",
     "prettier": "npm run prettier --workspaces --if-present",
     "lints": "npm run lint --workspaces",
-    "start": "npm run prettier && npm run lints && npm run build && npm run commit && npm run dev && npm run test",
+    "start": "npm run prettier && npm run lints && npm run build && npm run commit && npm run dev",
     "commit": "npm run prettier && npm run lints && git add . && git commit -m \"working...\""
   },
   "keywords": [],
