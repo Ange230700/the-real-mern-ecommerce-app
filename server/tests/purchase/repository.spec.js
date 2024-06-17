@@ -23,21 +23,25 @@ describe("PurchaseRepository", () => {
 
     user.password = encryptedPassword;
 
-    const insertIdUser = await tables.Auth.createUser(user);
+    const id_for_created_user = await tables.Auth.createUser(user);
 
     const purchase = {
-      user_id: insertIdUser,
-      total: 100,
+      user_id: id_for_created_user,
+      total: 100.0,
     };
 
-    const insertId = await tables.Purchase.createPurchase(
-      insertIdUser,
+    const id_for_created_order = await tables.Purchase.createPurchase(
+      id_for_created_user,
       purchase
     );
 
-    expect(insertId).toBeTruthy();
-    expect(typeof insertId).toBe("number");
-    expect(insertId).toBeGreaterThan(0);
+    expect(id_for_created_order).toBeTruthy();
+    expect(typeof id_for_created_order).toBe("number");
+    expect(id_for_created_order).toBeGreaterThan(0);
+
+    const total = Number(purchase.total);
+    expect(typeof total).toBe("number");
+    expect(total).toBe(purchase.total);
   });
 
   test("readPurchase", async () => {
@@ -54,23 +58,31 @@ describe("PurchaseRepository", () => {
 
     user.password = encryptedPassword;
 
-    const insertIdUser = await tables.Auth.createUser(user);
+    const id_for_created_user = await tables.Auth.createUser(user);
 
     const purchase = {
-      user_id: insertIdUser,
-      total: 200,
+      user_id: id_for_created_user,
+      total: 200.0,
     };
 
-    const insertId = await tables.Purchase.createPurchase(
-      insertIdUser,
+    const id_for_created_order = await tables.Purchase.createPurchase(
+      id_for_created_user,
       purchase
     );
 
-    const order = await tables.Purchase.readPurchase(insertId, insertIdUser);
+    const order = await tables.Purchase.readPurchase(
+      id_for_created_order,
+      id_for_created_user
+    );
 
     expect(order).toBeTruthy();
     expect(order).toHaveProperty("user_id");
     expect(order).toHaveProperty("total");
+    expect(order.user_id).toBe(id_for_created_user);
+
+    const total = Number(order.total);
+    expect(typeof total).toBe("number");
+    expect(total).toBe(purchase.total);
   });
 
   test("updatePurchase", async () => {
@@ -87,28 +99,32 @@ describe("PurchaseRepository", () => {
 
     user.password = encryptedPassword;
 
-    const insertIdUser = await tables.Auth.createUser(user);
+    const id_for_created_user = await tables.Auth.createUser(user);
 
     const purchase = {
-      user_id: insertIdUser,
-      total: 300,
+      user_id: id_for_created_user,
+      total: 300.0,
     };
 
-    const insertId = await tables.Purchase.createPurchase(
-      insertIdUser,
+    const id_for_created_purchase = await tables.Purchase.createPurchase(
+      id_for_created_user,
       purchase
     );
 
-    const updatedPurchase = { total: 400 };
+    const updatedPurchase = { total: 400.0 };
 
     const updatedRows = await tables.Purchase.updatePurchase(
-      insertId,
-      insertIdUser,
+      id_for_created_purchase,
+      id_for_created_user,
       updatedPurchase
     );
 
     expect(updatedRows).toBe(1);
     expect(typeof updatedRows).toBe("number");
+
+    const total = Number(updatedPurchase.total);
+    expect(typeof total).toBe("number");
+    expect(total).toBe(updatedPurchase.total);
   });
 
   test("deletePurchase", async () => {
@@ -125,24 +141,28 @@ describe("PurchaseRepository", () => {
 
     user.password = encryptedPassword;
 
-    const insertIdUser = await tables.Auth.createUser(user);
+    const id_for_created_user = await tables.Auth.createUser(user);
 
     const purchase = {
-      user_id: insertIdUser,
-      total: 500,
+      user_id: id_for_created_user,
+      total: 500.0,
     };
 
     const insertId = await tables.Purchase.createPurchase(
-      insertIdUser,
+      id_for_created_user,
       purchase
     );
 
     const deletedRows = await tables.Purchase.deletePurchase(
       insertId,
-      insertIdUser
+      id_for_created_user
     );
 
     expect(deletedRows).toBe(1);
     expect(typeof deletedRows).toBe("number");
+
+    const total = Number(purchase.total);
+    expect(typeof total).toBe("number");
+    expect(total).toBe(purchase.total);
   });
 });

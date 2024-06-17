@@ -23,28 +23,16 @@ class PurchaseRepository extends AbstractRepository {
     return purchases[0];
   }
 
-  async updatePurchase(order_id, userId, { user_id, total }) {
-    if (!userId) {
-      throw new Error("User ID is required");
-    }
-
+  async updatePurchase(order_id, user_id, { total }) {
     const [result] = await this.database.query(
       `UPDATE ${this.table} SET total = COALESCE(?, total) WHERE id = ? AND user_id = ?`,
-      [user_id, total, order_id, userId]
+      [total, order_id, user_id]
     );
 
     return result.affectedRows;
   }
 
-  async createPurchase(userId, { user_id, total }) {
-    if (!userId) {
-      throw new Error("User ID is required");
-    }
-
-    if (user_id !== Number(userId)) {
-      throw new Error("User ID is invalid");
-    }
-
+  async createPurchase(user_id, { total }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (user_id, total) VALUES (?, ?)`,
       [user_id, total]
