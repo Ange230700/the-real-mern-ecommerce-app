@@ -56,11 +56,6 @@ const editPurchase = async (request, response, next) => {
       return;
     }
 
-    if (purchase.user_id !== Number(user_id)) {
-      response.status(403).json({ message: "You are not allowed to do that" });
-      return;
-    }
-
     const affectedRows = await tables.Purchase.updatePurchase(
       order_id,
       user_id,

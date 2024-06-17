@@ -9,7 +9,7 @@
     "db:seed": "node ./bin/seed.js",
     "build": "npm run db:migrate && npm run db:seed",
     "start": "node index.js",
-    "test": "jest",
+    "test": "npx jest",
     "prettier": "npx prettier --write .",
     "lint": "npx eslint . --fix"
   },
