@@ -12,7 +12,7 @@ describe("Payment API", () => {
   describe("POST /api/checkout/payment", () => {
     it("should create a payment intent", async () => {
       const paymentInfo = {
-        tokenId: "tok_visa",
+        tokenId: "tok_visa", // Use a valid Stripe test token
         amount: 2000,
       };
 
