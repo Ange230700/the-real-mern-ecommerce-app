@@ -1,11 +1,3 @@
-/*
-  eslint-disable no-var
-*/
-
-/*
-  eslint-disable prefer-const
-*/
-
 import { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 
@@ -31,8 +23,7 @@ function HeroCarousel() {
 
   const settings = {
     dots: false,
-    infinite: true,
-    speed: 500,
+    infinite: false,
     slidesToShow: 1,
     slidesToScroll: 1,
     prevArrow: <PrevArrow onClick={previous} />,
