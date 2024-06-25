@@ -1,3 +1,4 @@
+const { faker } = require("@faker-js/faker");
 const { database, tables } = require("../config");
 
 describe("SliderItemRepository", () => {
@@ -12,7 +13,7 @@ describe("SliderItemRepository", () => {
   test("createSliderItem", async () => {
     const sliderItem = {
       title: "New Slider Item",
-      image: "new_slider_item.png",
+      image: faker.image.url(),
     };
 
     const insertId = await tables.Slider_item.createSliderItem(sliderItem);
@@ -24,7 +25,7 @@ describe("SliderItemRepository", () => {
   test("readSliderItem", async () => {
     const sliderItem = {
       title: "Read Slider Item",
-      image: "read_slider_item.png",
+      image: faker.image.url(),
     };
 
     const insertId = await tables.Slider_item.createSliderItem(sliderItem);
@@ -40,14 +41,14 @@ describe("SliderItemRepository", () => {
   test("updateSliderItem", async () => {
     const sliderItem = {
       title: "Update Slider Item",
-      image: "update_slider_item.png",
+      image: faker.image.url(),
     };
 
     const insertId = await tables.Slider_item.createSliderItem(sliderItem);
 
     const updatedSliderItem = {
       title: "Updated Slider Item",
-      image: "updated_slider_item.png",
+      image: faker.image.url(),
     };
 
     const updatedRows = await tables.Slider_item.updateSliderItem(
@@ -62,7 +63,7 @@ describe("SliderItemRepository", () => {
   test("deleteSliderItem", async () => {
     const sliderItem = {
       title: "Delete Slider Item",
-      image: "delete_slider_item.png",
+      image: faker.image.url(),
     };
 
     const insertId = await tables.Slider_item.createSliderItem(sliderItem);

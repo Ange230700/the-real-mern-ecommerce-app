@@ -20,8 +20,7 @@ describe("Payment API", () => {
         .post("/api/checkout/payment")
         .send(paymentInfo);
 
-      // console.info("Response:", response.body); // Add detailed logging
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(303);
       expect(response.body).toHaveProperty("success");
     });
 

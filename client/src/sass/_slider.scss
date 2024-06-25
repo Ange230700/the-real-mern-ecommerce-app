@@ -75,6 +75,10 @@
   right: 10px;
 }
 
+.slick-arrow {
+  display: none !important;
+}
+
 /*=============================== BREAKPOINTS ===============================*/
 /* For large devices */
 @media screen and (max-width: 992px) {

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router"; // eslint-disable-line
+import { useLocation } from "react-router";
 
 import { userRequest } from "../requestMethods";
+import Message from "../components/Message";
+import Product from "../components/Product";
 
 function Success() {
   const location = useLocation();
@@ -10,6 +12,19 @@ function Success() {
   const { cart } = location.state;
   const currentUser = useSelector((state) => state.user.currentUser);
   const [order_id, setOrderId] = useState(null);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+
+    if (query.get("success")) {
+      setMessage("Order has been created successfully. Your order number is ");
+    }
+
+    if (query.get("canceled")) {
+      setMessage("Your order has been canceled.");
+    }
+  }, []);
 
   useEffect(() => {
     const createOrder = async () => {
@@ -38,6 +53,7 @@ function Success() {
       {order_id
         ? `Order has been created successfully. Your order number is ${order_id}`
         : `Successful. Your order is being prepared...`}
+      {message ? <Message message={message} /> : <Product />}
       <button className="success-button" type="button">
         Go to Homepage
       </button>

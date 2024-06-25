@@ -1,6 +1,6 @@
 import Announcement from "../components/Announcement";
 import Navbar from "../components/Navbar";
-import Carousel from "../components/HeroCarousel";
+import HeroCarousel from "../components/HeroCarousel";
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import Newsletter from "../components/Newsletter";
@@ -11,7 +11,7 @@ function Home() {
     <div className="home-container">
       <Announcement />
       <Navbar />
-      <Carousel />
+      <HeroCarousel />
       <Categories />
       <Products />
       <Newsletter />

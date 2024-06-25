@@ -24,6 +24,11 @@ function Product({ item }) {
           <FavoriteBorderOutlined />
         </div>
       </div>
+      <form action="/payment" method="POST">
+        <button className="product-button" type="submit">
+          Buy
+        </button>
+      </form>
     </div>
   );
 }
