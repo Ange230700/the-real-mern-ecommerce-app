@@ -15,22 +15,28 @@ import NextArrow from "./NextArrow";
 import { publicRequest } from "../requestMethods";
 
 function HeroCarousel() {
-  let sliderRef = useRef(null);
+  const sliderRef = useRef(null);
 
   const next = () => {
-    sliderRef.slickNext();
+    if (sliderRef.current) {
+      sliderRef.current.slickNext();
+    }
   };
 
   const previous = () => {
-    sliderRef.slickPrev();
+    if (sliderRef.current) {
+      sliderRef.current.slickPrev();
+    }
   };
 
-  var settings = {
+  const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    prevArrow: <PrevArrow onClick={previous} />,
+    nextArrow: <NextArrow onClick={next} />,
   };
 
   const [sliderItems, setSliderItems] = useState([]);
@@ -50,13 +56,7 @@ function HeroCarousel() {
 
   return (
     <div className="slider-container">
-      <Slider
-        className="slider-wrapper"
-        ref={(slider) => {
-          sliderRef = slider;
-        }}
-        {...settings}
-      >
+      <Slider ref={sliderRef} {...settings}>
         {Array.isArray(sliderItems) &&
           sliderItems.map((item) => (
             <div className="slider-slide" key={item.id}>
@@ -76,10 +76,6 @@ function HeroCarousel() {
             </div>
           ))}
       </Slider>
-      <div style={{ textAlign: "center" }}>
-        <PrevArrow previous={previous} />
-        <NextArrow next={next} />
-      </div>
     </div>
   );
 }

@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import { ArrowRightOutlined } from "@material-ui/icons";
 
-function NextArrow({ next }) {
+function NextArrow({ onClick }) {
   return (
     <button
       type="button"
       aria-label="next button"
       className="control-btn next"
-      onClick={next}
+      onClick={onClick}
     >
       <ArrowRightOutlined />
     </button>
@@ -15,7 +15,7 @@ function NextArrow({ next }) {
 }
 
 NextArrow.propTypes = {
-  next: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default NextArrow;
