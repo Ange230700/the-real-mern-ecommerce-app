@@ -1,35 +1,44 @@
-import { useState, useEffect, useRef } from "react";
-import Slider from "react-slick";
+import { useState, useEffect } from "react";
+import Carousel from "react-multi-carousel";
 
 import PrevArrow from "./PrevArrow";
 import NextArrow from "./NextArrow";
 
 import { publicRequest } from "../requestMethods";
 
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 1601 },
+    items: 1,
+  },
+
+  desktop: {
+    breakpoint: { max: 1600, min: 1025 },
+    items: 1,
+  },
+
+  landscapeTablet: {
+    breakpoint: { max: 1024, min: 769 },
+    items: 1,
+  },
+
+  tablet: {
+    breakpoint: { max: 768, min: 481 },
+    items: 1,
+  },
+
+  landscapeMobile: {
+    breakpoint: { max: 480, min: 321 },
+    items: 1,
+  },
+
+  mobile: {
+    breakpoint: { max: 320, min: 0 },
+    items: 1,
+  },
+};
+
 function HeroCarousel() {
-  const sliderRef = useRef(null);
-
-  const next = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickNext();
-    }
-  };
-
-  const previous = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickPrev();
-    }
-  };
-
-  const settings = {
-    dots: false,
-    infinite: false,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    prevArrow: <PrevArrow onClick={previous} />,
-    nextArrow: <NextArrow onClick={next} />,
-  };
-
   const [sliderItems, setSliderItems] = useState([]);
 
   useEffect(() => {
@@ -46,28 +55,31 @@ function HeroCarousel() {
   }, []);
 
   return (
-    <div className="slider-container">
-      <Slider ref={sliderRef} {...settings}>
-        {Array.isArray(sliderItems) &&
-          sliderItems.map((item) => (
-            <div className="slider-slide" key={item.id}>
-              <div className="slider-img-container">
-                <img
-                  className="slider-image"
-                  src={item.image}
-                  alt="slider pic"
-                />
-              </div>
-              <div className="slider-info-container">
-                <h1 className="slider-title">{item.title}</h1>
-                <button type="button" className="slider-button">
-                  SHOW NOW
-                </button>
-              </div>
+    <Carousel
+      className="slider-container"
+      containerClass="container"
+      customLeftArrow={<PrevArrow />}
+      customRightArrow={<NextArrow />}
+      itemClass="item"
+      responsive={responsive}
+      sliderClass="slider"
+      slidesToSlide={1}
+    >
+      {Array.isArray(sliderItems) &&
+        sliderItems.map((item) => (
+          <div className="slider-slide" key={item.id}>
+            <div className="slider-img-container">
+              <img className="slider-image" src={item.image} alt="slider pic" />
             </div>
-          ))}
-      </Slider>
-    </div>
+            <div className="slider-info-container">
+              <h1 className="slider-title">{item.title}</h1>
+              <button type="button" className="slider-button">
+                SHOW NOW
+              </button>
+            </div>
+          </div>
+        ))}
+    </Carousel>
   );
 }
 
