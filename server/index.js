@@ -1,5 +1,5 @@
 // Load environment variables from .env file
-require("dotenv").config();
+require("dotenv").config({ path: "./server/.env" });
 
 // Check database connection
 // Note: This is optional and can be removed if the database connection

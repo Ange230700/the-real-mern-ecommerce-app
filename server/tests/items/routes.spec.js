@@ -5,46 +5,46 @@ const { app, request, database } = require("../config");
 describe("GET /api/items", () => {
   it("should fetch items successfully", async () => {
     // Mock empty rows returned from the database
-    const rows = [];
+    const items = [];
 
     // Mock the implementation of the database query method
-    jest.spyOn(database, "query").mockImplementation(() => [rows]);
+    jest.spyOn(database, "query").mockImplementation(() => [items]);
 
     // Send a GET request to the /api/items endpoint
     const response = await request(app).get("/api/items");
 
     // Assertions
     expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows);
+    expect(response.body).toStrictEqual(items);
   });
 });
 
 // Test suite for the GET /api/items/:id route
-describe("GET /api/items/:id", () => {
+describe("GET /api/items/item/:item_id", () => {
   it("should fetch a single item successfully", async () => {
     // Mock rows returned from the database
-    const rows = [{}];
+    const items = [{}];
 
     // Mock the implementation of the database query method
-    jest.spyOn(database, "query").mockImplementation(() => [rows]);
+    jest.spyOn(database, "query").mockImplementation(() => [items]);
 
     // Send a GET request to the /api/items/:id endpoint
-    const response = await request(app).get(`/api/items/1`);
+    const response = await request(app).get(`/api/items/item/1`);
 
     // Assertions
     expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows[0]);
+    expect(response.body).toStrictEqual(items[0]);
   });
 
   it("should return 404 for non-existent item", async () => {
     // Mock empty rows returned from the database
-    const rows = [];
+    const items = [];
 
     // Mock the implementation of the database query method
-    jest.spyOn(database, "query").mockImplementation(() => [rows]);
+    jest.spyOn(database, "query").mockImplementation(() => [items]);
 
     // Send a GET request to the /api/items/:id endpoint with an invalid ID
-    const response = await request(app).get("/api/items/0");
+    const response = await request(app).get("/api/items/item/0");
 
     // Assertions
     expect(response.status).toBe(404);
@@ -55,7 +55,7 @@ describe("GET /api/items/:id", () => {
 // Test suite for the POST /api/items route
 // Doesn't pass: maybe something to change in app config :/
 // Hint: enabling error log could help ;)
-describe("POST /api/items", () => {
+describe("POST /api/items/item", () => {
   it("should add a new item successfully", async () => {
     // Mock result of the database query
     const result = [{ insertId: 1 }];

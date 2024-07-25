@@ -7,7 +7,7 @@ const UserSeeder = require("./UserSeeder");
 class ItemSeeder extends AbstractSeeder {
   constructor() {
     // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "item", truncate: true, dependencies: [UserSeeder] });
+    super({ table: "Item", truncate: true, dependencies: [UserSeeder] });
   }
 
   // The run method - Populate the 'item' table with fake data

@@ -3,28 +3,37 @@
   "version": "0.0.1",
   "private": true,
   "description": "",
-  "homepage": "https://github.com/WildCodeSchool/full-stack-e-commerce-mern-app#readme",
+  "homepage": "https://github.com/Ange230700/full-stack-e-commerce-mern-app#readme",
   "bugs": {
-    "url": "https://github.com/WildCodeSchool/full-stack-e-commerce-mern-app/issues"
+    "url": "https://github.com/Ange230700/full-stack-e-commerce-mern-app/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WildCodeSchool/full-stack-e-commerce-mern-app.git"
+    "url": "git+https://github.com/Ange230700/full-stack-e-commerce-mern-app.git"
   },
-  "workspaces": ["client", "server"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
-    "postinstall": "husky install || true",
+    "postinstall": "cross-env-shell \"husky install && npm install --workspace=client && npm install --workspace=server\"",
     "db:migrate": "npm run db:migrate --workspace=server",
     "db:seed": "npm run db:seed --workspace=server",
     "dev": "concurrently -c green,yellow -t \"HH:mm:ss\" -p \"{name} {time}\" \"npm:dev:*\"",
     "dev:client": "npm run dev --workspace=client",
     "dev:server": "npm run dev --workspace=server",
     "lint": "lint-staged",
+    "prebuild": "npm install --legacy-peer-deps && npm install --workspace=client --legacy-peer-deps && npm install --workspace=server --legacy-peer-deps",
+    "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "clean": "cross-env-shell \"rm -rf ./client/node_modules ./server/node_modules ./node_modules ./package-lock.json\""
+    "clean": "cross-env-shell \"rm -rf ./client/node_modules ./server/node_modules ./node_modules ./package-lock.json\"",
+    "prettier": "npm run prettier --workspaces --if-present",
+    "lints": "npm run lint --workspaces",
+    "start": "npm run prettier && npm run lints && npm run build && npm run dev",
+    "git_commit": "npm run prettier && npm run lints && git add . && commit -m \"working...\""
   },
   "keywords": [],
-  "author": "WildCodeSchool",
+  "author": "Ange230700",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^19.2.2",
