@@ -1,0 +1,11 @@
+.categories-container {
+  display: flex;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.category-slider {
+  display: flex;
+  flex: 1;
+  list-style-type: none;
+}
