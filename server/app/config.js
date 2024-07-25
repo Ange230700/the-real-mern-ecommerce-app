@@ -29,24 +29,12 @@ const app = express();
 // For example: ["http://mysite.com", "http://another-domain.com"]
 
 /*
-<<<<<<< HEAD
-const cors = require("cors");
-=======
  */
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 app.use(
   cors({
     origin: [
       process.env.CLIENT_URL, // keep this one, after checking the value in `server/.env`
-<<<<<<< HEAD
-      "http://mysite.com",
-      "http://another-domain.com",
-    ]
-  })
-);
-*/
-=======
       // "http://mysite.com",
       // "http://another-domain.com",
       "http://192.168.0.25:3004",
@@ -56,7 +44,6 @@ app.use(
     ],
   })
 );
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 /* ************************************************************************* */
 
@@ -73,13 +60,8 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
-<<<<<<< HEAD
-// app.use(express.json());
-// app.use(express.urlencoded());
-=======
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 // app.use(express.text());
 // app.use(express.raw());
 
@@ -96,14 +78,9 @@ app.use(express.json());
 
 // Then, require the module and use it as middleware in your Express application:
 
-<<<<<<< HEAD
-// const cookieParser = require("cookie-parser");
-// app.use(cookieParser());
-=======
 const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 // Once `cookie-parser` is set up, you can read and set cookies in your routes.
 // For example, to set a cookie named "username" with the value "john":
@@ -138,11 +115,7 @@ app.use("/api", apiRouter);
 // 2. Ensure that the `reactBuildPath` points to the correct directory where your client's build artifacts are located.
 
 /*
-<<<<<<< HEAD
-const path = require("path");
-=======
  */
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 const reactBuildPath = path.join(__dirname, "/../../client/dist");
 const publicFolderPath = path.join(__dirname, "/../public");
@@ -160,10 +133,6 @@ app.get("*.*", express.static(publicFolderPath, { maxAge: "1y" }));
 app.get("*", (_, res) => {
   res.sendFile(path.join(reactBuildPath, "/index.html"));
 });
-<<<<<<< HEAD
-*/
-=======
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 /* ************************************************************************* */
 
@@ -171,10 +140,7 @@ app.get("*", (_, res) => {
 // Important: Error-handling middleware should be defined last, after other app.use() and routes calls.
 
 /*
-<<<<<<< HEAD
-=======
  */
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 // Define a middleware function to log errors
 const logErrors = (err, req, res, next) => {
   // Log the error to the console for debugging purposes
@@ -187,10 +153,6 @@ const logErrors = (err, req, res, next) => {
 
 // Mount the logErrors middleware globally
 app.use(logErrors);
-<<<<<<< HEAD
-*/
-=======
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
 
 /* ************************************************************************* */
 

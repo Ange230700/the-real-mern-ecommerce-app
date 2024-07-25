@@ -24,8 +24,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-<<<<<<< HEAD
-=======
     children: [
       {
         index: true,
@@ -56,7 +54,6 @@ const router = createBrowserRouter([
         element: <Register />,
       },
     ],
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
   },
 ]);
 
@@ -64,14 +61,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-<<<<<<< HEAD
-    <RouterProvider router={router} />
-=======
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <RouterProvider router={router} />
       </PersistGate>
     </Provider>
->>>>>>> 0897825e08ff103213d71573ae155ae27c078b7e
   </React.StrictMode>
 );
