@@ -1,5 +1,7 @@
 // Load environment variables from .env file
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 // Check database connection
 // Note: This is optional and can be removed if the database connection

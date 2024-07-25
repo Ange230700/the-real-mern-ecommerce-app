@@ -1,28 +1,55 @@
+const CryptoJS = require("crypto-js");
 const AbstractSeeder = require("./AbstractSeeder");
 
 class UserSeeder extends AbstractSeeder {
   constructor() {
-    // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "user", truncate: true });
+    super({ table: "User", truncate: true });
   }
 
-  // The run method - Populate the 'user' table with fake data
+  async run() {
+    const fakeAdmin = {
+      username: "admin",
+      email: "admin@admin.admin",
+      password: CryptoJS.AES.encrypt(
+        "admin",
+        process.env.APP_SECRET
+      ).toString(),
+      is_admin: true,
+    };
 
-  run() {
-    // Generate and insert fake data into the 'user' table
-    for (let i = 0; i < 10; i += 1) {
-      // Generate fake user data
+    this.insert(fakeAdmin);
+
+    const fakeTestUser = {
+      username: "user",
+      email: "user@user.user",
+      password: CryptoJS.AES.encrypt("user", process.env.APP_SECRET).toString(),
+    };
+
+    this.insert(fakeTestUser);
+
+    const numberOfUsers = 1;
+
+    if (!numberOfUsers) {
+      return;
+    }
+
+    for (let i = 0; i < numberOfUsers; i += 1) {
       const fakeUser = {
-        email: this.faker.internet.email(), // Generate a fake email using faker library
-        password: this.faker.internet.password(), // Generate a fake password using faker library
-        refName: `user_${i}`, // Create a reference name for the user
+        username: this.faker.internet.userName(),
+        email: this.faker.internet.email(),
+        password: CryptoJS.AES.encrypt(
+          this.faker.internet.password(),
+          process.env.APP_SECRET
+        ).toString(),
+        is_admin: this.faker.datatype.boolean(),
+        refName: `user_${i}`,
       };
 
-      // Insert the fakeUser data into the 'user' table
-      this.insert(fakeUser); // insert into user(email, password) values (?, ?)
+      this.insert(fakeUser);
     }
+
+    await Promise.all(this.promises);
   }
 }
 
-// Export the UserSeeder class
 module.exports = UserSeeder;

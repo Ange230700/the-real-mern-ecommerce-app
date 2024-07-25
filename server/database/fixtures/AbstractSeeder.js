@@ -1,5 +1,3 @@
-/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
-
 // Import Faker library for generating fake data
 const { faker } = require("@faker-js/faker");
 
@@ -19,15 +17,22 @@ class AbstractSeeder {
       );
     }
 
+    // Store the table name
     this.table = table;
 
+    // Store the truncate option
     this.truncate = truncate;
 
+    // Store the dependencies
     this.dependencies = dependencies;
 
+    // Store the promises
     this.promises = [];
 
+    // Store the faker library
     this.faker = faker;
+
+    // Store the refs object
     this.refs = refs;
   }
 
@@ -41,7 +46,7 @@ class AbstractSeeder {
       .fill("?")
       .join(",");
 
-    const sql = `insert into ${this.table}(${fields}) values (${placeholders})`;
+    const sql = `INSERT INTO ${this.table}(${fields}) VALUES (${placeholders})`;
 
     // Perform the query and if applicable store the insert id given the ref name
     const [result] = await database.query(sql, Object.values(values));
@@ -55,6 +60,13 @@ class AbstractSeeder {
 
   insert(data) {
     this.promises.push(this.#doInsert(data));
+  }
+
+  // Method to count the number of rows in a table
+  async count() {
+    const sql = `SELECT COUNT(*) AS count FROM ${this.table}`;
+    const [rows] = await database.query(sql);
+    return rows[0].count;
   }
 
   // eslint-disable-next-line class-methods-use-this

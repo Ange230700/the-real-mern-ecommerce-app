@@ -22,7 +22,7 @@ const seed = async () => {
 
         const seeder = new SeederClass();
 
-        dependencyMap[SeederClass] = seeder;
+        dependencyMap[SeederClass.name] = seeder;
       });
 
     // Sort seeders according to their dependencies
@@ -31,7 +31,7 @@ const seed = async () => {
     // The recursive solver
     const solveDependencies = (n) => {
       n.dependencies.forEach((DependencyClass) => {
-        const dependency = dependencyMap[DependencyClass];
+        const dependency = dependencyMap[DependencyClass.name];
 
         if (!sortedSeeders.includes(dependency)) {
           solveDependencies(dependency);
@@ -60,7 +60,7 @@ const seed = async () => {
 
       // Use delete instead of truncate to bypass foreign key constraint
       // Wait for the delete promise to complete
-      await database.query(`delete from ${firstOut.table}`);
+      await database.query(`DELETE FROM ${firstOut.table}`);
 
       await doTruncate(stack);
     };
@@ -77,9 +77,8 @@ const seed = async () => {
 
       const firstOut = queue.shift();
 
-      // Use delete instead of truncate to bypass foreign key constraint
-      // Wait for the delete promise to complete
-      firstOut.run();
+      // Run the seeder
+      await firstOut.run();
 
       // Wait for all the insertion promises to complete
       // We do want to wait in a loop to satisfy dependencies
