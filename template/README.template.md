@@ -1,9 +1,6 @@
-# full-stack-e-commerce-mern-app
+# {{name}}
 
 This project uses Harmonia. Harmonia is a framework meant to serve as a foundation for every project following the React-Express-MySQL stack, as learned in Wild Code School.
-# Harmonia
-
-Harmonia is a framework meant to serve as a foundation for every project following the React-Express-MySQL stack, as learned in Wild Code School.
 It's pre-configured with a set of tools which'll help students produce industry-quality and easier-to-maintain code, while staying a pedagogical tool.
 
 ## Setup & Use
@@ -37,7 +34,7 @@ git config --global core.autocrlf false
 - _Husky_ : Allows to execute specific commands that trigger on _git_ events
 - _Vite_ : Alternative to _Create-React-App_, packaging less tools for a more fluid experience
 - _ESLint_ : "Quality of code" tool, ensures chosen rules will be enforced
-- _Prettier_ : "Quality of code" tool as well, focuses on the style guide
+- _Prettier_ : "Quality of code" tool as well, focuses on the styleguide
 - _ Airbnb Standard_ : One of the most known "standards", even though it's not officially linked to ES/JS
 
 ## Deployment with Traefik
@@ -66,7 +63,7 @@ Your url will be ` https://${PROJECT-NAME}.${subdomain}.wilders.dev/`.
 
 ### About the database
 
-The database is automatically deployed with the name of your repo. During the build of the projet (`docker-entry.sh`), the `node migrate.js` command is executed in the server. If you want to seed automatically your database using the `seed.js` script, replace the `cd ./server && node ./bin/migrate.js && node index.js` by `cd ./server && node ./bin/migrate.js && node ./bin/seed.js && node index.js`
+The database is automaticaly deployed with the name of your repo. During the build of the projet (`docker-entry.sh`), the `node migrate.js` command is executed in the server. If you want to seed automaticaly your database using the `seed.js` script, replace the `cd ./server && node ./bin/migrate.js && node index.js` by `cd ./server && node ./bin/migrate.js && node ./bin/seed.js && node index.js`
 
 ### About public assets (pictures, fonts...)
 
@@ -86,16 +83,5 @@ To add it during deployment, follow these 2 steps:
 
 ### About Logs
 
-If you want to access the logs of your online projet (to follow the deployment or to watch any bug error), connect to your VPS (`ssh user@host`).
+If you want to access the logs of your online projet (to follow the deployement or to watch any bug error), connect to your VPS (`ssh user@host`).
 Then, go on your specific project and run  `docker compose logs -t -f`.
-Basic usage:
-
-```bash
-npm create harmonia@latest my-project
-```
-
-You may prefix your project name with the name of your organization:
-
-```bash
-npm create harmonia@latest my-org/my-project
-```
